@@ -20,34 +20,25 @@ public class Batalla {
         this.disponibles2 = e2.getEquipo();
     }
 
-    public void combate(Ataque ataqueElegido) {
+    public int combate(Ataque ataqueElegido) {
         // getAtaqueElegido() --> Getter proveniente de método de WindowBatalla
-        Pokemon atacado;
-        while (!disponibles1.isEmpty() && !disponibles2.isEmpty()) {
-            atacado = activo2;
-            activo2 = atacarYComprobarEstado(activo1, ataqueElegido, disponibles2, activo2);
-            if (activo2 == null) {
-                break;
-            } else if (atacado == activo2) {
-                intercambiarActivos();
-                continue;
+        activo1.atacar(ataqueElegido, activo2);
+        if (activo2.getVivo() == false) {
+            if (disponibles2.isEmpty()) {
+                return 0; // 0 --> Ganó entrenador 1 porque no quedan Pokemones a entrenador 2
             } else {
-                // Método para mostrar a nuevo Pokemon
-                ordenBatalla();
-                continue;
+                return 1; // 1 --> Entrenador 2 sigue porque tiene más pokemones
             }
-        }
-        if (!disponibles1.isEmpty()) {
-            e1.celebracion();
         } else {
-            e2.celebracion();
+            intercambiarActivos();
+            return 2; // 2 --> Turno de quien fue atacado porque no murió
         }
     }
      // Método principal para iniciar una batalla entre dos entrenadores
-     public static Batalla instanciarBatalla(Entrenador e1, Entrenador e2, Pokemon a1, Pokemon a2) {
+     public static Batalla instanciarBatalla(Entrenador e1, Entrenador e2, Pokemon a1, Pokemon a2, Ataque ataqueElegido) {
         Batalla batalla = new Batalla(e1, e2, a1, a2);
         batalla.ordenBatalla();
-        batalla.combate(null);
+        batalla.combate(ataqueElegido);
         return batalla;
     }
 
@@ -69,26 +60,4 @@ public class Batalla {
             }
         }
     }
-
-    public Pokemon atacarYComprobarEstado(Pokemon atacante, Ataque ataqueElegido, ArrayList<Pokemon> equipo, Pokemon pokemon) { 
-        atacante.atacar(ataqueElegido, pokemon);
-        if (!pokemon.getVivo()) {
-            // El Pokemon ha sido derrotado
-            equipo.remove(pokemon);
-            if (!equipo.isEmpty()) {
-                pokemon = elegirNuevoPokemon(equipo);
-                return pokemon;
-            } else {
-                return null;
-            }
-        }
-        return pokemon;
-    }
-    // Método para elegir un nuevo Pokémon
-    public Pokemon elegirNuevoPokemon(ArrayList<Pokemon> equipo) {
-        // Implementación básica: elegir el primer Pokémon disponible
-        return equipo.get(0);
-    }
-
-    // MÉTODOS elegirAtaque() y elegirNuevoPokemon() candidatos para ser del Controlador
 }   
