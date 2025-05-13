@@ -19,7 +19,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.Timer;
 
-public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener { // Implementamos ActionListener
+public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
     
 
     public String getNombre1() {
@@ -532,6 +532,11 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
            switchToNextPanel(showSixthPanel());
         }
         System.out.println(pokemon1 + " " + pokemon2 + " " + pokemon3);
+    }
+
+    public void batalla() {
+        // Aquí puedes implementar la lógica para la batalla
+        JOptionPane.showMessageDialog(this, "¡Batalla iniciada!", "Batalla", JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
