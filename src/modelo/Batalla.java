@@ -11,34 +11,32 @@ public class Batalla {
     ArrayList<Pokemon> disponibles1, disponibles2;
     Pokemon activo1, activo2;
 
-    public Batalla(Entrenador e1, Entrenador e2, Pokemon activo1, Pokemon activo2) {
+    public Batalla(Entrenador e1, Entrenador e2) {
         this.e1 = e1;
         this.e2 = e2;
-        this.activo1 = activo1;
-        this.activo2 = activo2;
         this.disponibles1 = e1.getEquipo();
         this.disponibles2 = e2.getEquipo();
     }
 
-    public int combate(Ataque ataqueElegido) {
+    public int combate(Ataque ataqueElegido, Pokemon activo1, Pokemon activo2) {
+        this.ordenBatalla();
         // getAtaqueElegido() --> Getter proveniente de método de WindowBatalla
         activo1.atacar(ataqueElegido, activo2);
         if (activo2.getVivo() == false) {
+            disponibles2.remove(activo2);
             if (disponibles2.isEmpty()) {
                 return 0; // 0 --> Ganó entrenador 1 porque no quedan Pokemones a entrenador 2
             } else {
                 return 1; // 1 --> Entrenador 2 sigue porque tiene más pokemones
             }
         } else {
-            intercambiarActivos();
             return 2; // 2 --> Turno de quien fue atacado porque no murió
         }
     }
      // Método principal para iniciar una batalla entre dos entrenadores
-     public static Batalla instanciarBatalla(Entrenador e1, Entrenador e2, Pokemon a1, Pokemon a2, Ataque ataqueElegido) {
-        Batalla batalla = new Batalla(e1, e2, a1, a2);
-        batalla.ordenBatalla();
-        batalla.combate(ataqueElegido);
+     public static Batalla instanciarBatalla(Entrenador e1, Entrenador e2) {
+        Batalla batalla = new Batalla(e1, e2);
+        // batalla.combate(ataqueElegido, activo1, activo2); --> Este es el metodo que se llama para atacar
         return batalla;
     }
 
