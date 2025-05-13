@@ -8,8 +8,8 @@ public class Batalla {
     // Objetos globales
     static Random random = new Random(); // Generar aleatoriedad
     Entrenador e1, e2;
-    ArrayList<Pokemon> disponibles1, disponibles2;
     Pokemon activo1, activo2;
+    ArrayList<Pokemon> disponibles1, disponibles2;
 
     public Batalla(Entrenador e1, Entrenador e2) {
         this.e1 = e1;
@@ -18,7 +18,8 @@ public class Batalla {
         this.disponibles2 = e2.getEquipo();
     }
 
-    public int combate(Ataque ataqueElegido, Pokemon activo1, Pokemon activo2) {
+
+    public int turno(Pokemon activo1, Ataque ataqueElegido, Pokemon activo2) {
         this.ordenBatalla();
         // getAtaqueElegido() --> Getter proveniente de método de WindowBatalla
         activo1.atacar(ataqueElegido, activo2);
@@ -36,7 +37,6 @@ public class Batalla {
      // Método principal para iniciar una batalla entre dos entrenadores
      public static Batalla instanciarBatalla(Entrenador e1, Entrenador e2) {
         Batalla batalla = new Batalla(e1, e2);
-        // batalla.combate(ataqueElegido, activo1, activo2); --> Este es el metodo que se llama para atacar
         return batalla;
     }
 
