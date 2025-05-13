@@ -1,6 +1,11 @@
 package vista;
 
 import controlador.Controlador;
+import modelo.Pokemon;
+import modelo.TipoAtaquePokemon;
+
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -18,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.Timer;
+import javax.swing.plaf.IconUIResource;
 
 public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
     
@@ -397,7 +403,20 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     return pokemonPanel;
 }
 
-    public JPanel showSixthPanel() {
+   
+     public static final Map<TipoAtaquePokemon, ImageIcon> ICONOS_TIPO;
+
+    static {
+        ICONOS_TIPO = new HashMap<>();
+        ICONOS_TIPO.put(TipoAtaquePokemon.FUEGO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/charmander.png")));
+        ICONOS_TIPO.put(TipoAtaquePokemon.PLANTA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/bulbasur.png")));
+        ICONOS_TIPO.put(TipoAtaquePokemon.ELECTRICO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/picachu.png")));
+        ICONOS_TIPO.put(TipoAtaquePokemon.TIERRA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/diglet.png")));
+        ICONOS_TIPO.put(TipoAtaquePokemon.AGUA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/squirtle.png")));
+    }
+    
+
+    public JPanel showSixthPanel(Pokemon pokemon ) {
         currentPanel = 6; // Cambiamos el panel actual a 6
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0xF8D070));
@@ -407,7 +426,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         franjamorada.setBounds(0, 0, 250, 30);
         panel.add(franjamorada);
 
-        String nombreConNivel = "Nv. " + 5 + "  " + pokemon1;
+        String nombreConNivel = "Nv. " + pokemon.getNivel() + "/" + pokemon.getNombre() + " (" + pokemon.getTipo() + ")";
         JLabel nombrLabel = new JLabel(nombreConNivel, JLabel.LEFT);
         nombrLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
         nombrLabel.setForeground(Color.WHITE);
@@ -420,12 +439,12 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         cajaBlanca.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
         String[][] Stats = {
-            {"HP", "55", },
-            {"ATAQUE", "40"},
-            {"DEFENSA", "35"},
-            {"ATAQUE ESPECIAL", "50"},
-            {"DEFENSA ESPECIAL", "50"},
-            {"VELOCIDAD", "90"},
+            {"HP", String.valueOf(pokemon.getHp())},
+            {"ATAQUE", String.valueOf(pokemon.getAtk())},
+            {"DEFENSA", String.valueOf(pokemon.getDf())},
+            {"ATAQUE ESPECIAL", String.valueOf(pokemon.getAtkEs())},
+            {"DEFENSA ESPECIAL", String.valueOf(pokemon.getDfEs())},
+            {"VELOCIDAD", String.valueOf(pokemon.getVelocidad())}
             
         };
 
@@ -448,12 +467,11 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
    
 
-        String [][] ataques = {
-            {"Rayo", "40"},
-            {"Impactrueno", "50"},
-            {"Cola Fuego", "60", },
-            {"Puño fuego", "70"},
-        };
+        String [][] ataques = new String[4][4];
+        for (int i = 0; i < pokemon.getAtaques().size(); i++) {
+            ataques[i][0] = pokemon.getAtaques().get(i).getNombre();
+            ataques[i][1] = String.valueOf(pokemon.getAtaques().get(i).getPoder());
+        }
 
         for (int i = 0; i < ataques.length; i++) {
             JLabel label = new JLabel(ataques[i][0], JLabel.CENTER);
@@ -484,9 +502,8 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
         }
 
-       
 
-        ImageIcon imagen = new ImageIcon("C:\\Users\\SAMUEL\\Documents\\Samuel\\Univalle\\semestreIII\\PROGRAMACIÓNORIENTADAAEVENTOS\\PokemonEventos#2\\imagendelospokemons\\imagendecharmander\\src\\charmander.png");
+        ImageIcon imagen = ICONOS_TIPO.get(pokemon.getTipo());
         Image img = imagen.getImage().getScaledInstance(210, 120, Image.SCALE_SMOOTH);
         JLabel labelImagen = new JLabel(new ImageIcon(img));
         labelImagen.setBounds(20,40,210, 120);
@@ -523,15 +540,18 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     
 
     public void pokemones() {
+        System.out.println(pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty());
         pokemon1 =  poke1Field.getText();
         pokemon2 =  poke2Field.getText();
         pokemon3 =  poke3Field.getText();
         if (pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los nombres.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-           switchToNextPanel(showSixthPanel());
+        } 
+        else{
+            currentPanel = 6; // Cambiamos el panel actual a 6
         }
-        System.out.println(pokemon1 + " " + pokemon2 + " " + pokemon3);
+
+       
     }
 
     public void batalla() {

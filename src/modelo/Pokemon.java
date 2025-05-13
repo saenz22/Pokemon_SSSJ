@@ -19,6 +19,12 @@ public class Pokemon extends SerVivo {
     public short getDfEs() {
         return dfEs;
     }
+    public short getAtk() {
+        return atk;
+    }
+    public short getAtkEs() {
+        return atkEs;
+    }
     public TipoAtaquePokemon getTipo() {
         return tipo;
     }
