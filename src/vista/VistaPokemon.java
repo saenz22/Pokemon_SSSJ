@@ -14,10 +14,10 @@ public interface VistaPokemon {
    void mostrarPokemon(Pokemon pokemon);
    void batalla();
    void ganador();
-   int getEscena();
+   byte getEscena();
    void cambiarEscena();
    Pokemon elegirPokemon(Entrenador entrenador);
-   Ataque elegirAtaque();
+   Ataque elegirAtaque(Pokemon pokemon);
    String getNombre1();
    String getNombre2();
    String getPokemon1();
