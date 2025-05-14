@@ -31,6 +31,7 @@ public class Batalla {
                 return 1; // 1 --> Entrenador 2 sigue porque tiene más pokemones
             }
         } else {
+            this.intercambiarActivos();
             return 2; // 2 --> Turno de quien fue atacado porque no murió
         }
     }

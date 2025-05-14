@@ -26,7 +26,7 @@ public class Controlador {
                 vista.bienvenido();
                 break;
             case 2:
-                vista.cambiarEscena(vista.escena3());
+                vista.cambiarEscena(vista.entrenadores());
                 break;
             case 3:
                 vista.entrenadores();
@@ -49,17 +49,22 @@ public class Controlador {
                 for(int i = 0; i < entrenador1.getEquipo().size(); i++) {
                    vista.cambiarEscena(vista.escena6(entrenador1.getEquipo().get(i)));
                 }
+                // Pendiente entrenador #2
                 break;
             case 7:
                 // Combate
                 int number = 0;
-                batalla = Batalla.instanciarBatalla(entrenador1, Entrenador2);
-                while(number != 0) {
-                    number = batalla.turno(vista.elegirPokemon1(), vista.elegirAtaque(), vista.elegirPokemon2());
+                batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
+                Pokemon activo1 = vista.elegirPokemon(entrenador1);
+                Pokemon activo2 = vista.elegirPokemon(entrenador2);
+                while (number != 0) {
+                    number = batalla.turno(activo1, vista.elegirAtaque(activo1), activo2);
                     if (number == 1) {
-                        vista.elegirPokemon2();
-                    } else if (number == 2) {
-                        batalla.intercambiarActivos();
+                        if (activo1.getVivo() == false) {
+                            activo1 = vista.elegirPokemon(entrenador1);
+                        } else {
+                            activo2 = vista.elegirPokemon(entrenador2);
+                        }
                     }
                 }
                 break;

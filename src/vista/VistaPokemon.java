@@ -17,7 +17,7 @@ public interface VistaPokemon {
    int getEscena();
    void cambiarEscena();
    Pokemon elegirPokemon(Entrenador entrenador);
-   Ataque elegirAtaque();
+   Ataque elegirAtaque(Pokemon pokemon);
    String getNombre1();
    String getNombre2();
    String getPokemon1();
