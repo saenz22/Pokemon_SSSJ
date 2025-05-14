@@ -49,9 +49,13 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         return pokemon3;
     }
 
+    public int getEscena() {
+        return currentPanel;
+    }
+
 
     private Timer timer; // Declaramos el Timer como un campo de la clase
-    public int currentPanel = 0;
+    private int currentPanel = 0;
 
 
     private String nombre1 = "";
@@ -91,7 +95,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
 
 
-    private void showFirstPanel() {
+    private JPanel showFirstPanel() {
         currentPanel = 1; // Cambiamos el panel actual a 1
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -149,6 +153,8 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         panel.add(element10);
 
         this.add(panel); // Usamos 'this' porque es una instancia de JFrame (WindowBuilder)
+
+        return panel;
     }
 
     public void switchToNextPanel(JPanel panel) {
@@ -349,6 +355,10 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     label1.setBounds(200, 60, 200, 25);
     pokemonPanel.add(label1);
 
+    // Antes de agregar remover listeners previos
+    for (KeyListener kl : poke1Field.getKeyListeners()) poke1Field.removeKeyListener(kl); 
+    for (KeyListener kl : poke2Field.getKeyListeners()) poke2Field.removeKeyListener(kl);
+    for (KeyListener kl : poke3Field.getKeyListeners()) poke3Field.removeKeyListener(kl);
 
     poke1Field.setBounds(200, 90, 200, 25);
     poke1Field.setFont(new Font("Monospaced", Font.PLAIN, 13));
@@ -522,7 +532,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     }
 
     public void bienvenido() {
-        showFirstPanel(); // Mostrar el primer panel
+        switchToNextPanel(showFirstPanel()); // Mostrar el primer panel
     }
 
 
@@ -538,17 +548,19 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     }
 
     
-
+    
     public void pokemones() {
-        System.out.println(pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty());
+        System.out.println(pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty() );
         pokemon1 =  poke1Field.getText();
         pokemon2 =  poke2Field.getText();
         pokemon3 =  poke3Field.getText();
-        if (pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty()) {
+        if ((pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty()) ) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los nombres.", "Error", JOptionPane.ERROR_MESSAGE);
+            
         } 
         else{
             currentPanel = 6; // Cambiamos el panel actual a 6
+            
         }
 
        
