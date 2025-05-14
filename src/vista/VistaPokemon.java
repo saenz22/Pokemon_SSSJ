@@ -14,7 +14,7 @@ public interface VistaPokemon {
    void mostrarPokemon(Pokemon pokemon);
    void batalla();
    void ganador();
-   int getEscena();
+   byte getEscena();
    void cambiarEscena();
    Pokemon elegirPokemon(Entrenador entrenador);
    Ataque elegirAtaque(Pokemon pokemon);
