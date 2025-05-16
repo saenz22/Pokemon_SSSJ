@@ -1,6 +1,8 @@
 package vista;
 
 import controlador.Controlador;
+import modelo.Ataque;
+import modelo.Entrenador;
 import modelo.Pokemon;
 import modelo.TipoAtaquePokemon;
 import java.util.HashMap;
@@ -24,26 +26,25 @@ import javax.swing.Timer;
 import javax.swing.plaf.IconUIResource;
 
 public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
-    
 
-    public String getNombre1() {
+    public Entrenador getNombre1() {
         return nombre1;
     }
 
 
-    public String getNombre2() {
+    public Entrenador getNombre2() {
         return nombre2;
     }
 
-    public String getPokemon1() {
+    public Pokemon getPokemon1() {
         return pokemon1;
     }
 
-    public String getPokemon2() {
+    public Pokemon getPokemon2() {
         return pokemon2;
     }
 
-    public String getPokemon3() {
+    public Pokemon getPokemon3() {
         return pokemon3;
     }
 
@@ -576,31 +577,36 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
 
     @Override
-    public void getEscena() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEscena'");
+    public byte getEscena() {
+        return (byte)currentPanel;
     }
 
-
     @Override
-    public void cambiarEscena() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cambiarEscena'");
-    }
-
-
-    @Override
-    public void elegirPokemon() {
+    public Pokemon elegirPokemon(Entrenador entrenador) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'elegirPokemon'");
+        //return nuevoPokemon;
     }
 
 
     @Override
-    public void elegirAtaque() {
+    public Ataque elegirAtaque(Pokemon pokemon) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'elegirAtaque'");
+        //return nuevoAtaque;
     }
 
-  
+
+    @Override
+    public void mostrarPokemon(Pokemon pokemon) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarPokemon'");
+    }
+
+
+    @Override
+    public void ganador(Entrenador entrenador) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'ganador'");
+    }
 }

@@ -2,14 +2,32 @@ package modelo;
 
 import java.util.ArrayList;  
 import java.util.Random;
+import vista.VistaPokemon;
 
 public class Batalla {
     
     // Objetos globales
+    VistaPokemon vista;
     static Random random = new Random(); // Generar aleatoriedad
     Entrenador e1, e2;
-    Pokemon activo1, activo2;
+
     ArrayList<Pokemon> disponibles1, disponibles2;
+
+    public Entrenador getEntrenador1() {
+        return e1;
+    }
+
+    public void setEntrenador1(Entrenador e1) {
+        this.e1 = e1;
+    }
+
+    public Entrenador getEntrenador2() {
+        return e2;
+    }
+
+    public void setEntrenador2(Entrenador e2) {
+        this.e2 = e2;
+    }
 
     public Batalla(Entrenador e1, Entrenador e2) {
         this.e1 = e1;
@@ -18,44 +36,46 @@ public class Batalla {
         this.disponibles2 = e2.getEquipo();
     }
 
-
-    public int turno(Pokemon activo1, Ataque ataqueElegido, Pokemon activo2) {
-        this.ordenBatalla();
-        // getAtaqueElegido() --> Getter proveniente de método de WindowBatalla
-        activo1.atacar(ataqueElegido, activo2);
-        if (activo2.getVivo() == false) {
-            disponibles2.remove(activo2);
-            if (disponibles2.isEmpty()) {
-                return 0; // 0 --> Ganó entrenador 1 porque no quedan Pokemones a entrenador 2
-            } else {
-                return 1; // 1 --> Entrenador 2 sigue porque tiene más pokemones
+    public int turno(Pokemon atacante, Ataque ataqueElegido, Pokemon atacado, boolean esRepetido) {
+        
+        ordenBatalla(atacante, atacado, esRepetido);
+         // Si ambos tienen la misma velocidad, el primero que llege a la batalla, lo ataca
+        atacante.atacar(ataqueElegido, atacado);
+        if (atacado.getVivo() == false) {
+            // Verificar el pokemon de quién perdió
+            if (disponibles1.contains(atacado)) {
+                disponibles1.remove(atacado);
+                if (disponibles1.isEmpty()) {
+                    return 2; // el ganador es el entrenador 2
+                } else {
+                    return -2; // el entrenador1 tiene que elegir un nuevo pokemon
+                }
             }
-        } else {
-            this.intercambiarActivos();
-            return 2; // 2 --> Turno de quien fue atacado porque no murió
+            else if (disponibles2.contains(atacado)) {
+                disponibles2.remove(atacado);
+                if (disponibles2.isEmpty()) {
+                    return 1; // El ganador es el entrenador 1
+                } else {
+                    return -1; // el entrenador2 tiene que elegir un nuevo pokemon
+                }
+            }
         }
+        return 0;
     }
+    
      // Método principal para iniciar una batalla entre dos entrenadores
      public static Batalla instanciarBatalla(Entrenador e1, Entrenador e2) {
         Batalla batalla = new Batalla(e1, e2);
         return batalla;
     }
 
-    public void intercambiarActivos() {
-        Pokemon temp1 = activo1;
-        Entrenador temp2 = e1;
-        this.activo1 = activo2;
-        this.activo2 = temp1;
-        this.e1 = e2;
-        this.e2 = temp2;
-    }
-
-    public void ordenBatalla() {
-        if (activo2.getVelocidad() > activo1.getVelocidad()) {
-            this.intercambiarActivos();
-        } else if (activo2.getVelocidad() == activo1.getVelocidad()) {
-            if (!random.nextBoolean()) {
-                this.intercambiarActivos();
+    void ordenBatalla(Pokemon atacante, Pokemon atacado, boolean esRepetido) {
+        Pokemon temporal;
+        if (!esRepetido) {
+            if (atacado.getVelocidad() > atacante.getVelocidad()) {
+            temporal = atacante;
+            atacante = atacado;
+            atacado = temporal;
             }
         }
     }

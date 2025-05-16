@@ -11,9 +11,21 @@ import java.util.NoSuchElementException;
 import java.util.InputMismatchException;
 
 public class VistaPokemonConsola implements VistaPokemon {
+    private byte contadorEscena;
     private Scanner scanner;
     private String nombre1, nombre2, pokemon1, pokemon2, pokemon3;
-    private byte contadorEscena;
+    private Controlador controlador;
+    ArrayList<String> listaPokemones, listaEntrenadores = new ArrayList<>();
+
+    public VistaPokemonConsola() {
+        this.contadorEscena = 0;
+        scanner = new Scanner(System.in);
+        this.nombre1 = "";
+        this.nombre2 = "";
+        this.pokemon1 = "";
+        this.pokemon2 = "";
+        this.pokemon3 = "";
+    }
     
     @Override
     public void bienvenido() {
@@ -29,11 +41,9 @@ public class VistaPokemonConsola implements VistaPokemon {
         throw new UnsupportedOperationException("Unimplemented method 'bienvenido'");
     }
     @Override
-    public void entrenadores() {
-        nombre1 = "";
-        nombre2 = "";
-        boolean NombresValidos = false;
-        while (NombresValidos == false) {
+    public ArrayList<String> entrenadores() {
+        boolean nombresValidos = false;
+        while (nombresValidos) {
             try {
                 System.out.print("Ingrese el nombre del Entrenador 1: ");
                 nombre1 = scanner.nextLine().trim(); 
@@ -48,17 +58,18 @@ public class VistaPokemonConsola implements VistaPokemon {
                     System.out.println("Error: El nombre del Entrenador 2 no puede estar vacío.");
                     continue; 
                 }
-
-                NombresValidos = true; 
+                nombresValidos = true; 
 
             } catch (NoSuchElementException e) {
                 System.err.println("Error: No se encontró más entrada. Saliendo...");
-                return;
+                break;
             } catch (IllegalStateException e) {
                 System.err.println("Error: El scanner ha sido cerrado. Saliendo...");
-                return;
+                break;
             }
         }
+        listaEntrenadores.add(nombre1);
+        listaEntrenadores.add(nombre2);
 
         String texto = """
                 Bienvenidos a Pokémon {jugador1} y
@@ -72,18 +83,13 @@ public class VistaPokemonConsola implements VistaPokemon {
                 """;
         texto = texto.replace("{jugador1}", nombre1).replace("{jugador2}", nombre2);
         System.out.println(texto);
-        
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'entrenadores'");
+        return listaEntrenadores;
     }
 
     @Override
-    public void pokemones() {
-        pokemon1 = "";
-        pokemon2 = "";
-        pokemon3 = "";
+    public ArrayList<String> pokemones(String nombre) {
         boolean PokemonValidos = false;
-
+        System.out.println(nombre + ", ¡Nombra a tus Pokémon!");
         while (!PokemonValidos) {
             try {
                 System.out.print("Ingrese el nombre del primer Pokémon: ");
@@ -113,26 +119,18 @@ public class VistaPokemonConsola implements VistaPokemon {
                 System.out.println("1. " + pokemon1);
                 System.out.println("2. " + pokemon2);
                 System.out.println("3. " + pokemon3);
-
+                
             } catch (NoSuchElementException e) {
                 System.err.println("Error: No se encontró más entrada. Puede que la entrada haya sido interrumpida.");
                 break; // O podrías decidir salir del programa aquí
             }
         }
-        throw new UnsupportedOperationException("Unimplemented method 'pokemones'");
+        listaPokemones.add(pokemon1);
+        listaPokemones.add(pokemon2);
+        listaPokemones.add(pokemon3);
+        return listaPokemones; // Devuelve un ArrayList con los nombres de los Pokémon{pokemon1, pokemon2, pokemon3};
     }
 
-    @Override
-    public void batalla() {
-        System.out.println("""
-                ¡Es hora de la batalla!
-            
-                """);
-      //  controlador.batalla(nombre1, nombre2, pokemon1, pokemon2, pokemon3);
-
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'batalla'");
-    }
     @Override
     public Pokemon elegirPokemon(Entrenador entrenador) {
         ArrayList<Pokemon> pokemones = entrenador.getEquipo();
@@ -153,15 +151,12 @@ public class VistaPokemonConsola implements VistaPokemon {
             } else {
                 System.out.println("Entrada no válida. Por favor, ingresa un número.");
                 scanner.next(); 
-            }
-            return pokemones.get(opcion-1);
+                }
         } catch (InputMismatchException e) {
             System.out.println("Error: Entrada no válida. Por favor, ingresa un número.");
             scanner.next();
         }
-
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'elegirPokemon1'");
+        return pokemones.get(opcion-1);
     }
 
     @Override
@@ -169,28 +164,6 @@ public class VistaPokemonConsola implements VistaPokemon {
         return contadorEscena;
     }
 
-    @Override
-    public void cambiarEscena() {
-        switch (contadorEscena) {
-            case 0 -> {
-                bienvenido();
-                contadorEscena++;
-            }
-            case 1 -> {
-                entrenadores();
-                contadorEscena++;
-            }
-            case 2 -> {
-                pokemones();
-                contadorEscena++;
-            }
-            case 3 -> {
-                batalla();
-                contadorEscena++;
-            }
-        }
-        
-    }
     @Override
     public Ataque elegirAtaque(Pokemon pokemon) {
         ArrayList<Ataque> ataques = pokemon.getAtaques();
@@ -213,19 +186,16 @@ public class VistaPokemonConsola implements VistaPokemon {
                 System.out.println("Entrada no válida. Por favor, ingresa un número.");
                 scanner.next(); 
             }
-            return ataques.get(opcion-1);
         } catch (InputMismatchException e) {
             System.out.println("Error: Entrada no válida. Por favor, ingresa un número.");
             scanner.next();
         }
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'elegirAtaque'");
+        return ataques.get(opcion-1);
     }
 
     @Override
     public void setControlador(Controlador controlador) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setControlador'");
+        this.controlador = controlador;
     }
 
     @Override
@@ -242,36 +212,7 @@ public class VistaPokemonConsola implements VistaPokemon {
     }
 
     @Override
-    public void ganador() {
-        System.out.println("""
-                ¡Felicidades!
-                Has ganado la batalla.
-                """);
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ganador'");
-    }
-    @Override
-    public String getNombre1() {
-        return nombre1;
-    }
-    @Override
-    public String getNombre2() {
-        return nombre2;
-    }
-    @Override
-    public String getPokemon1() {
-        return pokemon1;
-    }
-    @Override
-    public String getPokemon2() {
-        return pokemon2;
-    }
-    @Override
-    public String getPokemon3() {
-        return pokemon3;
-    }
-
-
-    
-    // Implementar métodos
+    public void ganador(Entrenador entrenador) {
+        System.out.println("El ganador es: " + entrenador.getNombre());
+    } 
 }

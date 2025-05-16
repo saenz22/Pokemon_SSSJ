@@ -160,15 +160,4 @@ public class Pokemon extends SerVivo {
     private static boolean yaElegido(String nombreAtk, ArrayList<Ataque> ataques) {
         return ataques.stream().anyMatch(a -> nombreAtk.contains(a.getNombre()));
     }
-
-    // Métodos heredados y sobrescritos
-    @Override
-    public void entrada() {
-        System.out.println(getNombre() + ", ¡Yo te elijo!");
-    }
-
-    @Override
-    public void celebracion() {
-        System.out.println("Yupii");
-    }
 }

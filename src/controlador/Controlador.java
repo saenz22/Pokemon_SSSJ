@@ -1,14 +1,20 @@
 package controlador;
 
 import vista.*;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import modelo.Batalla;
 import modelo.Entrenador;
-import modelo.Pokemon;
 
 public class Controlador {
     private VistaPokemon vista;
     private Batalla batalla;
+    private Entrenador entrenador1, entrenador2;
     public boolean esGui;
+    int provisional;
+    ArrayList<String> listaPokemones, listaEntrenadores = new ArrayList<>();
 
     public Controlador(VistaPokemon vista, boolean esGui) {
        this.vista = vista;
@@ -17,6 +23,7 @@ public class Controlador {
     }
 
     // getEscena corresponde a CurrentPanel en vistaGUI
+    // Aunque no sé si realmente sea necesario, porque en la consola no lo necesitamos al hacerle el Fall Through
     // cambiarEscena() corresponde a switchToNextPanel() en vistaGUI
 
     public void flujo() {
@@ -24,55 +31,48 @@ public class Controlador {
         switch(vista.getEscena()) {
             case 0:
                 vista.bienvenido();
-                break;
+            case 1:
+                listaEntrenadores = vista.entrenadores();
             case 2:
-                vista.cambiarEscena(vista.entrenadores());
-                break;
+                listaPokemones = vista.pokemones(listaEntrenadores.get(0));
+                entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
+                listaPokemones = vista.pokemones(listaEntrenadores.get(1));
+                entrenador2 = Entrenador.capturarEntrenador(listaEntrenadores.get(1), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
             case 3:
-                vista.entrenadores();
-                break;
+                // Método para mostrar pokemones
+                vista.mostrarPokemon(entrenador1.getEquipo().get(0));
+                vista.mostrarPokemon(entrenador1.getEquipo().get(1));
+                vista.mostrarPokemon(entrenador1.getEquipo().get(2));
+                vista.mostrarPokemon(entrenador2.getEquipo().get(0));
+                vista.mostrarPokemon(entrenador2.getEquipo().get(1));
+                vista.mostrarPokemon(entrenador2.getEquipo().get(2));
+                // Hay que instanciar aquí a los entrenadores
             case 4:
-                vista.cambiarEscena(vista.escena5(vista.getNombre1()));
-                break;
-            case 5:
-                vista.pokemones();
-                
-                //vista.cambiarEscena(vista.showFifthPanel(vista.getNombre2()));
-
-                break;
-            case 6:
-                Entrenador entrenador1 = Entrenador.capturarEntrenador(vista.getNombre1(), vista.getPokemon1(), vista.getPokemon2(), vista.getPokemon3());
-                System.out.println("Entrenador 1: " + entrenador1.getNombre());
-                System.out.println("Pokémon 1: " + entrenador1.getEquipo().get(0).getNombre());
-                System.out.println("Pokémon 2: " + entrenador1.getEquipo().get(1).getNombre());
-                System.out.println("Pokémon 3: " + entrenador1.getEquipo().get(2).getNombre());
-                for(int i = 0; i < entrenador1.getEquipo().size(); i++) {
-                   vista.cambiarEscena(vista.escena6(entrenador1.getEquipo().get(i)));
-                }
-                // Pendiente entrenador #2
-                break;
-            case 7:
-                // Combate
-                int number = 0;
                 batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
-                Pokemon activo1 = vista.elegirPokemon(entrenador1);
-                Pokemon activo2 = vista.elegirPokemon(entrenador2);
-                while (number != 0) {
-                    number = batalla.turno(activo1, vista.elegirAtaque(activo1), activo2);
-                    if (number == 1) {
-                        if (activo1.getVivo() == false) {
-                            activo1 = vista.elegirPokemon(entrenador1);
-                        } else {
-                            activo2 = vista.elegirPokemon(entrenador2);
-                        }
-                    }
+                provisional = batalla.turno(vista.elegirPokemon(entrenador1), vista.elegirAtaque(vista.elegirPokemon(entrenador1)), vista.elegirPokemon(entrenador2), false);
+                switch(provisional) {
+                    case -2:
+                        vista.elegirPokemon(batalla.getEntrenador1());
+                        provisional = batalla.turno(vista.elegirPokemon(entrenador1), vista.elegirAtaque(vista.elegirPokemon(entrenador1)), vista.elegirPokemon(entrenador2), false);
+                        break;
+                    case -1:
+                        vista.elegirPokemon(batalla.getEntrenador2());
+                        provisional = batalla.turno(vista.elegirPokemon(entrenador1), vista.elegirAtaque(vista.elegirPokemon(entrenador1)), vista.elegirPokemon(entrenador2), false);
+                        break;
+                    case 0:
+                        provisional = batalla.turno(vista.elegirPokemon(entrenador1), vista.elegirAtaque(vista.elegirPokemon(entrenador1)), vista.elegirPokemon(entrenador2), true);
+                        break;
+                    case 1:
+                        vista.ganador(batalla.getEntrenador1());
+                        break;
+                    case 2:
+                        vista.ganador(batalla.getEntrenador2());
+                        break;
                 }
-                break;
-           break;
+            break;
         }
         
     }
-    // Métodos para manejar las vistas
 
     public void cambiarVista(){
         if(esGui){
@@ -84,10 +84,4 @@ public class Controlador {
         vista.setControlador(this);
         vista.bienvenido();
     }
-
-    // public static void main(String[] args) {
-    //     VistaPokemonGUI vista = new VistaPokemonGUI();
-    //     Controlador control = new Controlador(vista);
-    //     control.flujo();
-    // }
 }
