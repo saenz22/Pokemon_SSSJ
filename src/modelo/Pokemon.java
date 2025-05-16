@@ -105,7 +105,7 @@ public class Pokemon extends SerVivo {
 
         Pokemon inicial = new Pokemon(nombrePokemon);
         // Se inicializan atributos aleatorios
-        inicial.hp = aleatorio(500, 100);
+        inicial.hp = aleatorio(10, 20);
         inicial.atk = aleatorio(100, 10);
         inicial.atkEs = aleatorio(100, 10);
         inicial.df = aleatorio(100, 10);

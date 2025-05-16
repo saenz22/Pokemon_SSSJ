@@ -18,4 +18,5 @@ public interface VistaPokemon {
    Pokemon elegirPokemon(Entrenador entrenador);
    Ataque elegirAtaque(Pokemon pokemon);
    void setControlador(Controlador controlador);
+   void setEscena(byte b);
 }
