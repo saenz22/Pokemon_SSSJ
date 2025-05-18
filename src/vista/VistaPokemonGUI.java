@@ -88,14 +88,14 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         // Creamos un temporizador que se activará después de 3 segundos
         timer = new Timer(3000, this); // El temporizador escucha a esta clase (WindowBuilder)
         timer.setRepeats(false);
-        //timer.start(); // Iniciamos el temporizador
+        timer.start(); // Iniciamos el temporizador
     }
 
     public static void main(String[] args) {
-        VistaPokemonGUI vista = new VistaPokemonGUI();
+        // VistaPokemonGUI vista = new VistaPokemonGUI();
       
 
-        vista.switchToNextPanel(vista.showSeventhPanel()); // Iniciar el flujo de la aplicación
+        // vista.switchToNextPanel(vista.showSeventhPanel()); // Iniciar el flujo de la aplicación
         
     }
 
@@ -571,10 +571,12 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     infoEnemigo.setBounds(70, 20, 200, 50);
 
     JLabel nombreEnemigo = new JLabel("PIDGEY");
+    nombreEnemigo.setFont(new Font("Monospaced", Font.BOLD, 15));
     nombreEnemigo.setBounds(10, 5, 100, 20);
     infoEnemigo.add(nombreEnemigo);
 
     JLabel nivelEnemigo = new JLabel("Nv 4");
+    nivelEnemigo.setFont(new Font("Monospaced", Font.BOLD, 15));
     nivelEnemigo.setBounds(120, 5, 40, 20);
     infoEnemigo.add(nivelEnemigo);
 
@@ -592,10 +594,12 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     infoJugador.setBounds(360, 130, 200, 60);
 
     JLabel nombreJugador = new JLabel("ALASTOR");
+    nombreJugador.setFont(new Font("Monospaced", Font.BOLD, 15));
     nombreJugador.setBounds(10, 5, 100, 20);
     infoJugador.add(nombreJugador);
 
     JLabel nivelJugador = new JLabel("Nv 7");
+    nivelJugador.setFont(new Font("Monospaced", Font.BOLD, 15));
     nivelJugador.setBounds(120, 5, 40, 20);
     infoJugador.add(nivelJugador);
 
@@ -610,7 +614,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     // Panel de comandos personalizado (capa 2)
 JPanel comandos = new JPanel();
 comandos.setLayout(new GridLayout(2, 2, 10, 10));
-comandos.setBounds(8, 190, 317, 100);
+comandos.setBounds(8, 190, 400, 100);
 comandos.setBackground(Color.WHITE);
 comandos.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3)); // Borde café/naranja
 
@@ -629,10 +633,12 @@ layeredPane.add(comandos, Integer.valueOf(2));
     panelInfoAtaque.setLayout(new GridLayout(2, 1));
     panelInfoAtaque.setBackground(new Color(240, 240, 240));
     panelInfoAtaque.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
-    panelInfoAtaque.setBounds(325, 190, 264, 100);
+    panelInfoAtaque.setBounds(408, 190, 180, 100);
 
-    JLabel etiquetaPP = new JLabel("PP: 25/25");
-    JLabel etiquetaTipo = new JLabel("TIPO: FUEGO");
+    JLabel etiquetaPP = new JLabel(" PP        25/25");
+    etiquetaPP.setFont(new Font("Monospaced", Font.BOLD, 15));
+    JLabel etiquetaTipo = new JLabel(" TIPO/FUEGO");
+    etiquetaTipo.setFont(new Font("Monospaced", Font.BOLD, 15));
     panelInfoAtaque.add(etiquetaPP);
     panelInfoAtaque.add(etiquetaTipo);
 
