@@ -82,7 +82,8 @@ public class Controlador {
                                 vista.switchToNextPanel(vista.showSixthPanel(entrenador2.getEquipo().get(indicePokemonActual)));   // Solucion error de índice 
                                 indicePokemonActual++;
                             } else {
-                                System.out.println("¡Listos los dos entrenadores!");
+                                System.out.println("Ya mostró los 3 Pokémon del jugador 2");
+                                vista.switchToNextPanel(vista.showSeventhPanel());
                                 // Aquí podrías avanzar a la batalla o a otro panel
                           
                             }

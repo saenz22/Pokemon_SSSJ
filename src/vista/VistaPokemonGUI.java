@@ -8,15 +8,18 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -85,11 +88,14 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         // Creamos un temporizador que se activará después de 3 segundos
         timer = new Timer(3000, this); // El temporizador escucha a esta clase (WindowBuilder)
         timer.setRepeats(false);
-        timer.start(); // Iniciamos el temporizador
+        //timer.start(); // Iniciamos el temporizador
     }
 
     public static void main(String[] args) {
+        VistaPokemonGUI vista = new VistaPokemonGUI();
+      
 
+        vista.switchToNextPanel(vista.showSeventhPanel()); // Iniciar el flujo de la aplicación
         
     }
 
@@ -519,7 +525,6 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         labelImagen.setBounds(20,40,210, 120);
         panel.add(labelImagen);
         panel.add(cajaBlanca);
-
         panel.setLayout(null);
         panel.setFocusable(true);
         panel.addKeyListener(this);
@@ -527,6 +532,118 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
        return panel; // Usamos 'this' para añadir el sexto panel
     }
+
+    public JPanel showSeventhPanel() {
+    currentPanel = 7;
+
+    JPanel panel = new JPanel();
+    panel.setLayout(null); // para que el LayeredPane funcione bien
+    panel.setPreferredSize(new java.awt.Dimension(605, 327));
+
+    JLayeredPane layeredPane = new JLayeredPane();
+    layeredPane.setBounds(0, 0, 605, 327);
+
+    // 1. Fondo
+    ImageIcon fondoBatalla = new ImageIcon(getClass().getResource("/vista/fondo.png"));
+    Image imagenFondo = fondoBatalla.getImage().getScaledInstance(605, 327, Image.SCALE_SMOOTH);
+    JLabel labelFondo = new JLabel(new ImageIcon(imagenFondo));
+    labelFondo.setBounds(0, 0, 605, 327);
+    layeredPane.add(labelFondo, Integer.valueOf(0));
+
+   
+    // 3. Pokémon
+    ImageIcon squirtle = new ImageIcon(getClass().getResource("/vista/squirtle.png"));
+    JLabel spriteJugador = new JLabel(squirtle);
+    spriteJugador.setBounds(90, 100, 120, 120);
+    layeredPane.add(spriteJugador, Integer.valueOf(1));
+
+    ImageIcon charmander = new ImageIcon(getClass().getResource("/vista/charmander.png"));
+    JLabel spriteEnemigo = new JLabel(charmander);
+    spriteEnemigo.setBounds(370, 30, 120, 120);
+    layeredPane.add(spriteEnemigo, Integer.valueOf(1));
+
+    //panel info jugador
+
+    JPanel infoEnemigo = new JPanel();
+    infoEnemigo.setLayout(null);
+    infoEnemigo.setBackground(new Color(255, 255, 200)); // color de fondo claro
+    infoEnemigo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    infoEnemigo.setBounds(70, 20, 200, 50);
+
+    JLabel nombreEnemigo = new JLabel("PIDGEY");
+    nombreEnemigo.setBounds(10, 5, 100, 20);
+    infoEnemigo.add(nombreEnemigo);
+
+    JLabel nivelEnemigo = new JLabel("Nv 4");
+    nivelEnemigo.setBounds(120, 5, 40, 20);
+    infoEnemigo.add(nivelEnemigo);
+
+    JLabel barraVidaEnemigo = new JLabel(new ImageIcon(getClass().getResource("/vista/vida1.jpg")));
+    barraVidaEnemigo.setBounds(10, 25, 100, 10);
+    infoEnemigo.add(barraVidaEnemigo);
+
+    layeredPane.add(infoEnemigo, Integer.valueOf(2));
+
+    // 5. Panel de información del jugador
+    JPanel infoJugador = new JPanel();
+    infoJugador.setLayout(null);
+    infoJugador.setBackground(new Color(255, 255, 200));
+    infoJugador.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    infoJugador.setBounds(360, 130, 200, 60);
+
+    JLabel nombreJugador = new JLabel("ALASTOR");
+    nombreJugador.setBounds(10, 5, 100, 20);
+    infoJugador.add(nombreJugador);
+
+    JLabel nivelJugador = new JLabel("Nv 7");
+    nivelJugador.setBounds(120, 5, 40, 20);
+    infoJugador.add(nivelJugador);
+
+    JLabel barraVidaJugador = new JLabel(new ImageIcon(getClass().getResource("/vista/vida3.jpg")));
+    barraVidaJugador.setBounds(10, 30, 100, 10);
+    infoJugador.add(barraVidaJugador);
+
+    layeredPane.add(infoJugador, Integer.valueOf(2));
+
+    
+// 6. Panel de opciones de ataque
+    // Panel de comandos personalizado (capa 2)
+JPanel comandos = new JPanel();
+comandos.setLayout(new GridLayout(2, 2, 10, 10));
+comandos.setBounds(8, 190, 317, 100);
+comandos.setBackground(Color.WHITE);
+comandos.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3)); // Borde café/naranja
+
+String[] ataques = { "ARAÑAZO", "GRUÑIDO", "ASCÚAS", "ATRACTRUENO" };
+for (String ataque : ataques) {
+    JButton boton = new JButton(ataque);
+    boton.setBorderPainted(false); // Sin borde
+    boton.setContentAreaFilled(false); // Sin fondo
+    boton.setFont(new Font("Arial", Font.BOLD, 12));
+    comandos.add(boton);
+}
+layeredPane.add(comandos, Integer.valueOf(2));
+
+    // 7. Panel de tipo y PP
+    JPanel panelInfoAtaque = new JPanel();
+    panelInfoAtaque.setLayout(new GridLayout(2, 1));
+    panelInfoAtaque.setBackground(new Color(240, 240, 240));
+    panelInfoAtaque.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    panelInfoAtaque.setBounds(325, 190, 264, 100);
+
+    JLabel etiquetaPP = new JLabel("PP: 25/25");
+    JLabel etiquetaTipo = new JLabel("TIPO: FUEGO");
+    panelInfoAtaque.add(etiquetaPP);
+    panelInfoAtaque.add(etiquetaTipo);
+
+    layeredPane.add(panelInfoAtaque, Integer.valueOf(2));
+
+    // Agregar el layeredPane al panel base
+    panel.add(layeredPane);
+
+    return panel;
+    }
+
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
