@@ -575,12 +575,6 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     
     }
 
-
-    @Override
-    public byte getEscena() {
-        return (byte)currentPanel;
-    }
-
     @Override
     public Pokemon elegirPokemon(Entrenador entrenador) {
         // TODO Auto-generated method stub

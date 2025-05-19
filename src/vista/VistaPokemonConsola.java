@@ -11,7 +11,6 @@ import java.util.NoSuchElementException;
 import java.util.InputMismatchException;
 
 public class VistaPokemonConsola implements VistaPokemon {
-    private byte contadorEscena;
     private Scanner scanner;
     private String nombre1, nombre2, pokemon1, pokemon2, pokemon3;
     private Controlador controlador;
@@ -217,14 +216,4 @@ public class VistaPokemonConsola implements VistaPokemon {
     public void ganador(Entrenador entrenador) {
         System.out.println("El ganador es: " + entrenador.getNombre());
     }
-    
-    @Override
-    public byte getEscena() {
-        return contadorEscena;
-    }
-
-    @Override
-    public void setEscena(byte b) {
-        this.contadorEscena = b;
-    } 
 }

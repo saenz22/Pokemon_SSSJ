@@ -14,9 +14,7 @@ public interface VistaPokemon {
    ArrayList<String> pokemones(String nombre);
    void mostrarPokemon(Pokemon pokemon);
    void ganador(Entrenador entrenador);
-   byte getEscena();
    Pokemon elegirPokemon(Entrenador entrenador);
    Ataque elegirAtaque(Pokemon pokemon);
    void setControlador(Controlador controlador);
-   void setEscena(byte b);
 }
