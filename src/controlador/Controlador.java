@@ -3,6 +3,7 @@ package controlador;
 import vista.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import modelo.Batalla;
@@ -14,27 +15,39 @@ public class Controlador {
     private VistaPokemon vista;
     private Batalla batalla;
     private Entrenador entrenador1, entrenador2;
-    private byte estadoCombate;
     public boolean esGui;
     public byte escena;
-    ArrayList<String> listaPokemones, listaEntrenadores;
+    ArrayList<String> listaPokemones1, listaPokemones2, listaEntrenadores;
+
     Pokemon pokemon1, pokemon2;
     ArrayList<Pokemon> orden;
 
-    public void setPokemon1(Pokemon pokemon1) {
-        this.pokemon1 = pokemon1;
+    public void setPokemonActivoEntrenador1(Pokemon pokemonActivoEntrenador1) {
+        this.pokemon1 = pokemonActivoEntrenador1;
     }
 
-    public void setPokemon2(Pokemon pokemon2) {
-        this.pokemon2 = pokemon2;
+    public void setPokemonActivoEntrenador2(Pokemon pokemonActivoEntrenador2) {
+        this.pokemon2 = pokemonActivoEntrenador2;
     }
 
+    public void setListaPokemones1(String nombre1, String nombre2, String nombre3) {
+        this.listaPokemones1 = new ArrayList<>(Arrays.asList(nombre1, nombre2, nombre3));
+    }
+
+    public void setListaPokemones2(String nombre1, String nombre2, String nombre3) {
+        this.listaPokemones2 = new ArrayList<>(Arrays.asList(nombre1, nombre2, nombre3));
+    }
+
+    public void setListaEntrenadores(String nombre1, String nombre2) {
+        this.listaEntrenadores = new ArrayList<>(Arrays.asList(nombre1, nombre2));
+    }
 
     public Controlador(VistaPokemon vista, boolean esGui) {
        this.vista = vista;
        this.esGui = esGui;
        vista.setControlador(this);
-       this.listaPokemones = new ArrayList<>();
+       this.listaPokemones1 = new ArrayList<>();
+       this.listaPokemones2 = new ArrayList<>();
        this.listaEntrenadores = new ArrayList<>();
        this.escena = 0;
     }
@@ -82,7 +95,7 @@ public class Controlador {
      * 10. Pensar en cómo la vista va a manejar el orden de batalla, que le pasa el controlador
      */
 
-    public void flujo() {
+    public void actualizarEscena() {
         System.out.println("Flujo de control iniciado." + escena);
         switch(escena) {
             case 0:
@@ -90,18 +103,20 @@ public class Controlador {
                 // Listener para cambiar de escena
                 break;
             case 1:
-                listaEntrenadores = vista.entrenadores();
+                vista.entrenadores();
                 // Aquí tiene que estar el listener que ademas de cambiar de escena, guarda las variables entrenador1 y entrenador2
                 break;
             case 2:
-                // Listener para guardar los 3 pokemones (Se llama 2 veces, una para cada entrenador)   
-                // Cambiar variables por getters de las variables, para poder instanciar los entrenadores
-                listaPokemones.addAll(vista.pokemones(listaEntrenadores.get(0)));
-                entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
-                // Aquí estaría la segunda llamada al listener, hacer condicion:
-                //si está por 2da vez mandando pokemones, cambiar de escena
-                listaPokemones.addAll(vista.pokemones(listaEntrenadores.get(1)));
-                entrenador2 = Entrenador.capturarEntrenador(listaEntrenadores.get(1), listaPokemones.get(3), listaPokemones.get(4), listaPokemones.get(5));
+                /*  Listener para guardar los 3 pokemones (Se llama 2 veces, una para cada entrenador)
+                 * Te hice unos setters al principio del controlador, me tienes que mandar los strings que pide según la ventana 
+                 * Por ejemplo, con setListaPokemones1(pokemon1, pokemon2, pokemon3), me pasas los 3 nombres de los textFields en tu listener
+                 * */
+                vista.pokemones(listaEntrenadores.get(0));
+                entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones1.get(0), listaPokemones1.get(1), listaPokemones1.get(2));
+                /* Aquí estaría la segunda llamada al listener, hacer condicion:
+                 * si está por 2da vez mandando pokemones, cambiar de escena */
+                vista.pokemones(listaEntrenadores.get(1));
+                entrenador2 = Entrenador.capturarEntrenador(listaEntrenadores.get(1), listaPokemones2.get(0), listaPokemones2.get(1), listaPokemones2.get(2));
                 break;
             case 3:
                 // Método para mostrar pokemones
@@ -115,10 +130,7 @@ public class Controlador {
                 break;
             case 4:
                 batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
-                pokemon1 = vista.elegirPokemon(entrenador1);
-                pokemon2 = vista.elegirPokemon(entrenador2);
                 orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
-                iniciarCombate();
                 break;
         }        
     }
@@ -126,17 +138,23 @@ public class Controlador {
     public void avanzarEscena() {
         // Este método será el que usará la vista para avanzar de escena, en el listener del Enter puede ser
         escena++;
-        flujo();
+        actualizarEscena();
     }
 
-    public void iniciarCombate() {
+    public void iniciarCombate(byte estadoCombate) {
         switch(estadoCombate) {
         case -2:
-        // El entrenador 1 tiene que elegir un nuevo pokemon, ese nuevo pokemon se definiría con el setter
+        // El entrenador 1 tiene que elegir un nuevo pokemon
+        // vista.elegirPokemon(entrenador1) sería donde eliges el pokemon y usas el setter para cambiar pokemon1
+        // El setter para cambiar pokemon1 se llama setPokemonActivoEntrenador1(pokemon)
+            vista.elegirPokemon(entrenador1);
             orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
             break;
         case -1:
-        // El entrenador 2 tiene que elegir un nuevo pokemon, ese nuevo pokemon se definiría con el setter
+        // El entrenador 2 tiene que elegir un nuevo pokemon
+        // vista.elegirPokemon(entrenador2) sería donde eliges el pokemon y usas el setter para cambiar pokemon2
+        // El setter para cambiar pokemon2 se llama setPokemonActivoEntrenador2(pokemon)
+            vista.elegirPokemon(entrenador2);
             orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
             break;
         case 0:
@@ -152,18 +170,21 @@ public class Controlador {
         }
     }
 
-    public byte atacar(Ataque ataqueElegido) {
-        // Entonces el actionListener del botón del ataque, tiene que llamar a este método y pasarle el ataque
-        // Después de la llamada de esta función, se llama a iniciarCombate()
-        return (byte) batalla.turno(orden.get(0), ataqueElegido, orden.get(1));
+    public void atacar(Ataque ataqueElegido) {
+        // Entonces el actionListener del botón de cada ataque tiene que llamar a este método y pasarle el ataque
+        byte estadoCombate = (byte) batalla.turno(orden.get(0), ataqueElegido, orden.get(1));
+        iniciarCombate(estadoCombate);
     }
 
     public ArrayList<Pokemon> getOrden() {
-        // Este método es quizás el más polémico para mí, porque ahí si que no sé cómo se maneje en la vista la pelea a nivel visual,
-        // igual y lo dejo aquí para discutirlo, porque sería útil: al atacante le pones la imagen de espalda y al atacado la imagen
-        // de frente, además, así sabes cuál es la vida de quien (así sabes qué barra de vida usar)
-        // y cuáles son los ataques específicos del atacante  HpMax.
         return orden;
+        // Esto es un regalo pa vos, aclaro que SIEMPRE orden.get(0) es el atacante y orden.get(1) es el atacado: 
+        // Como al atacante le pones la imagen de espalda y al atacado la imagen de frente, con el orden puedes darle a cada quien
+        // su imagen.
+        // Además, así sabes la vida de cada quien, y por tanto qué barra de vida usar.
+        // Ya vos relacionas "nombredelpokemon".getHp() con "nombredelpokemon".getHPMAX() para ver qué barra de vida usar
+        // Con esto puedes sacar los ataques específicos del atacante "orden.get(0).getAtaques()";
+        // Ya te hice HPMAX, puedes acceder al HPMAX de cada pokemon con "nombredelpokemon".getHPMAX()
     }
 
     public void cambiarVista(){

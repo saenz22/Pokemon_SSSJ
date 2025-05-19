@@ -9,6 +9,7 @@ public class Pokemon extends SerVivo {
     private ArrayList<Ataque> ataques = new ArrayList<>();
     private boolean vivo; // vivo se encanga de inhabilitar al Pokemon cuando hp=0
     private float hp;
+    private final float HPMAX;
     private byte velocidad, nivel;
     private short df, dfEs, atk, atkEs;
     
@@ -27,6 +28,9 @@ public class Pokemon extends SerVivo {
     }
     public TipoAtaquePokemon getTipo() {
         return tipo;
+    }
+    public float getHPMAX() {
+        return HPMAX;
     }
     public void setTipo(TipoAtaquePokemon tipo) {
         this.tipo = tipo;
@@ -67,6 +71,8 @@ public class Pokemon extends SerVivo {
         // Trayendo herencia: atributo nombre
         super(nombre);
         this.vivo = true;
+        this.hp = aleatorio(200, 20);
+        this.HPMAX = this.hp;
     }
 
     // Método para que el usuario elija los ataques de acuerdo con el tipo de pokemon elegido
@@ -105,7 +111,6 @@ public class Pokemon extends SerVivo {
 
         Pokemon inicial = new Pokemon(nombrePokemon);
         // Se inicializan atributos aleatorios
-        inicial.hp = aleatorio(10, 20);
         inicial.atk = aleatorio(100, 10);
         inicial.atkEs = aleatorio(100, 10);
         inicial.df = aleatorio(100, 10);
