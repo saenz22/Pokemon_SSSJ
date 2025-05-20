@@ -105,7 +105,7 @@ public class Pokemon extends SerVivo {
 
         Pokemon inicial = new Pokemon(nombrePokemon);
         // Se inicializan atributos aleatorios
-        inicial.hp = aleatorio(500, 100);
+        inicial.hp = aleatorio(10, 20);
         inicial.atk = aleatorio(100, 10);
         inicial.atkEs = aleatorio(100, 10);
         inicial.df = aleatorio(100, 10);
@@ -159,16 +159,5 @@ public class Pokemon extends SerVivo {
     
     private static boolean yaElegido(String nombreAtk, ArrayList<Ataque> ataques) {
         return ataques.stream().anyMatch(a -> nombreAtk.contains(a.getNombre()));
-    }
-
-    // Métodos heredados y sobrescritos
-    @Override
-    public void entrada() {
-        System.out.println(getNombre() + ", ¡Yo te elijo!");
-    }
-
-    @Override
-    public void celebracion() {
-        System.out.println("Yupii");
     }
 }

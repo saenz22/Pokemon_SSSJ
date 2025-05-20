@@ -533,7 +533,52 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
        return panel; // Usamos 'this' para añadir el sexto panel
     }
 
-    public JPanel showSeventhPanel() {
+     public static final Map<TipoAtaquePokemon, ImageIcon> ICONOS_TIPO_DEFENSOR;
+
+    static {
+        ICONOS_TIPO_DEFENSOR = new HashMap<>();
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.FUEGO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/charmanderFrente.png")));
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.PLANTA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/bulbasurFrente.png")));
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.ELECTRICO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/pikachuFrente.png")));
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.TIERRA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/diglettFrente.png")));
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.AGUA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/squirtleFrente.png")));
+    }
+
+    
+     public static final Map<TipoAtaquePokemon, ImageIcon> ICONOS_TIPO_ATACANTE;
+
+    static {
+        ICONOS_TIPO_ATACANTE = new HashMap<>();
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.FUEGO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/charmanderEspalda.png")));
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.PLANTA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/bulbasurEspalda.png")));
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.ELECTRICO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/pikachuEspalda.png")));
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.TIERRA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/digtletEspalda.png")));
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.AGUA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/squirtleEspalda.png")));
+    }
+  
+
+    public ImageIcon VidaActual(int vida) {
+
+
+        if (vida >= 60) {
+            return new ImageIcon(getClass().getResource("/vista/vida1.jpg"));
+        }
+        else if (vida >= 40) {
+            return new ImageIcon(getClass().getResource("/vista/vida2.jpg"));
+        }
+        else if (vida >= 20) {
+            return new ImageIcon(getClass().getResource("/vista/vida3.jpg"));
+        } 
+        else if (vida >= 0) {
+            return new ImageIcon(getClass().getResource("/vista/vida4.jpg"));
+        } 
+        else {
+            return new ImageIcon(getClass().getResource("/vista/vida5.jpg"));
+        }
+   
+    }
+
+    public JPanel showSeventhPanel(Pokemon atacante, Pokemon defensor) {
     currentPanel = 7;
 
     JPanel panel = new JPanel();
@@ -552,13 +597,13 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
    
     // 3. Pokémon
-    ImageIcon squirtle = new ImageIcon(getClass().getResource("/vista/squirtle.png"));
-    JLabel spriteJugador = new JLabel(squirtle);
+    ImageIcon jugador2 = ICONOS_TIPO_ATACANTE.get(atacante.getTipo());
+    JLabel spriteJugador = new JLabel(jugador2);
     spriteJugador.setBounds(90, 100, 120, 120);
     layeredPane.add(spriteJugador, Integer.valueOf(1));
 
-    ImageIcon charmander = new ImageIcon(getClass().getResource("/vista/charmander.png"));
-    JLabel spriteEnemigo = new JLabel(charmander);
+    ImageIcon jugador1 = ICONOS_TIPO_DEFENSOR.get(defensor.getTipo());
+    JLabel spriteEnemigo = new JLabel(jugador1);
     spriteEnemigo.setBounds(370, 30, 120, 120);
     layeredPane.add(spriteEnemigo, Integer.valueOf(1));
 
@@ -570,12 +615,12 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     infoEnemigo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     infoEnemigo.setBounds(70, 20, 200, 50);
 
-    JLabel nombreEnemigo = new JLabel("PIDGEY");
+    JLabel nombreEnemigo = new JLabel(defensor.getNombre());
     nombreEnemigo.setFont(new Font("Monospaced", Font.BOLD, 15));
     nombreEnemigo.setBounds(10, 5, 100, 20);
     infoEnemigo.add(nombreEnemigo);
 
-    JLabel nivelEnemigo = new JLabel("Nv 4");
+    JLabel nivelEnemigo = new JLabel("Nv " + defensor.getNivel());
     nivelEnemigo.setFont(new Font("Monospaced", Font.BOLD, 15));
     nivelEnemigo.setBounds(120, 5, 40, 20);
     infoEnemigo.add(nivelEnemigo);
@@ -593,12 +638,12 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     infoJugador.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     infoJugador.setBounds(360, 130, 200, 60);
 
-    JLabel nombreJugador = new JLabel("ALASTOR");
+    JLabel nombreJugador = new JLabel(atacante.getNombre());
     nombreJugador.setFont(new Font("Monospaced", Font.BOLD, 15));
     nombreJugador.setBounds(10, 5, 100, 20);
     infoJugador.add(nombreJugador);
 
-    JLabel nivelJugador = new JLabel("Nv 7");
+    JLabel nivelJugador = new JLabel("Nv " + atacante.getNivel());
     nivelJugador.setFont(new Font("Monospaced", Font.BOLD, 15));
     nivelJugador.setBounds(120, 5, 40, 20);
     infoJugador.add(nivelJugador);
@@ -618,7 +663,10 @@ comandos.setBounds(8, 190, 400, 100);
 comandos.setBackground(Color.WHITE);
 comandos.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3)); // Borde café/naranja
 
-String[] ataques = { "ARAÑAZO", "GRUÑIDO", "ASCÚAS", "ATRACTRUENO" };
+String[] ataques = new String[4];
+for (int i = 0; i < 4; i++) {
+    ataques[i] = atacante.getAtaques().get(i).getNombre();
+}
 for (String ataque : ataques) {
     JButton boton = new JButton(ataque);
     boton.setBorderPainted(false); // Sin borde
@@ -635,9 +683,9 @@ layeredPane.add(comandos, Integer.valueOf(2));
     panelInfoAtaque.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
     panelInfoAtaque.setBounds(408, 190, 180, 100);
 
-    JLabel etiquetaPP = new JLabel(" PP        25/25");
+    JLabel etiquetaPP = new JLabel("PP:     " + atacante.getAtk());
     etiquetaPP.setFont(new Font("Monospaced", Font.BOLD, 15));
-    JLabel etiquetaTipo = new JLabel(" TIPO/FUEGO");
+    JLabel etiquetaTipo = new JLabel(" TIPO/" + atacante.getTipo());
     etiquetaTipo.setFont(new Font("Monospaced", Font.BOLD, 15));
     panelInfoAtaque.add(etiquetaPP);
     panelInfoAtaque.add(etiquetaTipo);

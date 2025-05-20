@@ -83,7 +83,7 @@ public class Controlador {
                                 indicePokemonActual++;
                             } else {
                                 System.out.println("Ya mostró los 3 Pokémon del jugador 2");
-                                vista.switchToNextPanel(vista.showSeventhPanel());
+                                vista.switchToNextPanel(vista.showSeventhPanel(entrenador1.getEquipo().get(0), entrenador2.getEquipo().get(0)));
                                 // Aquí podrías avanzar a la batalla o a otro panel
                           
                             }
