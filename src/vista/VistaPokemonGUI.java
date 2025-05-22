@@ -1,11 +1,14 @@
 package vista;
 
 import controlador.Controlador;
+import modelo.Ataque;
+import modelo.Entrenador;
 import modelo.Pokemon;
 import modelo.TipoAtaquePokemon;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,6 +30,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.Timer;
 import javax.swing.plaf.IconUIResource;
+
 
 public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
     
@@ -55,11 +59,16 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     public int getEscena() {
         return currentPanel;
     }
+    public boolean isError() {
+        return error;
+    }
 
+
+    private boolean error = false;
 
     private Timer timer; // Declaramos el Timer como un campo de la clase
     private int currentPanel = 0;
-
+    
 
     private String nombre1 = "";
     private String nombre2 = "";
@@ -237,6 +246,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         
         // Cambiar al siguiente panel
     }
+
 
     public JPanel showThirdPanel() {
         currentPanel = 3; // Cambiamos el panel actual a 3
@@ -463,6 +473,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
             {"VELOCIDAD", String.valueOf(pokemon.getVelocidad())}
             
         };
+
 
         for (int i = 0; i < Stats.length; i++) {
             JLabel label = new JLabel(Stats[i][0], JLabel.CENTER);
@@ -708,12 +719,15 @@ layeredPane.add(comandos, Integer.valueOf(2));
 
 
     public void entrenadores() {
-        
+
         nombre1 = jugador1Field.getText(); // Obtener el texto del primer campo
         nombre2 = jugador2Field.getText(); // Obtener el texto del segundo campo
         if (nombre1.isEmpty() || nombre2.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese ambos nombres.", "Error", JOptionPane.ERROR_MESSAGE);
+            error = true;
         } else {
+            error = false;
+            controlador.setListaEntrenadores(nombre1, nombre2);
             switchToNextPanel(showFourthPanel());
         }
     }
@@ -721,21 +735,65 @@ layeredPane.add(comandos, Integer.valueOf(2));
     
     
     public void pokemones() {
-        System.out.println(pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty() );
+        
         pokemon1 =  poke1Field.getText();
         pokemon2 =  poke2Field.getText();
         pokemon3 =  poke3Field.getText();
         if ((pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty()) ) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los nombres.", "Error", JOptionPane.ERROR_MESSAGE);
-            
+            error = true;
+
         } 
         else{
-            currentPanel = 6; // Cambiamos el panel actual a 6
+            System.out.println("Pokemon 1: " + pokemon1);
+            System.out.println("Pokemon 2: " + pokemon2);
+            System.out.println("Pokemon 3: " + pokemon3);
+            
+            controlador.setListaPokemones(pokemon1, pokemon2, pokemon3);
+            error = false;
+            controlador.avanzarEscena();
+         
+    
             
         }
 
-       
+       System.out.println("Error: " + error);
     }
+
+    ArrayList<Pokemon> listaPokemones = new ArrayList<>();
+    byte contadorPokemones = 0;
+    byte contadorEntrenadores = 0;
+       @Override
+    public void mostrarPokemon(ArrayList<Pokemon> pokemon) {
+        System.out.println("Lista de pokemones: " + pokemon);
+     listaPokemones = pokemon; 
+     currentPanel = 6;
+   
+     switchToNextPanel(showSixthPanel(listaPokemones.get(contadorPokemones)));
+       System.out.println("contadorPokemones: " + contadorPokemones);
+       System.out.println("Lista de pokemones: " + listaPokemones);
+        // Aquí puedes implementar la lógica para mostrar los Pokémon
+        // Por ejemplo, podrías crear un nuevo panel y añadirlo a la ventana
+        // o actualizar el panel existente con la información de los Pokémon
+    }
+
+    public void ganador(Entrenador entrenador) {
+        // Aquí puedes implementar la lógica para mostrar el ganador
+        JOptionPane.showMessageDialog(this, "¡El ganador es " + entrenador.getNombre() + "!", "Ganador", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public Pokemon elegirPokemon(Entrenador entrenador) {
+        // Aquí puedes implementar la lógica para elegir un Pokémon
+        return null; // Cambia esto según tu implementación
+    }
+
+    public Ataque elegirAtaque(Pokemon pokemon) {
+        // Aquí puedes implementar la lógica para elegir un ataque
+        return null; // Cambia esto según tu implementación
+    }
+
+   
+
 
     public void batalla() {
         // Aquí puedes implementar la lógica para la batalla
@@ -746,10 +804,66 @@ layeredPane.add(comandos, Integer.valueOf(2));
     public void keyTyped(KeyEvent e) {
        
     }
+
+
+    
     @Override
     public void keyPressed(KeyEvent e) {
+        System.out.println("current panel: " + currentPanel);
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            controlador.flujo(); // Llamar al método flujo() del controlador
+            switch (currentPanel) {
+                case 2:
+                    switchToNextPanel(showThirdPanel()); // Cambiar al tercer panel
+                    
+                    break;
+
+                case 4: 
+                    switchToNextPanel(showFifthPanel(getNombre1())); // Cambiar al quinto panel
+                    break;
+                case 6:
+                    error = false;
+                System.out.println("Contador: " + contadorPokemones);
+                    if (contadorPokemones < 2) {
+                        contadorPokemones++;
+                        switchToNextPanel(showSixthPanel(listaPokemones.get(contadorPokemones)));
+                     } // Cambiar al sex panel
+                     else{
+                        contadorPokemones = 0;
+                        if(contadorEntrenadores < 1){
+                        switchToNextPanel(showFifthPanel(getNombre2()));
+                        contadorEntrenadores++;
+              
+                     }
+                        else{
+                            controlador.avanzarEscena();
+                            currentPanel = 7;
+                            
+                        }
+                        
+                    }
+                     
+                
+                    break;
+                    case 7:
+                    System.out.println("Entramos al case 7");
+                    switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
+
+                    break;
+                           default:
+              
+                           if(error == false)    {
+                      
+                               controlador.avanzarEscena(); // Llamar al método flujo() del controlador
+                           }
+                           else{
+                            controlador.actualizarEscena();
+                           }
+
+                       
+   
+                    break;
+            }
+           
         }
     
     }
@@ -758,6 +872,11 @@ layeredPane.add(comandos, Integer.valueOf(2));
     public void keyReleased(KeyEvent e) {
     
     }
+
+
+ 
+
+
 
   
 }
