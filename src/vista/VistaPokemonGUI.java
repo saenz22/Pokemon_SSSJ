@@ -845,7 +845,6 @@ layeredPane.add(comandos, Integer.valueOf(2));
                 
                     break;
                     case 7:
-                    System.out.println("Entramos al case 7");
                     switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
 
                     break;
