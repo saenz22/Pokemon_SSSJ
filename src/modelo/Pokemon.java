@@ -1,12 +1,15 @@
 package modelo;
 
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+// En lugar de hacer un ArrayList de ataques, se usó un HashSet que impide inherentemente que se repitan.
 
 public class Pokemon extends SerVivo {
 
     // Inicializando atributos
     private TipoAtaquePokemon tipo;
-    private ArrayList<Ataque> ataques = new ArrayList<>();
+    private Set<Ataque> ataques = new HashSet<>();
     private boolean vivo; // vivo se encanga de inhabilitar al Pokemon cuando hp=0
     private float hp;
     private final float HPMAX;
@@ -35,10 +38,10 @@ public class Pokemon extends SerVivo {
     public void setTipo(TipoAtaquePokemon tipo) {
         this.tipo = tipo;
     }
-    public ArrayList<Ataque> getAtaques() {
+    public Set<Ataque> getAtaques() {
         return ataques;
     }
-    public void setAtaques(ArrayList<Ataque> ataques) {
+    public void setAtaques(Set<Ataque> ataques) {
         this.ataques = ataques;
     }
     public float getHp() {
@@ -76,32 +79,30 @@ public class Pokemon extends SerVivo {
     }
 
     // Método para que el usuario elija los ataques de acuerdo con el tipo de pokemon elegido
-    public static ArrayList<Ataque> capturarAtaques(TipoAtaquePokemon tipoPokemon) {
+    public static Set<Ataque> capturarAtaques(TipoAtaquePokemon tipoPokemon) {
 
         // Inicializando variables locales
         String nombreAtk;
         float stab = 1.0f;
         TipoAtaque tipoAtk;
+        Set<Ataque> ataques = new HashSet<>();
         String[] arsenal = tipoPokemon.getAtaques(); // Se asignan los ataques correspondientes
-        ArrayList<Ataque> ataques = new ArrayList<>();
 
         // SELECCIÓN AUTOMÁTICA
         while (ataques.size() < 4) {
             nombreAtk = arsenal[(short) (Math.random() * (arsenal.length))];
-            if (!yaElegido(nombreAtk, ataques)) {
-                if (nombreAtk.endsWith(" (E)")) {
-                    tipoAtk = TipoAtaque.ESPECIAL;
-                    stab = 1.5f;
-                    nombreAtk = nombreAtk.replace(" (E)", "").trim();
-                } else {
-                    tipoAtk = TipoAtaque.FISICO;
-                    nombreAtk = nombreAtk.replace(" (F)", "").trim();
-                } 
-                String poderStr = nombreAtk.replaceAll("[^0-9]", "");
-                byte poderAtk = Byte.parseByte(poderStr);
-                nombreAtk = nombreAtk.replaceAll("^[0-9]+", "").trim();
-                ataques.add(new Ataque(nombreAtk, poderAtk, tipoAtk, stab));
-            }
+            if (nombreAtk.endsWith(" (E)")) {
+                tipoAtk = TipoAtaque.ESPECIAL;
+                stab = 1.5f;
+                nombreAtk = nombreAtk.replace(" (E)", "").trim();
+            } else {
+                tipoAtk = TipoAtaque.FISICO;
+                nombreAtk = nombreAtk.replace(" (F)", "").trim();
+            } 
+            String poderStr = nombreAtk.replaceAll("[^0-9]", "");
+            byte poderAtk = Byte.parseByte(poderStr);
+            nombreAtk = nombreAtk.replaceAll("^[0-9]+", "").trim();
+            ataques.add(new Ataque(nombreAtk, poderAtk, tipoAtk, stab));
         }
         return ataques; // Se retorna ArrayList de ataques
     }
@@ -160,9 +161,5 @@ public class Pokemon extends SerVivo {
 
     private static short aleatorio(int max, int min) {
         return (short) (Math.random() * (max - min + 1) + min);
-    }
-    
-    private static boolean yaElegido(String nombreAtk, ArrayList<Ataque> ataques) {
-        return ataques.stream().anyMatch(a -> nombreAtk.contains(a.getNombre()));
     }
 }

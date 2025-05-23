@@ -112,6 +112,7 @@ public class Controlador {
                  * Por ejemplo, con setListaPokemones1(pokemon1, pokemon2, pokemon3), me pasas los 3 nombres de los textFields en tu listener
                  * */
                 vista.pokemones(listaEntrenadores.get(0));
+                // Si alguno de los pokemones o de los nombres de los entrenadores están vacíos, entonces vuelvo a llamar los métodos
                 entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones1.get(0), listaPokemones1.get(1), listaPokemones1.get(2));
                 /* Aquí estaría la segunda llamada al listener, hacer condicion:
                  * si está por 2da vez mandando pokemones, cambiar de escena */
