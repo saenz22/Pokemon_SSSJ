@@ -16,8 +16,6 @@ public class VistaPokemonConsola implements VistaPokemon {
 
     @Override
     public void entrenadores() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'entrenadores'");
     }
 
     @Override
