@@ -52,49 +52,6 @@ public class Controlador {
        this.escena = 0;
     }
 
-    /*
-     * Entonces, el objetivo es que la vista maneje el flujo(). Para eso:
-     * 1. Quitar el while(true) y hacer que sea la vista la que llame flujo()
-     * 
-     * 2. Quitar las funciones como tal, que son las escenas literalmente, y 
-     *    reemplazarlas por los getters de la vista (getter de textField y tal)
-     * 
-     * 3. Modificar también las variables que estoy usando en el controlador, de acuerdo a lo que me dice la vista
-     * 
-     * 4. Hacer que la vistaGUI tenga los listeners ella misma, y que esos listeners llamen los métodos
-     *    del controlador, que son los que llaman a los del modelo
-     * 
-     * 5. Crear en vistaGUI un método registrar eventos que tenga todos los eventos de enter, botones, etc.
-     * 
-     * Explico para no perderme luego que lo vaya a hacer:
-     * Básicamente, la idea es que la vista me retorne las variables metiéndolas de una vez
-     * en los parámetros de los métodos del controlador, de acuerdo a la escena en la que se encuentra la vista.
-     * 
-     * 6. Tienes que separar los eventos que cambian escenas de los eventos que hacen cosas, o ambos
-     * 
-     * 7. Propuesta para vistaGUI para que logre manejar los eventos según el panel:
-     * 
-     * public void registrarEventos() {
-            campoTexto.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (panelActual.equals("Panel1")) {
-                        controlador.accionPanel1(campoTexto.getText());
-                    } else if (panelActual.equals("Panel2")) {
-                        controlador.accionPanel2(campoTexto.getText());
-                    }
-                }
-            });
-        }
-     *
-     * 8. Eso sí, sin importar el panel, se cambiará el panel y se llamará a flujo()   
-     * 
-     * 9. Está en debate ver elegirPokemon(), si cambio el nombre a pokemonElegido porque como tal el proceso de elección lo hace
-     *    la vista, es decir, lo que activa pokemon elegido es el listener de la vista, algo como setPokemonElegido(pokemonElegido)
-     * 
-     * 10. Pensar en cómo la vista va a manejar el orden de batalla, que le pasa el controlador
-     */
-
     public void actualizarEscena() {
         System.out.println("Flujo de control iniciado." + escena);
         switch(escena) {
