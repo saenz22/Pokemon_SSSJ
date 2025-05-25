@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
-
+// elegir
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -668,7 +668,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
 
 // 6. Panel de opciones de ataque
-    // Panel de comandos personalizado (capa 2)
+    // Panel de comandos personalizado (capa 2) mostrarPokemon
 JPanel comandos = new JPanel();
 comandos.setLayout(new GridLayout(2, 2, 10, 10));
 comandos.setBounds(8, 190, 400, 100);
@@ -827,7 +827,7 @@ layeredPane.add(comandos, Integer.valueOf(2));
        System.out.println("Lista de pokemones: " + listaPokemones);
         // Aquí puedes implementar la lógica para mostrar los Pokémon
         // Por ejemplo, podrías crear un nuevo panel y añadirlo a la ventana
-        // o actualizar el panel existente con la información de los Pokémon
+        // o actualizar el panel existente con la información de los Pokémon error
     }
 
     public void ganador(Entrenador entrenador) {
@@ -924,17 +924,8 @@ layeredPane.add(comandos, Integer.valueOf(2));
     
     }
 
-<<<<<<< HEAD
-    @Override
-    public Pokemon elegirPokemon(Entrenador entrenador) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'elegirPokemon'");
-        //return nuevoPokemon;
-    }
-=======
     // agregar actionlistener y comando para los botones
     
->>>>>>> 2b69a2c4eca6237a16052e4eb374b5190d930e8d
 
 
  

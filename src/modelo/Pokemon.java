@@ -1,9 +1,6 @@
 package modelo;
 
-import java.util.Set;
-import java.util.HashSet;
-
-// En lugar de hacer un ArrayList de ataques, se usó un HashSet que impide inherentemente que se repitan.
+import java.util.ArrayList;
 
 // En lugar de hacer un ArrayList de ataques, se usó un HashSet que impide inherentemente que se repitan.
 
@@ -11,7 +8,7 @@ public class Pokemon extends SerVivo {
 
     // Inicializando atributos
     private TipoAtaquePokemon tipo;
-    private Set<Ataque> ataques = new HashSet<>();
+    private ArrayList<Ataque> ataques = new ArrayList<>();
     private boolean vivo; // vivo se encanga de inhabilitar al Pokemon cuando hp=0
     private float hp;
     private final float HPMAX;
@@ -40,10 +37,10 @@ public class Pokemon extends SerVivo {
     public void setTipo(TipoAtaquePokemon tipo) {
         this.tipo = tipo;
     }
-    public Set<Ataque> getAtaques() {
+    public ArrayList<Ataque> getAtaques() {
         return ataques;
     }
-    public void setAtaques(Set<Ataque> ataques) {
+    public void setAtaques(ArrayList<Ataque> ataques) {
         this.ataques = ataques;
     }
     public float getHp() {
@@ -76,43 +73,37 @@ public class Pokemon extends SerVivo {
         // Trayendo herencia: atributo nombre
         super(nombre);
         this.vivo = true;
-<<<<<<< HEAD
-        this.hp = aleatorio(200, 20);
-=======
         this.hp = aleatorio(1000, 500);
->>>>>>> 2b69a2c4eca6237a16052e4eb374b5190d930e8d
         this.HPMAX = this.hp;
     }
 
     // Método para que el usuario elija los ataques de acuerdo con el tipo de pokemon elegido
-    public static Set<Ataque> capturarAtaques(TipoAtaquePokemon tipoPokemon) {
+    public static ArrayList<Ataque> capturarAtaques(TipoAtaquePokemon tipoPokemon) {
 
         // Inicializando variables locales
         String nombreAtk;
         float stab = 1.0f;
         TipoAtaque tipoAtk;
-<<<<<<< HEAD
-        Set<Ataque> ataques = new HashSet<>();
-=======
         ArrayList<Ataque> ataques = new ArrayList<>();
->>>>>>> 2b69a2c4eca6237a16052e4eb374b5190d930e8d
         String[] arsenal = tipoPokemon.getAtaques(); // Se asignan los ataques correspondientes
 
         // SELECCIÓN AUTOMÁTICA
         while (ataques.size() < 4) {
             nombreAtk = arsenal[(short) (Math.random() * (arsenal.length))];
-            if (nombreAtk.endsWith(" (E)")) {
-                tipoAtk = TipoAtaque.ESPECIAL;
-                stab = 1.5f;
-                nombreAtk = nombreAtk.replace(" (E)", "").trim();
-            } else {
-                tipoAtk = TipoAtaque.FISICO;
-                nombreAtk = nombreAtk.replace(" (F)", "").trim();
-            } 
-            String poderStr = nombreAtk.replaceAll("[^0-9]", "");
-            byte poderAtk = Byte.parseByte(poderStr);
-            nombreAtk = nombreAtk.replaceAll("^[0-9]+", "").trim();
-            ataques.add(new Ataque(nombreAtk, poderAtk, tipoAtk, stab));
+            if (!yaElegido(nombreAtk, ataques)) {
+                if (nombreAtk.endsWith(" (E)")) {
+                    tipoAtk = TipoAtaque.ESPECIAL;
+                    stab = 1.5f;
+                    nombreAtk = nombreAtk.replace(" (E)", "").trim();
+                } else {
+                    tipoAtk = TipoAtaque.FISICO;
+                    nombreAtk = nombreAtk.replace(" (F)", "").trim();
+                } 
+                String poderStr = nombreAtk.replaceAll("[^0-9]", "");
+                byte poderAtk = Byte.parseByte(poderStr);
+                nombreAtk = nombreAtk.replaceAll("^[0-9]+", "").trim();
+                ataques.add(new Ataque(nombreAtk, poderAtk, tipoAtk, stab));
+            }
         }
         return ataques; // Se retorna ArrayList de ataques
     }
@@ -172,11 +163,8 @@ public class Pokemon extends SerVivo {
     private static short aleatorio(int max, int min) {
         return (short) (Math.random() * (max - min + 1) + min);
     }
-<<<<<<< HEAD
-=======
 
     private static boolean yaElegido(String nombreAtk, ArrayList<Ataque> ataques) {
         return ataques.stream().anyMatch(a -> nombreAtk.contains(a.getNombre()));
     }
->>>>>>> 2b69a2c4eca6237a16052e4eb374b5190d930e8d
 }
