@@ -5,6 +5,8 @@ import java.util.HashSet;
 
 // En lugar de hacer un ArrayList de ataques, se usó un HashSet que impide inherentemente que se repitan.
 
+// En lugar de hacer un ArrayList de ataques, se usó un HashSet que impide inherentemente que se repitan.
+
 public class Pokemon extends SerVivo {
 
     // Inicializando atributos
@@ -74,7 +76,11 @@ public class Pokemon extends SerVivo {
         // Trayendo herencia: atributo nombre
         super(nombre);
         this.vivo = true;
+<<<<<<< HEAD
         this.hp = aleatorio(200, 20);
+=======
+        this.hp = aleatorio(1000, 500);
+>>>>>>> 2b69a2c4eca6237a16052e4eb374b5190d930e8d
         this.HPMAX = this.hp;
     }
 
@@ -85,7 +91,11 @@ public class Pokemon extends SerVivo {
         String nombreAtk;
         float stab = 1.0f;
         TipoAtaque tipoAtk;
+<<<<<<< HEAD
         Set<Ataque> ataques = new HashSet<>();
+=======
+        ArrayList<Ataque> ataques = new ArrayList<>();
+>>>>>>> 2b69a2c4eca6237a16052e4eb374b5190d930e8d
         String[] arsenal = tipoPokemon.getAtaques(); // Se asignan los ataques correspondientes
 
         // SELECCIÓN AUTOMÁTICA
@@ -162,4 +172,11 @@ public class Pokemon extends SerVivo {
     private static short aleatorio(int max, int min) {
         return (short) (Math.random() * (max - min + 1) + min);
     }
+<<<<<<< HEAD
+=======
+
+    private static boolean yaElegido(String nombreAtk, ArrayList<Ataque> ataques) {
+        return ataques.stream().anyMatch(a -> nombreAtk.contains(a.getNombre()));
+    }
+>>>>>>> 2b69a2c4eca6237a16052e4eb374b5190d930e8d
 }

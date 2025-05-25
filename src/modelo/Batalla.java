@@ -23,18 +23,22 @@ public class Batalla {
          // Si ambos tienen la misma velocidad, el primero que llege a la batalla, lo ataca
         atacante.atacar(ataqueElegido, atacado);
         if (atacado.getVivo() == false) {
+            System.out.println("El pokemon " + atacado.getNombre() + " ha sido derrotado");
             // Verificar el pokemon de quién perdió
             if (disponibles1.contains(atacado)) {
                 disponibles1.remove(atacado);
                 if (disponibles1.isEmpty()) {
+                    System.out.println("El entrenador " + e2.getNombre() + " ha ganado la batalla");
                     return 2; // el ganador es el entrenador 2
                 } 
                 else {
+                    System.out.println("El entrenador " + e1.getNombre() + " tiene que elegir un nuevo pokemon");
                     return -2; // el entrenador1 tiene que elegir un nuevo pokemon
                 }
             }
             else if (disponibles2.contains(atacado)) {
                 disponibles2.remove(atacado);
+                System.out.println("El pokemon " + atacado.getNombre() + " ha sido derrotado");
                 if (disponibles2.isEmpty()) {
                     return 1; // El ganador es el entrenador 1
                 } 
@@ -43,6 +47,8 @@ public class Batalla {
                 }
             }
         }
+        System.out.println("El pokemon " + atacante.getNombre() + " ha atacado a " + atacado.getNombre());
+        System.out.println("A " + atacado.getNombre() + " le quedan " + atacado.getHp()+"/"+atacado.getHPMAX() + " puntos de vida");
         return 0;
     }
     

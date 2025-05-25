@@ -5,18 +5,24 @@ import modelo.Ataque;
 import modelo.Entrenador;
 import modelo.Pokemon;
 import modelo.TipoAtaquePokemon;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,33 +31,44 @@ import java.awt.event.KeyListener;
 import javax.swing.Timer;
 import javax.swing.plaf.IconUIResource;
 
-public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
 
-    public Entrenador getNombre1() {
+public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
+    
+
+    public String getNombre1() {
         return nombre1;
     }
 
 
-    public Entrenador getNombre2() {
+    public String getNombre2() {
         return nombre2;
     }
 
-    public Pokemon getPokemon1() {
+    public String getPokemon1() {
         return pokemon1;
     }
 
-    public Pokemon getPokemon2() {
+    public String getPokemon2() {
         return pokemon2;
     }
 
-    public Pokemon getPokemon3() {
+    public String getPokemon3() {
         return pokemon3;
     }
 
+    public int getEscena() {
+        return currentPanel;
+    }
+    public boolean isError() {
+        return error;
+    }
+
+
+    private boolean error = false;
 
     private Timer timer; // Declaramos el Timer como un campo de la clase
-    public int currentPanel = 0;
-
+    private int currentPanel = 0;
+    
 
     private String nombre1 = "";
     private String nombre2 = "";
@@ -84,13 +101,16 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     }
 
     public static void main(String[] args) {
+        // VistaPokemonGUI vista = new VistaPokemonGUI();
+      
 
+        // vista.switchToNextPanel(vista.showSeventhPanel()); // Iniciar el flujo de la aplicación
         
     }
 
 
 
-    private void showFirstPanel() {
+    private JPanel showFirstPanel() {
         currentPanel = 1; // Cambiamos el panel actual a 1
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -148,6 +168,8 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         panel.add(element10);
 
         this.add(panel); // Usamos 'this' porque es una instancia de JFrame (WindowBuilder)
+
+        return panel;
     }
 
     public void switchToNextPanel(JPanel panel) {
@@ -224,6 +246,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         
         // Cambiar al siguiente panel
     }
+
 
     public JPanel showThirdPanel() {
         currentPanel = 3; // Cambiamos el panel actual a 3
@@ -348,6 +371,10 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     label1.setBounds(200, 60, 200, 25);
     pokemonPanel.add(label1);
 
+    // Antes de agregar remover listeners previos
+    for (KeyListener kl : poke1Field.getKeyListeners()) poke1Field.removeKeyListener(kl); 
+    for (KeyListener kl : poke2Field.getKeyListeners()) poke2Field.removeKeyListener(kl);
+    for (KeyListener kl : poke3Field.getKeyListeners()) poke3Field.removeKeyListener(kl);
 
     poke1Field.setBounds(200, 90, 200, 25);
     poke1Field.setFont(new Font("Monospaced", Font.PLAIN, 13));
@@ -447,6 +474,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
             
         };
 
+
         for (int i = 0; i < Stats.length; i++) {
             JLabel label = new JLabel(Stats[i][0], JLabel.CENTER);
             label.setFont(new Font("Monospaced", Font.PLAIN, 15));
@@ -508,7 +536,6 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         labelImagen.setBounds(20,40,210, 120);
         panel.add(labelImagen);
         panel.add(cajaBlanca);
-
         panel.setLayout(null);
         panel.setFocusable(true);
         panel.addKeyListener(this);
@@ -516,42 +543,310 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
        return panel; // Usamos 'this' para añadir el sexto panel
     }
+
+     public static final Map<TipoAtaquePokemon, ImageIcon> ICONOS_TIPO_DEFENSOR;
+
+    static {
+        ICONOS_TIPO_DEFENSOR = new HashMap<>();
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.FUEGO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/charmanderFrente.png")));
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.PLANTA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/bulbasurFrente.png")));
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.ELECTRICO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/pikachuFrente.png")));
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.TIERRA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/diglettFrente.png")));
+        ICONOS_TIPO_DEFENSOR.put(TipoAtaquePokemon.AGUA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/squirtleFrente.png")));
+    }
+
+    
+     public static final Map<TipoAtaquePokemon, ImageIcon> ICONOS_TIPO_ATACANTE;
+
+    static {
+        ICONOS_TIPO_ATACANTE = new HashMap<>();
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.FUEGO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/charmanderEspalda.png")));
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.PLANTA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/bulbasurEspalda.png")));
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.ELECTRICO, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/pikachuEspalda.png")));
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.TIERRA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/digtletEspalda.png")));
+        ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.AGUA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/squirtleEspalda.png")));
+    }
+  
+
+    public ImageIcon VidaActual(Pokemon pokemon) {
+        
+
+        if (pokemon.getHp() > pokemon.getHPMAX()*0.8) {
+            return new ImageIcon(getClass().getResource("/vista/vida1.jpg"));
+        }
+        else if (pokemon.getHp() > pokemon.getHPMAX()*0.6) {
+            return new ImageIcon(getClass().getResource("/vista/vida2.jpg"));
+        }
+        else if (pokemon.getHp() > pokemon.getHPMAX()*0.4) {
+            return new ImageIcon(getClass().getResource("/vista/vida3.jpg"));
+        } 
+        else if (pokemon.getHp() > pokemon.getHPMAX()*0.2) {
+            return new ImageIcon(getClass().getResource("/vista/vida4.jpg"));
+        } 
+        else {
+            return new ImageIcon(getClass().getResource("/vista/vida5.jpg"));
+        }
+   
+    }
+
+    public JPanel showSeventhPanel(Pokemon atacante, Pokemon defensor) {
+    System.out.println();
+    currentPanel = 7;
+
+    JPanel panel = new JPanel();
+    panel.setLayout(null); // para que el LayeredPane funcione bien
+    panel.setPreferredSize(new java.awt.Dimension(605, 327));
+
+    JLayeredPane layeredPane = new JLayeredPane();
+    layeredPane.setBounds(0, 0, 605, 327);
+
+    // 1. Fondo
+    ImageIcon fondoBatalla = new ImageIcon(getClass().getResource("/vista/fondo.png"));
+    Image imagenFondo = fondoBatalla.getImage().getScaledInstance(605, 327, Image.SCALE_SMOOTH);
+    JLabel labelFondo = new JLabel(new ImageIcon(imagenFondo));
+    labelFondo.setBounds(0, 0, 605, 327);
+    layeredPane.add(labelFondo, Integer.valueOf(0));
+
+   
+    // 3. Pokémon
+    ImageIcon jugador2 = ICONOS_TIPO_ATACANTE.get(atacante.getTipo());
+    JLabel spriteJugador = new JLabel(jugador2);
+    spriteJugador.setBounds(90, 100, 120, 120);
+    layeredPane.add(spriteJugador, Integer.valueOf(1));
+
+    ImageIcon jugador1 = ICONOS_TIPO_DEFENSOR.get(defensor.getTipo());
+    JLabel spriteEnemigo = new JLabel(jugador1);
+    spriteEnemigo.setBounds(370, 30, 120, 120);
+    layeredPane.add(spriteEnemigo, Integer.valueOf(1));
+
+    //panel info jugador
+
+    JPanel infoEnemigo = new JPanel();
+    infoEnemigo.setLayout(null);
+    infoEnemigo.setBackground(new Color(255, 255, 200)); // color de fondo claro
+    infoEnemigo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    infoEnemigo.setBounds(70, 20, 200, 50);
+
+    JLabel nombreEnemigo = new JLabel(defensor.getNombre());
+    nombreEnemigo.setFont(new Font("Monospaced", Font.BOLD, 15));
+    nombreEnemigo.setBounds(10, 5, 100, 20);
+    infoEnemigo.add(nombreEnemigo);
+
+    JLabel nivelEnemigo = new JLabel("Nv " + defensor.getNivel());
+    nivelEnemigo.setFont(new Font("Monospaced", Font.BOLD, 15));
+    nivelEnemigo.setBounds(120, 5, 40, 20);
+    infoEnemigo.add(nivelEnemigo);
+
+    JLabel barraVidaEnemigo = new JLabel(VidaActual(defensor));
+    barraVidaEnemigo.setBounds(10, 25, 100, 10);
+    infoEnemigo.add(barraVidaEnemigo);
+
+    layeredPane.add(infoEnemigo, Integer.valueOf(2));
+
+    // 5. Panel de información del jugador
+    JPanel infoJugador = new JPanel();
+    infoJugador.setLayout(null);
+    infoJugador.setBackground(new Color(255, 255, 200));
+    infoJugador.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    infoJugador.setBounds(360, 130, 200, 60);
+
+    JLabel nombreJugador = new JLabel(atacante.getNombre());
+    nombreJugador.setFont(new Font("Monospaced", Font.BOLD, 15));
+    nombreJugador.setBounds(10, 5, 100, 20);
+    infoJugador.add(nombreJugador);
+
+    JLabel nivelJugador = new JLabel("Nv " + atacante.getNivel());
+    nivelJugador.setFont(new Font("Monospaced", Font.BOLD, 15));
+    nivelJugador.setBounds(120, 5, 40, 20);
+    infoJugador.add(nivelJugador);
+
+    JLabel barraVidaJugador = new JLabel(VidaActual(atacante));
+    barraVidaJugador.setBounds(10, 30, 100, 10);
+    infoJugador.add(barraVidaJugador);
+
+    layeredPane.add(infoJugador, Integer.valueOf(2));
+
+
+// 6. Panel de opciones de ataque
+    // Panel de comandos personalizado (capa 2)
+JPanel comandos = new JPanel();
+comandos.setLayout(new GridLayout(2, 2, 10, 10));
+comandos.setBounds(8, 190, 400, 100);
+comandos.setBackground(Color.WHITE);
+comandos.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3)); // Borde café/naranja
+
+String[] ataques = new String[4];
+for (int i = 0; i < 4; i++) {
+    ataques[i] = atacante.getAtaques().get(i).getNombre();
+}
+
+    JButton boton1 = new JButton(ataques[0]);
+    boton1.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Aquí puedes manejar la acción del botón 1
+            controlador.atacar(atacante.getAtaques().get(0));
+            switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
+           
+        }
+    });
+    boton1.setBorderPainted(false); // Sin borde
+    boton1.setContentAreaFilled(false); // Sin fondo
+    boton1.setFont(new Font("Arial", Font.BOLD, 12));
+    comandos.add(boton1);
+
+    JButton boton2 = new JButton(ataques[1]);
+    boton2.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Aquí puedes manejar la acción del botón 2
+            
+            controlador.atacar(atacante.getAtaques().get(1));
+            switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
+        }
+    });
+    boton2.setBorderPainted(false); // Sin borde
+    boton2.setContentAreaFilled(false); // Sin fondo
+    boton2.setFont(new Font("Arial", Font.BOLD, 12));
+    comandos.add(boton2);
+
+    JButton boton3 = new JButton(ataques[2]);
+    boton3.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Aquí puedes manejar la acción del botón 3
+            controlador.atacar(atacante.getAtaques().get(2));
+            switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
+        }
+    });
+    boton3.setBorderPainted(false); // Sin borde
+    boton3.setContentAreaFilled(false); // Sin fondo
+    boton3.setFont(new Font("Arial", Font.BOLD, 12));
+    comandos.add(boton3);
+
+    JButton boton4 = new JButton(ataques[3]);
+    boton4.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Aquí puedes manejar la acción del botón 4
+            controlador.atacar(atacante.getAtaques().get(3));
+            switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
+        }
+    });
+    boton4.setBorderPainted(false); // Sin borde
+    boton4.setContentAreaFilled(false); // Sin fondo
+    boton4.setFont(new Font("Arial", Font.BOLD, 12));
+    comandos.add(boton4);
+
+layeredPane.add(comandos, Integer.valueOf(2));
+
+    // 7. Panel de tipo y PP
+    JPanel panelInfoAtaque = new JPanel();
+    panelInfoAtaque.setLayout(new GridLayout(2, 1));
+    panelInfoAtaque.setBackground(new Color(240, 240, 240));
+    panelInfoAtaque.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    panelInfoAtaque.setBounds(408, 190, 180, 100);
+
+    JLabel etiquetaPP = new JLabel("PP:     " + atacante.getAtk());
+    etiquetaPP.setFont(new Font("Monospaced", Font.BOLD, 15));
+    JLabel etiquetaTipo = new JLabel(" TIPO/" + atacante.getTipo());
+    etiquetaTipo.setFont(new Font("Monospaced", Font.BOLD, 15));
+    panelInfoAtaque.add(etiquetaPP);
+    panelInfoAtaque.add(etiquetaTipo);
+
+    layeredPane.add(panelInfoAtaque, Integer.valueOf(2));
+
+    // Agregar el layeredPane al panel base
+    panel.add(layeredPane);
+
+    return panel;
+    }
+
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
 
     public void bienvenido() {
-        showFirstPanel(); // Mostrar el primer panel
+        switchToNextPanel(showFirstPanel()); // Mostrar el primer panel
     }
 
 
     public void entrenadores() {
-        
+
         nombre1 = jugador1Field.getText(); // Obtener el texto del primer campo
         nombre2 = jugador2Field.getText(); // Obtener el texto del segundo campo
         if (nombre1.isEmpty() || nombre2.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese ambos nombres.", "Error", JOptionPane.ERROR_MESSAGE);
+            error = true;
         } else {
+            error = false;
+            controlador.setListaEntrenadores(nombre1, nombre2);
             switchToNextPanel(showFourthPanel());
         }
     }
 
     
-
+    
     public void pokemones() {
-        System.out.println(pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty());
+        
         pokemon1 =  poke1Field.getText();
         pokemon2 =  poke2Field.getText();
         pokemon3 =  poke3Field.getText();
-        if (pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty()) {
+        if ((pokemon1.isEmpty() || pokemon2.isEmpty() || pokemon3.isEmpty()) ) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los nombres.", "Error", JOptionPane.ERROR_MESSAGE);
+            error = true;
+
         } 
         else{
-            currentPanel = 6; // Cambiamos el panel actual a 6
+            System.out.println("Pokemon 1: " + pokemon1);
+            System.out.println("Pokemon 2: " + pokemon2);
+            System.out.println("Pokemon 3: " + pokemon3);
+            
+            controlador.setListaPokemones(pokemon1, pokemon2, pokemon3);
+            error = false;
+            controlador.avanzarEscena();
+         
+    
+            
         }
 
-       
+       System.out.println("Error: " + error);
     }
+
+    ArrayList<Pokemon> listaPokemones = new ArrayList<>();
+    byte contadorPokemones = 0;
+    byte contadorEntrenadores = 0;
+       @Override
+    public void mostrarPokemon(ArrayList<Pokemon> pokemon) {
+        System.out.println("Lista de pokemones: " + pokemon);
+     listaPokemones = pokemon; 
+     currentPanel = 6;
+   
+     switchToNextPanel(showSixthPanel(listaPokemones.get(contadorPokemones)));
+       System.out.println("contadorPokemones: " + contadorPokemones);
+       System.out.println("Lista de pokemones: " + listaPokemones);
+        // Aquí puedes implementar la lógica para mostrar los Pokémon
+        // Por ejemplo, podrías crear un nuevo panel y añadirlo a la ventana
+        // o actualizar el panel existente con la información de los Pokémon
+    }
+
+    public void ganador(Entrenador entrenador) {
+        // Aquí puedes implementar la lógica para mostrar el ganador
+        JOptionPane.showMessageDialog(this, "¡El ganador es " + entrenador.getNombre() + "!", "Ganador", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public Pokemon elegirPokemon(Entrenador entrenador) {
+        // Aquí puedes implementar la lógica para elegir un Pokémon
+        return null; // Cambia esto según tu implementación
+    }
+
+    public Ataque elegirAtaque(Pokemon pokemon) {
+        // Aquí puedes implementar la lógica para elegir un ataque
+        return null; // Cambia esto según tu implementación
+    }
+
+   
+
 
     public void batalla() {
         // Aquí puedes implementar la lógica para la batalla
@@ -562,10 +857,64 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     public void keyTyped(KeyEvent e) {
        
     }
+
+
+    
     @Override
     public void keyPressed(KeyEvent e) {
+        System.out.println("current panel: " + currentPanel);
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            controlador.flujo(); // Llamar al método flujo() del controlador
+            switch (currentPanel) {
+                case 2:
+                    switchToNextPanel(showThirdPanel()); // Cambiar al tercer panel
+                    
+                    break;
+
+                case 4: 
+                    switchToNextPanel(showFifthPanel(getNombre1())); // Cambiar al quinto panel
+                    break;
+                case 6:
+                    error = false;
+                System.out.println("Contador: " + contadorPokemones);
+                    if (contadorPokemones < 2) {
+                        contadorPokemones++;
+                        switchToNextPanel(showSixthPanel(listaPokemones.get(contadorPokemones)));
+                     } // Cambiar al sex panel
+                     else{
+                        contadorPokemones = 0;
+                        if(contadorEntrenadores < 1){
+                        switchToNextPanel(showFifthPanel(getNombre2()));
+                        contadorEntrenadores++;
+             
+                     }
+                        else{
+                            controlador.avanzarEscena();
+                            currentPanel = 7;
+                            
+                        }
+                        
+                    }
+                    break;
+                    case 7:
+    
+                 System.out.println("Pokemon activo 1: " + controlador.getListaPokemones1().get(0).getNombre() + " " + controlador.getListaPokemones1().get(0).getTipo());
+                    switchToNextPanel(showSeventhPanel( controlador.getListaPokemones1().get(0), controlador.getListaPokemones2().get(0)));
+                    break;
+                           default:
+              
+                           if(error == false)    {
+                      
+                               controlador.avanzarEscena(); // Llamar al método flujo() del controlador
+                           }
+                           else{
+                            controlador.actualizarEscena();
+                           }
+
+                       
+   
+                    break;
+            }
+           
         }
     
     }
@@ -575,32 +924,22 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     
     }
 
+<<<<<<< HEAD
     @Override
     public Pokemon elegirPokemon(Entrenador entrenador) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'elegirPokemon'");
         //return nuevoPokemon;
     }
+=======
+    // agregar actionlistener y comando para los botones
+    
+>>>>>>> 2b69a2c4eca6237a16052e4eb374b5190d930e8d
 
 
-    @Override
-    public Ataque elegirAtaque(Pokemon pokemon) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'elegirAtaque'");
-        //return nuevoAtaque;
-    }
+ 
 
 
-    @Override
-    public void mostrarPokemon(Pokemon pokemon) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mostrarPokemon'");
-    }
 
-
-    @Override
-    public void ganador(Entrenador entrenador) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ganador'");
-    }
+  
 }
