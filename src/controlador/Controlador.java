@@ -17,10 +17,18 @@ public class Controlador {
     private Entrenador entrenador1, entrenador2;
     public boolean esGui;
     public byte escena;
-    ArrayList<String> listaPokemones1, listaPokemones2, listaEntrenadores;
+    ArrayList<String> listaPokemones, listaEntrenadores;
 
     Pokemon pokemon1, pokemon2;
     ArrayList<Pokemon> orden;
+
+    public ArrayList<Pokemon> getListaPokemones1() {
+        return entrenador1.getEquipo();
+    }
+
+    public ArrayList<Pokemon> getListaPokemones2() {
+        return entrenador2.getEquipo();
+    }
 
     public void setPokemonActivoEntrenador1(Pokemon pokemonActivoEntrenador1) {
         this.pokemon1 = pokemonActivoEntrenador1;
@@ -31,7 +39,7 @@ public class Controlador {
     }
 
     public void setListaPokemones(String nombre1, String nombre2, String nombre3) {
-        this.listaPokemones1 = new ArrayList<>(Arrays.asList(nombre1, nombre2, nombre3));
+        this.listaPokemones = new ArrayList<>(Arrays.asList(nombre1, nombre2, nombre3));
     }
 
     
@@ -44,8 +52,7 @@ public class Controlador {
        this.vista = vista;
        this.esGui = esGui;
        vista.setControlador(this);
-       this.listaPokemones1 = new ArrayList<>();
-       this.listaPokemones2 = new ArrayList<>();
+       this.listaPokemones = new ArrayList<>();
        this.listaEntrenadores = new ArrayList<>();
        this.escena = 0;
     }
@@ -120,7 +127,7 @@ public class Controlador {
                  * Por ejemplo, con setListaPokemones1(pokemon1, pokemon2, pokemon3), me pasas los 3 nombres de los textFields en tu listener
                  * */
               if (vista.isError() == false){
-                entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones1.get(0), listaPokemones1.get(1), listaPokemones1.get(2));
+                entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
                 System.out.println("Entrenador 1: " + entrenador1.getNombre());      
                 vista.mostrarPokemon(entrenador1.getEquipo());
               
@@ -141,7 +148,7 @@ public class Controlador {
                 break;
             case 5:
                if (vista.isError() == false){
-                entrenador2 = Entrenador.capturarEntrenador(listaEntrenadores.get(1), listaPokemones1.get(0), listaPokemones1.get(1), listaPokemones1.get(2));
+                entrenador2 = Entrenador.capturarEntrenador(listaEntrenadores.get(1), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
                 System.out.println("Entrenador 2: " + entrenador2.getNombre());      
                 vista.mostrarPokemon(entrenador2.getEquipo());
               
@@ -149,8 +156,15 @@ public class Controlador {
               break;
 
             case 6:
+                setPokemonActivoEntrenador1(entrenador1.getEquipo().get(0));
+                setPokemonActivoEntrenador2(entrenador2.getEquipo().get(0));
+                System.out.println("pokemon1: " + entrenador1.getEquipo().get(0).getNombre() + " pokemon2: " + entrenador2.getEquipo().get(0).getNombre());
+
+                System.out.println("pokemon1: " + pokemon1.getNombre() + " pokemon2: " + pokemon2.getNombre());
                 batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
                 orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
+                System.out.println(getOrden().get(0).getNombre() + " vs " + getOrden().get(1).getNombre());
+
                 
         }        
     }
@@ -195,16 +209,8 @@ public class Controlador {
         byte estadoCombate = (byte) batalla.turno(orden.get(0), ataqueElegido, orden.get(1));
         iniciarCombate(estadoCombate);
     }
-
-    public ArrayList<Pokemon> getOrden() {
+   public ArrayList<Pokemon> getOrden() {
         return orden;
-        // Esto es un regalo pa vos, aclaro que SIEMPRE orden.get(0) es el atacante y orden.get(1) es el atacado: 
-        // Como al atacante le pones la imagen de espalda y al atacado la imagen de frente, con el orden puedes darle a cada quien
-        // su imagen.
-        // Además, así sabes la vida de cada quien, y por tanto qué barra de vida usar.
-        // Ya vos relacionas "nombredelpokemon".getHp() con "nombredelpokemon".getHPMAX() para ver qué barra de vida usar
-        // Con esto puedes sacar los ataques específicos del atacante "orden.get(0).getAtaques()";
-        // Ya te hice HPMAX, puedes acceder al HPMAX de cada pokemon con "nombredelpokemon".getHPMAX()
     }
 
     public void cambiarVista(){
