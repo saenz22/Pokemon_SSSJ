@@ -924,6 +924,12 @@ layeredPane.add(comandos, Integer.valueOf(2));
     
     }
 
+
+    @Override
+    public void continuar() {
+        return;
+    }
+
     // agregar actionlistener y comando para los botones
     
 

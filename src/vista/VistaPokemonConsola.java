@@ -212,6 +212,7 @@ public class VistaPokemonConsola implements VistaPokemon {
             System.out.println("VELOCIDAD: " +  String.valueOf(pokemon.get(i).getVelocidad()) + "\n");
         }
         controlador.avanzarEscena();
+        elegirAtaque(controlador.getOrden().get(0));
     }
     
     @Override
@@ -222,5 +223,10 @@ public class VistaPokemonConsola implements VistaPokemon {
     @Override
     public boolean isError() {
         return false;
+    }
+
+    @Override
+    public void continuar() {
+        elegirAtaque(controlador.getOrden().get(0));
     }
 }

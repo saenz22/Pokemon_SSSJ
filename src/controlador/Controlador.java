@@ -105,10 +105,9 @@ public class Controlador {
         switch(estadoCombate) {
         case -2:
         // El entrenador 1 tiene que elegir un nuevo pokemon
-        // vista.elegirPokemon(entrenador1) sería donde eliges el pokemon y usas el setter para cambiar pokemon1
-        // El setter para cambiar pokemon1 se llama setPokemonActivoEntrenador1(pokemon)
             vista.elegirPokemon(entrenador1);
             orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
+            vista.continuar();
             break;
         case -1:
         // El entrenador 2 tiene que elegir un nuevo pokemon
@@ -116,17 +115,19 @@ public class Controlador {
         // El setter para cambiar pokemon2 se llama setPokemonActivoEntrenador2(pokemon)
             vista.elegirPokemon(entrenador2);
             orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
+            vista.continuar();
             break;
         case 0:
         // Si pokemon2 sigue vivo, es turno de pokemon2
             Collections.reverse(orden);
+            vista.continuar();
             break;
         case 1:
             vista.ganador(entrenador1);
-            break;
+            return;
         case 2:
             vista.ganador(entrenador2);
-            break;
+            return;
         }
     }
 
