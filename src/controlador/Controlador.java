@@ -1,6 +1,7 @@
 package controlador;
 
 import vista.*;
+import vista.vistaGUI.VistaPokemonGUI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -107,7 +108,7 @@ public class Controlador {
         // El entrenador 1 tiene que elegir un nuevo pokemon
             vista.elegirPokemon(entrenador1);
             orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
-            vista.continuar();
+            //vista.continuar();
             break;
         case -1:
         // El entrenador 2 tiene que elegir un nuevo pokemon

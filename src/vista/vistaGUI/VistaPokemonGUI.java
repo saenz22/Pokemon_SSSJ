@@ -1,10 +1,11 @@
-package vista;
+package vista.vistaGUI;
 
 import controlador.Controlador;
 import modelo.Ataque;
 import modelo.Entrenador;
 import modelo.Pokemon;
 import modelo.TipoAtaquePokemon;
+import vista.VistaPokemon;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -421,7 +422,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     flecha.setBounds(430, 250, 30, 30); // Nueva posición razonable de la flecha
     flecha.setFont(new Font("Arial", Font.BOLD, 20)); // Fuente de la flecha    
 
-    // Añadir la flecha encima del cuadro de texto
+    // Añadir la flecha encima del cuadro de texto currentPanel = 7
     pokemonPanel.add(flecha);
 
     
@@ -619,7 +620,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     spriteEnemigo.setBounds(370, 30, 120, 120);
     layeredPane.add(spriteEnemigo, Integer.valueOf(1));
 
-    //panel info jugador
+    //panel info jugador avanzar
 
     JPanel infoEnemigo = new JPanel();
     infoEnemigo.setLayout(null);
@@ -890,7 +891,6 @@ layeredPane.add(comandos, Integer.valueOf(2));
                         else{
                             controlador.avanzarEscena();
                             currentPanel = 7;
-                            
                         }
                         
                     }
@@ -927,7 +927,6 @@ layeredPane.add(comandos, Integer.valueOf(2));
 
     @Override
     public void continuar() {
-        return;
     }
 
     // agregar actionlistener y comando para los botones
