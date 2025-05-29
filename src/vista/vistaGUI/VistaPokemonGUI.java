@@ -62,7 +62,6 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         return error;
     }
 
-
     private boolean error = false;
 
     private Timer timer; // Declaramos el Timer como un campo de la clase
@@ -82,7 +81,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     private JTextField poke2Field = new JTextField();
     private JTextField poke3Field = new JTextField();
    
-    private Controlador controlador;
+    Controlador controlador;
 
 
     public VistaPokemonGUI() {
@@ -787,7 +786,6 @@ layeredPane.add(comandos, Integer.valueOf(2));
     
     
     public void pokemones() {
-        
         pokemon1 =  poke1Field.getText();
         pokemon2 =  poke2Field.getText();
         pokemon3 =  poke3Field.getText();
@@ -835,27 +833,15 @@ layeredPane.add(comandos, Integer.valueOf(2));
     }
 
     public void elegirPokemon(Entrenador e1, Entrenador e2){
-        TablaPokemon tabla = new TablaPokemon();
+        TablaPokemon tabla = new TablaPokemon(controlador);
         tabla.mostrarTabla(e1, e2);
     }
 
     public void elegirAtaque(Pokemon pokemon) {
+        // Aquí este método no hace nada
     }
 
-   
-
-
-    public void batalla() {
-        // Aquí puedes implementar la lógica para la batalla
-        JOptionPane.showMessageDialog(this, "¡Batalla iniciada!", "Batalla", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-       
-    }
-
-
+    // Si lees esto, eres el mejor Joshua
     
     @Override
     public void keyPressed(KeyEvent e) {
@@ -863,75 +849,54 @@ layeredPane.add(comandos, Integer.valueOf(2));
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             switch (currentPanel) {
                 case 2:
-                    switchToNextPanel(showThirdPanel()); // Cambiar al tercer panel
-                    
-                    break;
-
+                switchToNextPanel(showThirdPanel()); // Cambiar al tercer panel
+                break;
                 case 4: 
-                    switchToNextPanel(showFifthPanel(getNombre1())); // Cambiar al quinto panel
+                switchToNextPanel(showFifthPanel(getNombre1())); // Cambiar al quinto panel
                     break;
                 case 6:
                     error = false;
-                System.out.println("Contador: " + contadorPokemones);
+                    System.out.println("Contador: " + contadorPokemones);
                     if (contadorPokemones < 2) {
                         contadorPokemones++;
                         switchToNextPanel(showSixthPanel(listaPokemones.get(contadorPokemones)));
-                     } // Cambiar al sex panel
+                     } // Cambiar al sexto panel
                      else{
                         contadorPokemones = 0;
-                        if(contadorEntrenadores < 1){
+                        if (contadorEntrenadores < 1) {
                         switchToNextPanel(showFifthPanel(getNombre2()));
                         contadorEntrenadores++;
-             
-                     }
-                        else{
-                            controlador.avanzarEscena();
-                            currentPanel = 7;
-                        }
-                        
+                    }
+                    else{
+                        controlador.avanzarEscena();
+                        currentPanel = 7;
+                    }
+                }
+                    break;
+                case 7:
+                    switchToNextPanel(showSeventhPanel(controlador.getListaPokemones1().get(0), controlador.getListaPokemones2().get(0)));
+                    break;
+                default:            
+                    if(error == false)    {
+                        controlador.avanzarEscena();
+                    }
+                    else{
+                        controlador.actualizarEscena();
                     }
                     break;
-                    case 7:
-    
-                 System.out.println("Pokemon activo 1: " + controlador.getListaPokemones1().get(0).getNombre() + " " + controlador.getListaPokemones1().get(0).getTipo());
-                    switchToNextPanel(showSeventhPanel( controlador.getListaPokemones1().get(0), controlador.getListaPokemones2().get(0)));
-                    break;
-                           default:
-              
-                           if(error == false)    {
-                      
-                               controlador.avanzarEscena(); // Llamar al método flujo() del controlador
-                           }
-                           else{
-                            controlador.actualizarEscena();
-                           }
-
-                       
-   
-                    break;
             }
-           
+            
         }
-    
+        
     }
-
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
     @Override
     public void keyReleased(KeyEvent e) {
     
     }
-
-
     @Override
     public void continuar() {
     }
-
-    // agregar actionlistener y comando para los botones
-    
-
-
- 
-
-
-
-  
 }

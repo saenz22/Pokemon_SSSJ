@@ -49,10 +49,13 @@ public class Controlador {
 
     public Controlador(boolean esGui) {
        this.esGui = esGui;
+       this.crearVista();
        vista.setControlador(this);
        this.listaPokemones = new ArrayList<>();
        this.listaEntrenadores = new ArrayList<>();
        this.escena = 0;
+       this.pokemon1 = null;
+       this.pokemon2 = null;
     }
 
     public void actualizarEscena() {
@@ -67,7 +70,6 @@ public class Controlador {
             case 2:
                 vista.pokemones();
                 break;
-           
             case 3:
               if (vista.isError() == false){
                 entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
@@ -76,7 +78,7 @@ public class Controlador {
                 }
                 break;
             case 4:
-               vista.pokemones();
+                vista.pokemones();
                 break;
             case 5:
                if (vista.isError() == false){
@@ -87,10 +89,12 @@ public class Controlador {
                 break;
             case 6:
                 vista.elegirPokemon(entrenador1, entrenador2);
-                batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
-                orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
-                System.out.println(getOrden().get(0).getNombre() + " vs " + getOrden().get(1).getNombre());
-                break;        
+                if (pokemon1 != null && pokemon2 != null) {
+                    batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
+                    orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
+                    System.out.println(getOrden().get(0).getNombre() + " vs " + getOrden().get(1).getNombre());
+                    break;        
+                }
         }        
     }
 
@@ -105,22 +109,21 @@ public class Controlador {
         case -2:
         // El entrenador 1 tiene que elegir un nuevo pokemon
             vista.elegirPokemon(entrenador1, entrenador2);
-            orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
-            //vista.continuar();
-            break;
+            if (true) {
+                break;
+            }
         case -1:
         // El entrenador 2 tiene que elegir un nuevo pokemon
-        // vista.elegirPokemon(entrenador2) sería donde eliges el pokemon y usas el setter para cambiar pokemon2
-        // El setter para cambiar pokemon2 se llama setPokemonActivoEntrenador2(pokemon)
             vista.elegirPokemon(entrenador1, entrenador2);
-            orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
-            vista.continuar();
-            break;
+            if (true) {
+                break;
+            }
         case 0:
         // Si pokemon2 sigue vivo, es turno de pokemon2
             Collections.reverse(orden);
-            vista.continuar();
-            break;
+            if (true) {
+                break;
+            }
         case 1:
             vista.ganador(entrenador1);
             return;
@@ -128,6 +131,8 @@ public class Controlador {
             vista.ganador(entrenador2);
             return;
         }
+        orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
+        vista.continuar();
     }
 
     public void atacar(Ataque ataqueElegido) {

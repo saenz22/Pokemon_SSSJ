@@ -5,6 +5,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
@@ -12,9 +13,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import modelo.Entrenador;
 import modelo.Pokemon;
+import controlador.Controlador;
 
 // Botón personalizado para mostrar el Pokémon
 class BotonPokemon extends JButton {
@@ -55,8 +59,8 @@ class BotonPokemon extends JButton {
         // Texto nombre y nivel
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.drawString(pokemon.getNombre().toUpperCase(), 10, 20);
-        g.drawString("Nv" + pokemon.getNivel(), 10, 40);
+        g.drawString(pokemon.getNombre().toUpperCase(), 70, 20);
+        g.drawString("Nv" + pokemon.getNivel(), 70, 40);
 
         // PS
         g.setColor(Color.ORANGE);
@@ -81,6 +85,12 @@ class BotonPokemon extends JButton {
 }
 
 public class TablaPokemon {
+    private Controlador controlador;
+    private boolean seleccionado1 = false, seleccionado2 = false;
+
+    public TablaPokemon(Controlador controlador) {
+        this.controlador = controlador;
+    }
     public void mostrarTabla(Entrenador e1, Entrenador e2) {
         JFrame frame = new JFrame("Tabla de Pokémon");
         frame.setSize(605, 327);
@@ -91,9 +101,27 @@ public class TablaPokemon {
         fondo.setBackground(new Color(25, 95, 95));
         fondo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        // Hacer foco en el panel para detectar la tecla
+        fondo.setFocusable(true);
+        fondo.requestFocusInWindow(); // Requiere que la ventana esté visible
+
+        fondo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (seleccionado1 && seleccionado2) {   
+                        frame.dispose(); // Cierra la ventana
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(frame, "Por favor, seleccione un pokemon para cada entrenador.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
         // Fila de nombres de entrenadores
-        JLabel entrenador1 = new JLabel("Entrenador 1: Ash", SwingConstants.CENTER);
-        JLabel entrenador2 = new JLabel("Entrenador 2: Misty", SwingConstants.CENTER);
+        JLabel entrenador1 = new JLabel("Entrenador 1: " + e1.getNombre(), SwingConstants.CENTER);
+        JLabel entrenador2 = new JLabel("Entrenador 2: " + e2.getNombre(), SwingConstants.CENTER);
         entrenador1.setForeground(Color.WHITE);
         entrenador2.setForeground(Color.WHITE);
         entrenador1.setFont(new Font("Arial", Font.BOLD, 16));
@@ -131,6 +159,8 @@ public class TablaPokemon {
                     b.setEnabled(false);
                 }
                 botonesE1[finalI].seleccionar();
+                controlador.setPokemonActivoEntrenador1(botonesE1[finalI].getPokemon());
+                seleccionado1 = true;
             });
 
             botonesE2[i].addActionListener(_ -> {
@@ -139,11 +169,14 @@ public class TablaPokemon {
                     b.setEnabled(false);
                 }
                 botonesE2[finalI].seleccionar();
+                controlador.setPokemonActivoEntrenador2(botonesE2[finalI].getPokemon());
+                seleccionado2 = true;
             });
         }
 
         frame.add(fondo);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        fondo.requestFocusInWindow();
     }
 }
