@@ -1,24 +1,24 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+package vista.vistaGUI;
+
 import java.util.List;
-import java.util.Arrays;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridLayout;
 
-class Pokemon {
-    String nombre;
-    int nivel, saludActual, saludMaxima;
-
-    public Pokemon(String nombre, int nivel, int saludActual, int saludMaxima) {
-        this.nombre = nombre;
-        this.nivel = nivel;
-        this.saludActual = saludActual;
-        this.saludMaxima = saludMaxima;
-    }
-}
+import modelo.Entrenador;
+import modelo.Pokemon;
 
 // Botón personalizado para mostrar el Pokémon
 class BotonPokemon extends JButton {
-    private final Pokemon pokemon;
+    Pokemon pokemon;
     private boolean seleccionado = false;
 
     public BotonPokemon(Pokemon pokemon) {
@@ -48,11 +48,15 @@ class BotonPokemon extends JButton {
         }
         g.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
 
+        if (pokemon.getImagen().getImage() != null) {
+        g.drawImage(pokemon.getImagen().getImage(), 10, 10, 50, 50, this); // (x, y, ancho, alto)
+        }
+
         // Texto nombre y nivel
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.drawString(pokemon.nombre.toUpperCase(), 10, 20);
-        g.drawString("Nv" + pokemon.nivel, 10, 40);
+        g.drawString(pokemon.getNombre().toUpperCase(), 10, 20);
+        g.drawString("Nv" + pokemon.getNivel(), 10, 40);
 
         // PS
         g.setColor(Color.ORANGE);
@@ -63,21 +67,21 @@ class BotonPokemon extends JButton {
         g.fillRect(230, 12, 80, 10);
 
         // Barra verde
-        int barra = (int)((double)pokemon.saludActual / pokemon.saludMaxima * 80);
+        int barra = (int)((double)pokemon.getHp() / pokemon.getHPMAX() * 80);
         g.setColor(Color.GREEN);
         g.fillRect(230, 12, barra, 10);
 
         // PS numérico
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.PLAIN, 12));
-        g.drawString(pokemon.saludActual + "/" + pokemon.saludMaxima, 230, 35);
+        g.drawString(pokemon.getHp() + "/" + pokemon.getHPMAX(), 230, 35);
 
         super.paintComponent(g); // Para eventos del botón
     }
 }
 
 public class TablaPokemon {
-    public static void main(String[] args) {
+    public void mostrarTabla(Entrenador e1, Entrenador e2) {
         JFrame frame = new JFrame("Tabla de Pokémon");
         frame.setSize(605, 327);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -98,52 +102,43 @@ public class TablaPokemon {
         fondo.add(entrenador2);
 
         // Equipos
-        List<Pokemon> equipoAsh = Arrays.asList(
-            new Pokemon("Sparky", 20, 9, 51),
-            new Pokemon("Alastor", 26, 70, 70),
-            new Pokemon("Solais", 22, 60, 60)
-        );
-
-        List<Pokemon> equipoMisty = Arrays.asList(
-            new Pokemon("Hydroz", 23, 66, 66),
-            new Pokemon("Dormilon", 12, 30, 30),
-            new Pokemon("Starmie", 28, 80, 80)
-        );
+        List<Pokemon> equipoE1 = e1.getEquipo();
+        List<Pokemon> equipoE2 = e2.getEquipo();
 
         // Listas de botones por equipo
-        BotonPokemon[] botonesAsh = new BotonPokemon[3];
-        BotonPokemon[] botonesMisty = new BotonPokemon[3];
+        BotonPokemon[] botonesE1 = new BotonPokemon[3];
+        BotonPokemon[] botonesE2 = new BotonPokemon[3];
 
         // Crear y agregar botones al panel
         for (int i = 0; i < 3; i++) {
-            BotonPokemon botonAsh = new BotonPokemon(equipoAsh.get(i));
-            BotonPokemon botonMisty = new BotonPokemon(equipoMisty.get(i));
+            BotonPokemon botonE1 = new BotonPokemon(equipoE1.get(i));
+            BotonPokemon botonE2 = new BotonPokemon(equipoE2.get(i));
 
-            botonesAsh[i] = botonAsh;
-            botonesMisty[i] = botonMisty;
+            botonesE1[i] = botonE1;
+            botonesE2[i] = botonE2;
 
-            fondo.add(botonAsh);
-            fondo.add(botonMisty);
+            fondo.add(botonE1);
+            fondo.add(botonE2);
         }
 
         // Añadir listeners
         for (int i = 0; i < 3; i++) {
             int finalI = i;
 
-            botonesAsh[i].addActionListener(e -> {
-                System.out.println(botonesAsh[finalI].getPokemon().nombre);
-                for (BotonPokemon b : botonesAsh) {
+            botonesE1[i].addActionListener(_ -> {
+                System.out.println(botonesE1[finalI].getPokemon().getNombre());
+                for (BotonPokemon b : botonesE1) {
                     b.setEnabled(false);
                 }
-                botonesAsh[finalI].seleccionar();
+                botonesE1[finalI].seleccionar();
             });
 
-            botonesMisty[i].addActionListener(e -> {
-                System.out.println(botonesMisty[finalI].getPokemon().nombre);
-                for (BotonPokemon b : botonesMisty) {
+            botonesE2[i].addActionListener(_ -> {
+                System.out.println(botonesE2[finalI].getPokemon().getNombre());
+                for (BotonPokemon b : botonesE2) {
                     b.setEnabled(false);
                 }
-                botonesMisty[finalI].seleccionar();
+                botonesE2[finalI].seleccionar();
             });
         }
 

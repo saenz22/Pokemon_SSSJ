@@ -132,7 +132,12 @@ public class VistaPokemonConsola implements VistaPokemon {
     }
 
     @Override
-    public void elegirPokemon(Entrenador entrenador) {
+    public void elegirPokemon(Entrenador entrenador1, Entrenador entrenador2) {
+        controlador.setPokemonActivoEntrenador1(entrenador1.getEquipo().get(eleccion(entrenador1)-1));
+        controlador.setPokemonActivoEntrenador2(entrenador2.getEquipo().get(eleccion(entrenador2)-1));
+    }
+
+    private byte eleccion(Entrenador entrenador) {
         ArrayList<Pokemon> pokemones = entrenador.getEquipo();
         int opcion = 0; 
         System.out.println("Elige un Pokémon:" + entrenador.getNombre());
@@ -156,12 +161,7 @@ public class VistaPokemonConsola implements VistaPokemon {
             System.out.println("Error: Entrada no válida. Por favor, ingresa un número.");
             scanner.nextLine();
         }
-        if (entrenador.getNombre().equals(nombre1)) {
-            controlador.setPokemonActivoEntrenador1(pokemones.get(opcion-1));
-        }
-        else {
-            controlador.setPokemonActivoEntrenador2(pokemones.get(opcion-1));
-        }
+        return (byte) opcion;
     }
 
     @Override

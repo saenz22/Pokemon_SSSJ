@@ -2,6 +2,10 @@ package modelo;
 
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+
+import vista.vistaGUI.VistaPokemonGUI;
+
 // En lugar de hacer un ArrayList de ataques, se usó un HashSet que impide inherentemente que se repitan.
 
 public class Pokemon extends SerVivo {
@@ -14,8 +18,18 @@ public class Pokemon extends SerVivo {
     private final float HPMAX;
     private byte velocidad, nivel;
     private short df, dfEs, atk, atkEs;
+    private ImageIcon imagen;
     
     // Getters y Setters
+
+    public ImageIcon getImagen() {
+        return imagen;
+    }
+
+    public void setImagen() {
+        this.imagen = VistaPokemonGUI.ICONOS_TIPO.get(tipo);
+    }
+    
     public short getDf() {
         return df;
     }
@@ -75,6 +89,7 @@ public class Pokemon extends SerVivo {
         this.vivo = true;
         this.hp = aleatorio(1000, 500);
         this.HPMAX = this.hp;
+        this.imagen = null;
     }
 
     // Método para que el usuario elija los ataques de acuerdo con el tipo de pokemon elegido
@@ -123,6 +138,7 @@ public class Pokemon extends SerVivo {
         byte tipoElegido = (byte) (Math.random() * (TipoAtaquePokemon.values().length));
         inicial.setTipo(TipoAtaquePokemon.values()[tipoElegido]);
         inicial.setAtaques(Pokemon.capturarAtaques(inicial.getTipo()));
+        inicial.setImagen();
         return inicial; // Se retorna un nuevo Pokemon
     }
 

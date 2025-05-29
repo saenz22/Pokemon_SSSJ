@@ -1,7 +1,6 @@
 package vista.vistaGUI;
 
 import controlador.Controlador;
-import modelo.Ataque;
 import modelo.Entrenador;
 import modelo.Pokemon;
 import modelo.TipoAtaquePokemon;
@@ -20,7 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
-// elegir
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -30,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.Timer;
-import javax.swing.plaf.IconUIResource;
 
 
 public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
@@ -105,7 +103,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         // VistaPokemonGUI vista = new VistaPokemonGUI();
       
 
-        // vista.switchToNextPanel(vista.showSeventhPanel()); // Iniciar el flujo de la aplicación
+        // vista.switchToNextPanel(vista.showSeventhPanel()); // Iniciar el flujo de la aplicación mostrar
         
     }
 
@@ -836,14 +834,12 @@ layeredPane.add(comandos, Integer.valueOf(2));
         JOptionPane.showMessageDialog(this, "¡El ganador es " + entrenador.getNombre() + "!", "Ganador", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public Pokemon elegirPokemon(Entrenador entrenador) {
-        // Aquí puedes implementar la lógica para elegir un Pokémon
-        return null; // Cambia esto según tu implementación
+    public void elegirPokemon(Entrenador e1, Entrenador e2){
+        TablaPokemon tabla = new TablaPokemon();
+        tabla.mostrarTabla(e1, e2);
     }
 
-    public Ataque elegirAtaque(Pokemon pokemon) {
-        // Aquí puedes implementar la lógica para elegir un ataque
-        return null; // Cambia esto según tu implementación
+    public void elegirAtaque(Pokemon pokemon) {
     }
 
    

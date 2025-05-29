@@ -49,7 +49,6 @@ public class Controlador {
 
     public Controlador(boolean esGui) {
        this.esGui = esGui;
-       crearVista();
        vista.setControlador(this);
        this.listaPokemones = new ArrayList<>();
        this.listaEntrenadores = new ArrayList<>();
@@ -87,8 +86,7 @@ public class Controlador {
                 }
                 break;
             case 6:
-                vista.elegirPokemon(entrenador1);
-                vista.elegirPokemon(entrenador2);
+                vista.elegirPokemon(entrenador1, entrenador2);
                 batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
                 orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
                 System.out.println(getOrden().get(0).getNombre() + " vs " + getOrden().get(1).getNombre());
@@ -106,7 +104,7 @@ public class Controlador {
         switch(estadoCombate) {
         case -2:
         // El entrenador 1 tiene que elegir un nuevo pokemon
-            vista.elegirPokemon(entrenador1);
+            vista.elegirPokemon(entrenador1, entrenador2);
             orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
             //vista.continuar();
             break;
@@ -114,7 +112,7 @@ public class Controlador {
         // El entrenador 2 tiene que elegir un nuevo pokemon
         // vista.elegirPokemon(entrenador2) sería donde eliges el pokemon y usas el setter para cambiar pokemon2
         // El setter para cambiar pokemon2 se llama setPokemonActivoEntrenador2(pokemon)
-            vista.elegirPokemon(entrenador2);
+            vista.elegirPokemon(entrenador1, entrenador2);
             orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
             vista.continuar();
             break;
