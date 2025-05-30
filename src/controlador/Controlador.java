@@ -112,25 +112,31 @@ public class Controlador {
         iniciarCombate(estadoCombate);
     }
     public void ordenarContrincantes() {
-        // Este método sera el que usaremos para avanzar de escena en el listener del Enter entre la tabla de pokemones y la pelea
-        orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
+        // Este método será el que usaremos para avanzar de escena en el listener del Enter entre la tabla de pokemones y la pelea
+        orden = batalla.ordenBatalla(pokemon1, pokemon2);
         System.out.println(getOrden().get(0).getNombre() + " vs " + getOrden().get(1).getNombre());
     }
 
     public void iniciarCombate(byte estadoCombate) {
+        System.out.println("Estado de combate: " + estadoCombate);
         switch(estadoCombate) {
         case -2:
         // El entrenador 1 tiene que elegir un nuevo pokemon
+            System.out.println("Estado combate: " + estadoCombate);
+            System.out.println("El entrenador 1 tiene que elegir un nuevo pokemon");
             vista.elegirPokemon(entrenador1, entrenador2);
             vista.continuar();
             break;
         case -1:
         // El entrenador 2 tiene que elegir un nuevo pokemon
+            System.out.println("Estado combate: " + estadoCombate);
+            System.out.println("El entrenador 2 tiene que elegir un nuevo pokemon");
             vista.elegirPokemon(entrenador1, entrenador2);
             vista.continuar();
             break;
         case 0:
         // Si pokemon2 sigue vivo, es turno de pokemon2
+            System.out.println("Estado combate: " + estadoCombate);
             Collections.reverse(orden);
             vista.continuar();
             break;

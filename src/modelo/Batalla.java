@@ -57,9 +57,9 @@ public class Batalla {
         return new Batalla(e1, e2);
     }
 
-    public ArrayList<Pokemon> ordenBatalla(Pokemon atacante, Pokemon atacado, boolean esRepetido) {
+    public ArrayList<Pokemon> ordenBatalla(Pokemon atacante, Pokemon atacado) {
 
-        if ((!esRepetido && atacado.getVelocidad() > atacante.getVelocidad())) {
+        if ((atacado.getVelocidad() > atacante.getVelocidad())) {
             return new ArrayList<Pokemon>(Arrays.asList(atacado, atacante));
         }
         return new ArrayList<Pokemon>(Arrays.asList(atacante, atacado));
