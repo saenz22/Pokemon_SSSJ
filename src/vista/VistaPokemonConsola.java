@@ -135,7 +135,7 @@ public class VistaPokemonConsola implements VistaPokemon {
     public void elegirPokemon(Entrenador entrenador1, Entrenador entrenador2) {
         controlador.setPokemonActivoEntrenador1(entrenador1.getEquipo().get(eleccion(entrenador1)-1));
         controlador.setPokemonActivoEntrenador2(entrenador2.getEquipo().get(eleccion(entrenador2)-1));
-        controlador.avanzarEscena();
+        controlador.ordenarContrincantes();
     }
 
     private byte eleccion(Entrenador entrenador) {

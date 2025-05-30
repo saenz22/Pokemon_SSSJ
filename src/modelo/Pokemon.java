@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
-import vista.vistaGUI.VistaPokemonGUI;
+import vista.VistaPokemonGUI;
 
 // En lugar de hacer un ArrayList de ataques, se usó un HashSet que impide inherentemente que se repitan.
 

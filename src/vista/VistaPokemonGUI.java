@@ -1,12 +1,12 @@
-package vista.vistaGUI;
+package vista;
 
 import controlador.Controlador;
 import modelo.Entrenador;
 import modelo.Pokemon;
 import modelo.TipoAtaquePokemon;
-import vista.VistaPokemon;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
@@ -16,12 +16,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -55,8 +58,8 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         return pokemon3;
     }
 
-    public int getEscena() {
-        return currentPanel;
+    public byte getEscena() {
+        return (byte) currentPanel;
     }
     public boolean isError() {
         return error;
@@ -185,9 +188,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
            pokemon2 = "";
            pokemon3 = "";
         }
-       
         this.revalidate(); // Revalidar la ventana para que se actualice
-      
     }
 
     public JPanel showSecondPanel() {
@@ -564,11 +565,102 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.TIERRA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/digtletEspalda.png")));
         ICONOS_TIPO_ATACANTE.put(TipoAtaquePokemon.AGUA, new ImageIcon(VistaPokemonGUI.class.getResource("/vista/squirtleEspalda.png")));
     }
-  
+
+    boolean seleccionados[] = {false, false};
+
+    public JPanel mostrarTabla(Entrenador e1, Entrenador e2) {
+        System.out.println("Entramos a mostrar tabla");
+        JPanel fondo = new JPanel(new GridLayout(4, 2, 5, 5));
+        fondo.setBackground(new Color(25, 95, 95));
+        fondo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // ActionListener elegir
+
+        fondo.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (seleccionados[0] && seleccionados[1]) {
+                        controlador.ordenarContrincantes();
+                        switchToNextPanel(showSeventhPanel(controlador.getListaPokemones1().get(0), controlador.getListaPokemones2().get(0)));    
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(fondo, "Por favor, seleccione un pokemon para cada entrenador.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+
+        // Hacer foco en el panel para detectar la tecla
+        fondo.setFocusable(true);
+        fondo.requestFocusInWindow(); // Requiere que la ventana esté visible
+
+        // Fila de nombres de entrenadores
+        JLabel entrenador1 = new JLabel("Entrenador 1: " + e1.getNombre(), SwingConstants.CENTER);
+        JLabel entrenador2 = new JLabel("Entrenador 2: " + e2.getNombre(), SwingConstants.CENTER);
+        entrenador1.setForeground(Color.WHITE);
+        entrenador2.setForeground(Color.WHITE);
+        entrenador1.setFont(new Font("Arial", Font.BOLD, 16));
+        entrenador2.setFont(new Font("Arial", Font.BOLD, 16));
+        fondo.add(entrenador1);
+        fondo.add(entrenador2);
+
+        // Equipos
+        List<Pokemon> equipoE1 = e1.getEquipo();
+        List<Pokemon> equipoE2 = e2.getEquipo();
+
+        // Listas de botones por equipo
+        ArrayList<BotonPokemon> botonesE1 = new ArrayList<>();
+        ArrayList<BotonPokemon> botonesE2 = new ArrayList<>();
+
+        // Crear y agregar botones al panel
+        for (int i = 0; i < equipoE1.size(); i++) {
+            BotonPokemon botonE1 = new BotonPokemon(equipoE1.get(i));
+            botonesE1.add(botonE1);
+            fondo.add(botonE1);
+        }
+
+        for (int i = 0; i < equipoE2.size(); i++) {
+            BotonPokemon botonE2 = new BotonPokemon(equipoE2.get(i));
+            botonesE2.add(botonE2);
+            fondo.add(botonE2);
+        }
+
+        // Añadir listeners
+        for (int i = 0; i < equipoE1.size(); i++) {
+            int finalI = i;
+            botonesE1.get(i).addActionListener(_ -> {
+                System.out.println(botonesE1.get(finalI).getPokemon().getNombre());
+                for (BotonPokemon b : botonesE1) {
+                    b.setEnabled(false);
+                }
+                botonesE1.get(finalI).seleccionar();
+                controlador.setPokemonActivoEntrenador1(botonesE1.get(finalI).getPokemon());
+                seleccionados[0] = true;
+            });
+        }
+
+        for (int i = 0; i < equipoE2.size(); i++) {
+            int finalI = i;
+            botonesE2.get(i).addActionListener(_ -> {
+                System.out.println(botonesE2.get(finalI).getPokemon().getNombre());
+                for (BotonPokemon b : botonesE2) {
+                    b.setEnabled(false);
+                }
+                botonesE2.get(finalI).seleccionar();
+                controlador.setPokemonActivoEntrenador2(botonesE2.get(finalI).getPokemon());
+                seleccionados[1] = true;
+            });
+        }
+        fondo.requestFocusInWindow();
+        return fondo;
+    }
 
     public ImageIcon VidaActual(Pokemon pokemon) {
-        
-
         if (pokemon.getHp() > pokemon.getHPMAX()*0.8) {
             return new ImageIcon(getClass().getResource("/vista/vida1.jpg"));
         }
@@ -584,7 +676,6 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         else {
             return new ImageIcon(getClass().getResource("/vista/vida5.jpg"));
         }
-   
     }
 
     public JPanel showSeventhPanel(Pokemon atacante, Pokemon defensor) {
@@ -665,18 +756,18 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     layeredPane.add(infoJugador, Integer.valueOf(2));
 
 
-// 6. Panel de opciones de ataque
+    // 6. Panel de opciones de ataque
     // Panel de comandos personalizado (capa 2) mostrarPokemon
-JPanel comandos = new JPanel();
-comandos.setLayout(new GridLayout(2, 2, 10, 10));
-comandos.setBounds(8, 190, 400, 100);
-comandos.setBackground(Color.WHITE);
-comandos.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3)); // Borde café/naranja
+    JPanel comandos = new JPanel();
+    comandos.setLayout(new GridLayout(2, 2, 10, 10));
+    comandos.setBounds(8, 190, 400, 100);
+    comandos.setBackground(Color.WHITE);
+    comandos.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3)); // Borde café/naranja
 
-String[] ataques = new String[4];
-for (int i = 0; i < 4; i++) {
-    ataques[i] = atacante.getAtaques().get(i).getNombre();
-}
+    String[] ataques = new String[4];
+    for (int i = 0; i < 4; i++) {
+        ataques[i] = atacante.getAtaques().get(i).getNombre();
+    }
 
     JButton boton1 = new JButton(ataques[0]);
     boton1.addActionListener(new ActionListener() {
@@ -736,7 +827,7 @@ for (int i = 0; i < 4; i++) {
     boton4.setFont(new Font("Arial", Font.BOLD, 12));
     comandos.add(boton4);
 
-layeredPane.add(comandos, Integer.valueOf(2));
+    layeredPane.add(comandos, Integer.valueOf(2));
 
     // 7. Panel de tipo y PP
     JPanel panelInfoAtaque = new JPanel();
@@ -770,7 +861,6 @@ layeredPane.add(comandos, Integer.valueOf(2));
 
 
     public void entrenadores() {
-
         nombre1 = jugador1Field.getText(); // Obtener el texto del primer campo
         nombre2 = jugador2Field.getText(); // Obtener el texto del segundo campo
         if (nombre1.isEmpty() || nombre2.isEmpty()) {
@@ -816,8 +906,8 @@ layeredPane.add(comandos, Integer.valueOf(2));
        @Override
     public void mostrarPokemon(ArrayList<Pokemon> pokemon) {
         System.out.println("Lista de pokemones: " + pokemon);
-     listaPokemones = pokemon; 
-     currentPanel = 6;
+        listaPokemones = pokemon; 
+        currentPanel = 6;
    
      switchToNextPanel(showSixthPanel(listaPokemones.get(contadorPokemones)));
        System.out.println("contadorPokemones: " + contadorPokemones);
@@ -832,13 +922,15 @@ layeredPane.add(comandos, Integer.valueOf(2));
         JOptionPane.showMessageDialog(this, "¡El ganador es " + entrenador.getNombre() + "!", "Ganador", JOptionPane.INFORMATION_MESSAGE);
     }
 
+
+
     public void elegirPokemon(Entrenador e1, Entrenador e2){
-        TablaPokemon tabla = new TablaPokemon(controlador);
-        tabla.mostrarTabla(e1, e2);
+        System.out.println("Entramos a elegir pokemon");
+        switchToNextPanel(mostrarTabla(e1, e2));
     }
 
     public void elegirAtaque(Pokemon pokemon) {
-        // Aquí este método no hace nada
+        // Aquí este método tampoco hace nada
     }
 
     // Si lees esto, eres el mejor Joshua
@@ -849,10 +941,10 @@ layeredPane.add(comandos, Integer.valueOf(2));
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             switch (currentPanel) {
                 case 2:
-                switchToNextPanel(showThirdPanel()); // Cambiar al tercer panel
-                break;
+                    switchToNextPanel(showThirdPanel()); // Cambiar al tercer panel
+                    break;
                 case 4: 
-                switchToNextPanel(showFifthPanel(getNombre1())); // Cambiar al quinto panel
+                    switchToNextPanel(showFifthPanel(getNombre1())); // Cambiar al quinto panel
                     break;
                 case 6:
                     error = false;
@@ -860,34 +952,33 @@ layeredPane.add(comandos, Integer.valueOf(2));
                     if (contadorPokemones < 2) {
                         contadorPokemones++;
                         switchToNextPanel(showSixthPanel(listaPokemones.get(contadorPokemones)));
-                     } // Cambiar al sexto panel
-                     else{
+                    } // Cambiar al sexto panel
+                    else{
                         contadorPokemones = 0;
                         if (contadorEntrenadores < 1) {
-                        switchToNextPanel(showFifthPanel(getNombre2()));
-                        contadorEntrenadores++;
+                            switchToNextPanel(showFifthPanel(getNombre2()));
+                            contadorEntrenadores++;
+                        }
+                        else{
+                            controlador.avanzarEscena();
+                            currentPanel = 7;
+                        }
                     }
-                    else{
-                        controlador.avanzarEscena();
-                        currentPanel = 7;
-                    }
-                }
                     break;
                 case 7:
-                    switchToNextPanel(showSeventhPanel(controlador.getListaPokemones1().get(0), controlador.getListaPokemones2().get(0)));
+                    elegirPokemon(controlador.getListaEntrenadores().get(0), controlador.getListaEntrenadores().get(1)); // Cambiar al septimo panel
+                    System.out.println("Ya estamos en la tabla " + seleccionados[0] + "/ " + seleccionados[1]);
                     break;
                 default:            
-                    if(error == false)    {
+                    if(error == false) {
                         controlador.avanzarEscena();
                     }
-                    else{
+                    else {
                         controlador.actualizarEscena();
                     }
                     break;
             }
-            
-        }
-        
+        }   
     }
     @Override
     public void keyTyped(KeyEvent e) {
@@ -898,5 +989,80 @@ layeredPane.add(comandos, Integer.valueOf(2));
     }
     @Override
     public void continuar() {
+    }
+}
+
+// Botón personalizado para mostrar el Pokémon
+
+class BotonPokemon extends JButton {
+    Pokemon pokemon;
+    private boolean seleccionado = false;
+
+    public BotonPokemon(Pokemon pokemon) {
+        this.pokemon = pokemon;
+        setPreferredSize(new Dimension(290, 75));
+        setContentAreaFilled(false);
+        setFocusPainted(false);
+        setBorderPainted(false);
+    }
+
+    public Pokemon getPokemon() {
+        return pokemon;
+    }
+
+    public void seleccionar() {
+        this.seleccionado = true;
+        repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        // Fondo según selección
+        if (seleccionado) {
+            g.setColor(new Color(30, 100, 180)); // Azul oscuro si está seleccionado
+        } else {
+            g.setColor(new Color(100, 180, 255)); // Azul claro por defecto
+        }
+        g.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+
+        if (pokemon.getImagen().getImage() != null) {
+        g.drawImage(pokemon.getImagen().getImage(), 10, 10, 50, 50, this); // (x, y, ancho, alto)
+        }
+
+        // Texto nombre y nivel
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 14));
+        g.drawString(pokemon.getNombre().toUpperCase(), 70, 20);
+        g.drawString("Nv" + pokemon.getNivel(), 70, 40);
+
+        // PS
+        g.setColor(Color.ORANGE);
+        g.drawString("PS", 200, 20);
+
+        // Barra gris de fondo
+        g.setColor(Color.GRAY);
+        g.fillRect(230, 12, 80, 10);
+
+        // Barra verde
+        int barra = (int)((double)pokemon.getHp() / pokemon.getHPMAX() * 80);
+        double porcentaje = (double)pokemon.getHp() / pokemon.getHPMAX();
+
+        // Ajustar de acuerdo con los porcentajes e imágenes de VistaPokemonGUI.vidaActual()
+        g.setColor(Color.GREEN);
+        if (porcentaje > 0.5) {
+            g.setColor(Color.GREEN);
+        } else if (porcentaje > 0.2) {
+            g.setColor(Color.YELLOW);
+        } else {
+            g.setColor(Color.RED);
+        }
+        g.fillRect(230, 12, barra, 10);
+        
+        // PS numérico
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.PLAIN, 12));
+        g.drawString(pokemon.getHp() + "/" + pokemon.getHPMAX(), 230, 35);
+
+        super.paintComponent(g); // Para eventos del botón
     }
 }

@@ -1,7 +1,6 @@
 package controlador;
 
 import vista.*;
-import vista.vistaGUI.VistaPokemonGUI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,12 +15,15 @@ public class Controlador {
     private VistaPokemon vista;
     private Batalla batalla;
     private Entrenador entrenador1, entrenador2;
+    private Pokemon pokemon1, pokemon2;
+    private ArrayList<Pokemon> orden;
+    private ArrayList<String> listaPokemones, listaEntrenadores;
     public boolean esGui;
     public byte escena;
-    ArrayList<String> listaPokemones, listaEntrenadores;
 
-    Pokemon pokemon1, pokemon2;
-    ArrayList<Pokemon> orden;
+    public ArrayList<Entrenador> getListaEntrenadores() {
+        return new ArrayList<>(Arrays.asList(entrenador1, entrenador2)); 
+    }
 
     public ArrayList<Pokemon> getListaPokemones1() {
         return entrenador1.getEquipo();
@@ -29,6 +31,11 @@ public class Controlador {
 
     public ArrayList<Pokemon> getListaPokemones2() {
         return entrenador2.getEquipo();
+    }
+
+
+    public ArrayList<Pokemon> getOrden() {
+        return orden;
     }
 
     public void setPokemonActivoEntrenador1(Pokemon pokemonActivoEntrenador1) {
@@ -72,9 +79,9 @@ public class Controlador {
                 break;
             case 3:
               if (vista.isError() == false){
-                entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
-                System.out.println("Entrenador 1: " + entrenador1.getNombre());      
-                vista.mostrarPokemon(entrenador1.getEquipo());  
+                    entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
+                    System.out.println("Entrenador 1: " + entrenador1.getNombre());      
+                    vista.mostrarPokemon(entrenador1.getEquipo());  
                 }
                 break;
             case 4:
@@ -82,19 +89,15 @@ public class Controlador {
                 break;
             case 5:
                if (vista.isError() == false){
-                entrenador2 = Entrenador.capturarEntrenador(listaEntrenadores.get(1), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
-                System.out.println("Entrenador 2: " + entrenador2.getNombre());      
-                vista.mostrarPokemon(entrenador2.getEquipo());
+                    entrenador2 = Entrenador.capturarEntrenador(listaEntrenadores.get(1), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
+                    System.out.println("Entrenador 2: " + entrenador2.getNombre());      
+                    vista.mostrarPokemon(entrenador2.getEquipo());
                 }
                 break;
             case 6:
+                batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
                 vista.elegirPokemon(entrenador1, entrenador2);
-                if (pokemon1 != null && pokemon2 != null) {
-                    batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
-                    orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
-                    System.out.println(getOrden().get(0).getNombre() + " vs " + getOrden().get(1).getNombre());
-                    break;        
-                }
+                break;        
         }        
     }
 
@@ -103,27 +106,34 @@ public class Controlador {
         escena++;
         actualizarEscena();
     }
+    public void atacar(Ataque ataqueElegido) {
+        // Entonces el actionListener del botón de cada ataque tiene que llamar a este método y pasarle el ataque
+        byte estadoCombate = (byte) batalla.turno(orden.get(0), ataqueElegido, orden.get(1));
+        iniciarCombate(estadoCombate);
+    }
+    public void ordenarContrincantes() {
+        // Este método sera el que usaremos para avanzar de escena en el listener del Enter entre la tabla de pokemones y la pelea
+        orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
+        System.out.println(getOrden().get(0).getNombre() + " vs " + getOrden().get(1).getNombre());
+    }
 
     public void iniciarCombate(byte estadoCombate) {
         switch(estadoCombate) {
         case -2:
         // El entrenador 1 tiene que elegir un nuevo pokemon
             vista.elegirPokemon(entrenador1, entrenador2);
-            if (true) {
-                break;
-            }
+            vista.continuar();
+            break;
         case -1:
         // El entrenador 2 tiene que elegir un nuevo pokemon
             vista.elegirPokemon(entrenador1, entrenador2);
-            if (true) {
-                break;
-            }
+            vista.continuar();
+            break;
         case 0:
         // Si pokemon2 sigue vivo, es turno de pokemon2
             Collections.reverse(orden);
-            if (true) {
-                break;
-            }
+            vista.continuar();
+            break;
         case 1:
             vista.ganador(entrenador1);
             return;
@@ -131,17 +141,6 @@ public class Controlador {
             vista.ganador(entrenador2);
             return;
         }
-        orden = batalla.ordenBatalla(pokemon1, pokemon2, false);
-        vista.continuar();
-    }
-
-    public void atacar(Ataque ataqueElegido) {
-        // Entonces el actionListener del botón de cada ataque tiene que llamar a este método y pasarle el ataque
-        byte estadoCombate = (byte) batalla.turno(orden.get(0), ataqueElegido, orden.get(1));
-        iniciarCombate(estadoCombate);
-    }
-   public ArrayList<Pokemon> getOrden() {
-        return orden;
     }
 
     public void crearVista(){
