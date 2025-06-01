@@ -87,7 +87,7 @@ public class Pokemon extends SerVivo {
         // Trayendo herencia: atributo nombre
         super(nombre);
         this.vivo = true;
-        this.hp = aleatorio(500, 50);
+        this.hp = aleatorio(100, 50);
         this.HPMAX = this.hp;
         this.imagen = null;
     }

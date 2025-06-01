@@ -66,7 +66,6 @@ public class Controlador {
     }
 
     public void actualizarEscena() {
-
         switch(escena) {
             case 0:
                 vista.bienvenido();
@@ -102,48 +101,41 @@ public class Controlador {
     }
 
     public void avanzarEscena() {
-        // Este método será el que usará la vista para avanzar de escena, en el listener del Enter puede ser
+        // Este método será el que usará la vista para avanzar de escena
         escena++;
         actualizarEscena();
     }
     public void atacar(Ataque ataqueElegido) {
-        // Entonces el actionListener del botón de cada ataque tiene que llamar a este método y pasarle el ataque
+        // Entonces cada vez que seleccione un ataque tiene que llamar a este método y pasarle el ataque
         byte estadoCombate = (byte) batalla.turno(orden.get(0), ataqueElegido, orden.get(1));
         iniciarCombate(estadoCombate);
     }
     public void ordenarContrincantes() {
-        // Este método será el que usaremos para avanzar de escena en el listener del Enter entre la tabla de pokemones y la pelea
+        // Este método será el que usaremos para avanzar de escena entre la elección de pokemones y la pelea
         orden = batalla.ordenBatalla(pokemon1, pokemon2);
-        System.out.println(getOrden().get(0).getNombre() + " vs " + getOrden().get(1).getNombre());
     }
 
     public void iniciarCombate(byte estadoCombate) {
-        System.out.println("Estado de combate: " + estadoCombate);
         switch(estadoCombate) {
         case -2:
         // El entrenador 1 tiene que elegir un nuevo pokemon
-            System.out.println("El entrenador 1 tiene que elegir un nuevo pokemon");
             vista.elegirPokemon(entrenador1, entrenador2);
             vista.continuar();
             break;
         case -1:
         // El entrenador 2 tiene que elegir un nuevo pokemon       
-            System.out.println("El entrenador 2 tiene que elegir un nuevo pokemon");
             vista.elegirPokemon(entrenador1, entrenador2);
             vista.continuar();
             break;
         case 0:
         // Si pokemon2 sigue vivo, es turno de pokemon2
-            System.out.println("Estado combate: " + estadoCombate);
             Collections.reverse(orden);
             vista.continuar();
             break;
         case 1:
             vista.ganador(entrenador1);
-            return;
         case 2:
             vista.ganador(entrenador2);
-            return;
         }
     }
 
