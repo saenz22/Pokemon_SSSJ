@@ -36,7 +36,7 @@ import javax.swing.Timer;
 
 public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
     
-
+ 
     public String getNombre1() {
         return nombre1;
     }
@@ -99,6 +99,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         timer = new Timer(3000, this); // El temporizador escucha a esta clase (WindowBuilder)
         timer.setRepeats(false);
         timer.start(); // Iniciamos el temporizador
+        
     }
 
 
@@ -688,7 +689,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
     public JPanel showSeventhPanel(Pokemon atacante, Pokemon defensor) {
         System.out.println("Mostrando panel 7");
-        System.out.println();
+        
         currentPanel = 7;
 
         JPanel panel = new JPanel();
@@ -870,7 +871,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
     // ganador
     public JPanel WinnerPanel(Entrenador ganador, Pokemon atacante, Pokemon defensor, boolean isWinner) {
-        System.out.println();
+        
         currentPanel = 8;
 
         JPanel panel = new JPanel();
