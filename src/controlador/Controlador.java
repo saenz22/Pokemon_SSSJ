@@ -66,7 +66,7 @@ public class Controlador {
     }
 
     public void actualizarEscena() {
-        System.out.println("Flujo de control iniciado." + escena);
+
         switch(escena) {
             case 0:
                 vista.bienvenido();
@@ -122,14 +122,12 @@ public class Controlador {
         switch(estadoCombate) {
         case -2:
         // El entrenador 1 tiene que elegir un nuevo pokemon
-            System.out.println("Estado combate: " + estadoCombate);
             System.out.println("El entrenador 1 tiene que elegir un nuevo pokemon");
             vista.elegirPokemon(entrenador1, entrenador2);
             vista.continuar();
             break;
         case -1:
-        // El entrenador 2 tiene que elegir un nuevo pokemon
-            System.out.println("Estado combate: " + estadoCombate);
+        // El entrenador 2 tiene que elegir un nuevo pokemon       
             System.out.println("El entrenador 2 tiene que elegir un nuevo pokemon");
             vista.elegirPokemon(entrenador1, entrenador2);
             vista.continuar();

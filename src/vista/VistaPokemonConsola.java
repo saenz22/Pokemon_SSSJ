@@ -23,8 +23,6 @@ public class VistaPokemonConsola implements VistaPokemon {
         this.pokemon2 = "";
         this.pokemon3 = "";
     }
-
-    // Hacer souts mucho más descriptivos y estéticos, sería bueno agregar un await o algo parecido, métodos para que se sienta más ameno
     
     @Override
     public void bienvenido() {
