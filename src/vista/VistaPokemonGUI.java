@@ -788,7 +788,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
                 // Aquí puedes manejar la acción del botón 1
                 controlador.atacar(atacante.getAtaques().get(0));
                 if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
-                    switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
+                   switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
                 }
             }
         });
@@ -804,7 +804,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
                 // Aquí puedes manejar la acción del botón 2
                 controlador.atacar(atacante.getAtaques().get(1));
                 if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
-                    switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
+                    switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
                 }
             }
         });
@@ -820,7 +820,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
                 // Aquí puedes manejar la acción del botón 3
                 controlador.atacar(atacante.getAtaques().get(2));
                 if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
-                    switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
+                   switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
                 }
             }
         });
@@ -836,7 +836,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
                 // Aquí puedes manejar la acción del botón 4
                 controlador.atacar(atacante.getAtaques().get(3));
                 if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
-                    switchToNextPanel(showSeventhPanel(controlador.getOrden().get(0), controlador.getOrden().get(1)));
+                   switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
                 }
             }
         });
@@ -869,7 +869,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     }
 
     // ganador
-    public JPanel WinnerPanel(Entrenador ganador, Pokemon atacante, Pokemon defensor, Entrenador e1) {
+    public JPanel WinnerPanel(Entrenador ganador, Pokemon atacante, Pokemon defensor, boolean isWinner) {
         System.out.println();
         currentPanel = 8;
 
@@ -905,20 +905,20 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         infoEnemigo.setLayout(null);
         infoEnemigo.setBackground(new Color(255, 255, 200)); // color de fondo claro
         infoEnemigo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        infoEnemigo.setBounds(70, 20, 200, 50);
+        infoEnemigo.setBounds(70, 20, 200, 60);
 
         JLabel nombreEnemigo = new JLabel(defensor.getNombre());
-        nombreEnemigo.setFont(new Font("Monospaced", Font.BOLD, 15));
+        nombreEnemigo.setFont(new Font("Monospaced", Font.BOLD, 20));
         nombreEnemigo.setBounds(10, 5, 100, 20);
         infoEnemigo.add(nombreEnemigo);
 
-        JLabel nivelEnemigo = new JLabel("Nv " + defensor.getNivel());
-        nivelEnemigo.setFont(new Font("Monospaced", Font.BOLD, 15));
-        nivelEnemigo.setBounds(120, 5, 40, 20);
+        JLabel nivelEnemigo = new JLabel("Nv" + defensor.getNivel());
+        nivelEnemigo.setFont(new Font("Monospaced", Font.BOLD, 20));
+        nivelEnemigo.setBounds(140, 5, 100, 20);
         infoEnemigo.add(nivelEnemigo);
 
         JLabel barraVidaEnemigo = new JLabel(VidaActual(defensor));
-        barraVidaEnemigo.setBounds(10, 25, 100, 10);
+        barraVidaEnemigo.setBounds(40, 40, 150, 10);
         infoEnemigo.add(barraVidaEnemigo);
 
         layeredPane.add(infoEnemigo, Integer.valueOf(2));
@@ -928,23 +928,27 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         infoJugador.setLayout(null);
         infoJugador.setBackground(new Color(255, 255, 200));
         infoJugador.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        infoJugador.setBounds(360, 130, 200, 60);
+        infoJugador.setBounds(360, 125, 200, 60);
 
         JLabel nombreJugador = new JLabel(atacante.getNombre());
-        nombreJugador.setFont(new Font("Monospaced", Font.BOLD, 15));
+        nombreJugador.setFont(new Font("Monospaced", Font.BOLD, 20));
         nombreJugador.setBounds(10, 5, 100, 20);
         infoJugador.add(nombreJugador);
 
-        JLabel nivelJugador = new JLabel("Nv " + atacante.getNivel());
-        nivelJugador.setFont(new Font("Monospaced", Font.BOLD, 15));
-        nivelJugador.setBounds(120, 5, 40, 20);
+        JLabel nivelJugador = new JLabel("Nv" + atacante.getNivel());
+        nivelJugador.setFont(new Font("Monospaced", Font.BOLD, 20));
+        nivelJugador.setBounds(140, 5, 100, 20);
         infoJugador.add(nivelJugador);
-
+        System.out.println(VidaActual(atacante));
+        System.out.println(VidaActual(defensor));
+        System.out.println(atacante.getNivel());
+        System.out.println(defensor.getNivel());
         JLabel barraVidaJugador = new JLabel(VidaActual(atacante));
-        barraVidaJugador.setBounds(10, 30, 100, 10);
+        barraVidaJugador.setBounds(40, 40, 150, 10);
         infoJugador.add(barraVidaJugador);
 
         layeredPane.add(infoJugador, Integer.valueOf(2));
+
 
 
     // 6. Panel de opciones de ataque
@@ -959,12 +963,37 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     for (int i = 0; i < 4; i++) {
         ataques[i] = atacante.getAtaques().get(i).getNombre();
     }
-
-    JLabel ganadorLabel = new JLabel("¡" + ganador.getNombre() + " ha ganado la batalla!", JLabel.CENTER);
-    ganadorLabel.setFont(new Font("Monospaced", Font.BOLD, 16));
+    JLabel ganadorLabel;
+    JLabel ganadorLabel2;
+    if (isWinner) {
+     ganadorLabel = new JLabel("¡" + ganador.getNombre() + " ha ganado !");
+     ganadorLabel2 = new JLabel("el combate!");
+    }
+    else{
+    ganadorLabel = new JLabel("¡" + atacante.getNombre() + " ha hecho");
+    ganadorLabel2 = new JLabel((int)(defensor.getHPMAX() - defensor.getHp()) + " puntos de daño!");
+     panel.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    switchToNextPanel(showSeventhPanel(defensor, atacante));
+                }
+            }
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+}
+    ganadorLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
     ganadorLabel.setForeground(Color.BLACK);
-    ganadorLabel.setBounds(0, 10, 400, 30);
+    ganadorLabel.setBounds(50, 10, 400, 30);
     comandos.add(ganadorLabel);
+
+    ganadorLabel2.setFont(new Font("Monospaced", Font.BOLD, 20));
+    ganadorLabel2.setForeground(Color.BLACK);
+    ganadorLabel2.setBounds(50, 20, 400, 30);
+    comandos.add(ganadorLabel2);
 
     layeredPane.add(comandos, Integer.valueOf(2));
     // 7. Panel de tipo y PP
@@ -1042,7 +1071,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
     public void ganador(Entrenador entrenador) {
         // Aquí puedes implementar la lógica para mostrar el ganador
-        switchToNextPanel(WinnerPanel(entrenador, controlador.getOrden().get(0), controlador.getOrden().get(1), controlador.getListaEntrenadores().get(0)));
+        switchToNextPanel(WinnerPanel(entrenador, controlador.getOrden().get(0), controlador.getOrden().get(1), true));
     }
 
 
