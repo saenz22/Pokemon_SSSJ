@@ -70,15 +70,15 @@ Este proyecto tiene como objetivo la creación de una GUI en Java para simular c
 ```bash
 Pokemon_GUI/
 │
-├── bin/vista/                   # Imágenes utilizadas para la vista
-│                   
+│                       
 ├── src/
+│   ├── image/                   # Imágenes utilizadas
 │   ├── controlador/             # Lógica de control
 │   ├── modelo/                  # Clases de negocio y datos
 │   ├── vista/                   # Interfaces gráficas (GUI)
 │   ├── App.java/                # Archivo desde el cual se ejecuta todo el juego
 │   
-|
+│
 ├── .gitignore
 └── README.md
 ```
@@ -86,7 +86,7 @@ Pokemon_GUI/
 ---
 
 ### 📊 Diagrama UML del Juego
-![Diagrama UML del Juego](bin/vista/diagrama.png)
+![Diagrama UML del Juego](image/diagrama.png)
 
 ---
 
@@ -100,22 +100,22 @@ Pokemon_GUI/
 
 Pantalla Prinicipal
 
-![Pantalla principal](bin/vista/Pantalla_principal.png)
+![Pantalla principal](image/Pantalla_principal.png)
 
 Selección de entrenadores
 
-![Selección de entrenadores](bin/vista/Seleccion_de_entrenadores.png)
+![Selección de entrenadores](image/Seleccion_de_entrenadores.png)
 
 Selección de pokemones
 
-![Selección de pokemones 1](bin/vista/Seleccion_de_pokemones.png)
+![Selección de pokemones 1](image/Seleccion_de_pokemones.png)
 
-![Selección de pokemones 2](bin/vista/Seleccion_de_pokemon_2.png)
+![Selección de pokemones 2](image/Seleccion_de_pokemon_2.png)
 
 Combate
 
-![Combate](bin/vista/Combate.png)
-![Combate 2](bin/vista/Combate_2.png)
+![Combate](image/Combate.png)
+![Combate 2](image/Combate_2.png)
 
 
 ---
