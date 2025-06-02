@@ -86,7 +86,7 @@ Pokemon_GUI/
 ---
 
 ### 📊 Diagrama UML del Juego
-![Diagrama UML del Juego](image/diagrama.png)
+![Diagrama UML del Juego](src/image/diagrama.png)
 
 ---
 
@@ -100,22 +100,22 @@ Pokemon_GUI/
 
 Pantalla Prinicipal
 
-![Pantalla principal](image/Pantalla_principal.png)
+![Pantalla principal](/src/image/Pantalla_principal.png)
 
 Selección de entrenadores
 
-![Selección de entrenadores](image/Seleccion_de_entrenadores.png)
+![Selección de entrenadores](/src/image/Seleccion_de_entrenadores.png)
 
 Selección de pokemones
 
-![Selección de pokemones 1](image/Seleccion_de_pokemones.png)
+![Selección de pokemones 1](src/image/Seleccion_de_pokemones.png)
 
-![Selección de pokemones 2](image/Seleccion_de_pokemon_2.png)
+![Selección de pokemones 2](src/image/Seleccion_de_pokemon_2.png)
 
 Combate
 
-![Combate](image/Combate.png)
-![Combate 2](image/Combate_2.png)
+![Combate](src/image/Combate.png)
+![Combate 2](src/image/Combate_2.png)
 
 
 ---
