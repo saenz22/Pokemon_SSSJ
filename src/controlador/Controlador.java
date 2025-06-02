@@ -1,88 +1,152 @@
 package controlador;
 
 import vista.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 import modelo.Batalla;
 import modelo.Entrenador;
 import modelo.Pokemon;
+import modelo.Ataque;
 
 public class Controlador {
     private VistaPokemon vista;
     private Batalla batalla;
+    private Entrenador entrenador1, entrenador2;
+    private Pokemon pokemon1, pokemon2;
+    private ArrayList<Pokemon> orden;
+    private ArrayList<String> listaPokemones, listaEntrenadores;
     public boolean esGui;
+    public byte escena;
 
-    public Controlador(VistaPokemon vista, boolean esGui) {
-       this.vista = vista;
-       this.esGui = esGui;
-       vista.setControlador(this);
+    public ArrayList<Entrenador> getListaEntrenadores() {
+        return new ArrayList<>(Arrays.asList(entrenador1, entrenador2)); 
     }
 
-    // getEscena corresponde a CurrentPanel en vistaGUI
-    // cambiarEscena() corresponde a switchToNextPanel() en vistaGUI
+    public ArrayList<Pokemon> getListaPokemones1() {
+        return entrenador1.getEquipo();
+    }
 
-    public void flujo() {
-        System.out.println("Flujo de control iniciado." + vista.getEscena());
-        switch(vista.getEscena()) {
+    public ArrayList<Pokemon> getListaPokemones2() {
+        return entrenador2.getEquipo();
+    }
+
+
+    public ArrayList<Pokemon> getOrden() {
+        return orden;
+    }
+
+    public void setPokemonActivoEntrenador1(Pokemon pokemonActivoEntrenador1) {
+        this.pokemon1 = pokemonActivoEntrenador1;
+    }
+
+    public void setPokemonActivoEntrenador2(Pokemon pokemonActivoEntrenador2) {
+        this.pokemon2 = pokemonActivoEntrenador2;
+    }
+
+    public void setListaPokemones(String nombre1, String nombre2, String nombre3) {
+        this.listaPokemones = new ArrayList<>(Arrays.asList(nombre1, nombre2, nombre3));
+    }
+
+    public void setListaEntrenadores(String nombre1, String nombre2) {
+        this.listaEntrenadores = new ArrayList<>(Arrays.asList(nombre1, nombre2));
+    }
+
+    public Controlador(boolean esGui) {
+       this.esGui = esGui;
+       this.crearVista();
+       vista.setControlador(this);
+       this.listaPokemones = new ArrayList<>();
+       this.listaEntrenadores = new ArrayList<>();
+       this.escena = 0;
+       this.pokemon1 = null;
+       this.pokemon2 = null;
+    }
+
+    public void actualizarEscena() {
+        switch(escena) {
             case 0:
                 vista.bienvenido();
                 break;
-            case 2:
-                vista.cambiarEscena(vista.escena3());
-                break;
-            case 3:
+            case 1:
                 vista.entrenadores();
                 break;
+            case 2:
+                vista.pokemones();
+                break;
+            case 3:
+              if (vista.isError() == false){
+                    entrenador1 = Entrenador.capturarEntrenador(listaEntrenadores.get(0), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
+                    System.out.println("Entrenador 1: " + entrenador1.getNombre());      
+                    vista.mostrarPokemon(entrenador1.getEquipo());  
+                }
+                break;
             case 4:
-                vista.cambiarEscena(vista.escena5(vista.getNombre1()));
+                vista.pokemones();
                 break;
             case 5:
-                vista.pokemones();
-                
-                //vista.cambiarEscena(vista.showFifthPanel(vista.getNombre2()));
-
+               if (vista.isError() == false){
+                    entrenador2 = Entrenador.capturarEntrenador(listaEntrenadores.get(1), listaPokemones.get(0), listaPokemones.get(1), listaPokemones.get(2));
+                    System.out.println("Entrenador 2: " + entrenador2.getNombre());      
+                    vista.mostrarPokemon(entrenador2.getEquipo());
+                }
                 break;
             case 6:
-                Entrenador entrenador1 = Entrenador.capturarEntrenador(vista.getNombre1(), vista.getPokemon1(), vista.getPokemon2(), vista.getPokemon3());
-                System.out.println("Entrenador 1: " + entrenador1.getNombre());
-                System.out.println("Pokémon 1: " + entrenador1.getEquipo().get(0).getNombre());
-                System.out.println("Pokémon 2: " + entrenador1.getEquipo().get(1).getNombre());
-                System.out.println("Pokémon 3: " + entrenador1.getEquipo().get(2).getNombre());
-                for(int i = 0; i < entrenador1.getEquipo().size(); i++) {
-                   vista.cambiarEscena(vista.escena6(entrenador1.getEquipo().get(i)));
-                }
-                break;
-            case 7:
-                // Combate
-                int number = 0;
-                batalla = Batalla.instanciarBatalla(entrenador1, Entrenador2);
-                while(number != 0) {
-                    number = batalla.turno(vista.elegirPokemon1(), vista.elegirAtaque(), vista.elegirPokemon2());
-                    if (number == 1) {
-                        vista.elegirPokemon2();
-                    } else if (number == 2) {
-                        batalla.intercambiarActivos();
-                    }
-                }
-                break;
-           break;
-        }
-        
+                batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
+                vista.elegirPokemon(entrenador1, entrenador2);
+                break;        
+        }        
     }
-    // Métodos para manejar las vistas
 
-    public void cambiarVista(){
-        if(esGui){
-            vista = new VistaPokemonConsola();
+    public void avanzarEscena() {
+        // Este método será el que usará la vista para avanzar de escena
+        escena++;
+        actualizarEscena();
+    }
+    public void atacar(Ataque ataqueElegido) {
+        // Entonces cada vez que seleccione un ataque tiene que llamar a este método y pasarle el ataque
+        byte estadoCombate = (byte) batalla.turno(orden.get(0), ataqueElegido, orden.get(1));
+        iniciarCombate(estadoCombate);
+    }
+    public void ordenarContrincantes() {
+        // Este método será el que usaremos para avanzar de escena entre la elección de pokemones y la pelea
+        orden = batalla.ordenBatalla(pokemon1, pokemon2);
+    }
+
+    public void iniciarCombate(byte estadoCombate) {
+        switch(estadoCombate) {
+        case -2:
+        // El entrenador 1 tiene que elegir un nuevo pokemon
+            vista.elegirPokemon(entrenador1, entrenador2);
+            vista.continuar();
+            break;
+        case -1:
+        // El entrenador 2 tiene que elegir un nuevo pokemon       
+            vista.elegirPokemon(entrenador1, entrenador2);
+            vista.continuar();
+            break;
+        case 0:
+        // Si pokemon2 sigue vivo, es turno de pokemon2
+            Collections.reverse(orden);
+            vista.continuar();
+            break;
+        case 1:
+            vista.ganador(entrenador1);
+        case 2:
+            vista.ganador(entrenador2);
+        }
+    }
+
+    public void crearVista(){
+        if(!esGui){
+            this.vista = new VistaPokemonConsola();
         }else{
-            vista = new VistaPokemonGUI();
+            this.vista = new VistaPokemonGUI();
         }
         esGui = !esGui;
         vista.setControlador(this);
         vista.bienvenido();
     }
-
-    // public static void main(String[] args) {
-    //     VistaPokemonGUI vista = new VistaPokemonGUI();
-    //     Controlador control = new Controlador(vista);
-    //     control.flujo();
-    // }
 }
