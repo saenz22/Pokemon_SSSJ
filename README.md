@@ -11,7 +11,7 @@
 
 Una aplicación de escritorio desarrollada en Java, diseñada bajo el patrón de arquitectura MVC (Modelo-Vista-Controlador),que simula combates entre Pokémones, permitiendo al usuario utilizar sus Pokémones y disfrutar de una experiencia interactiva tipo videojuego.
 
----
+--- 
 
 ## 📚 Tabla de Contenidos
 
@@ -100,11 +100,22 @@ Pokemon_GUI/
 
 Pantalla Prinicipal
 
-![Pantalla principal]()
+![Pantalla principal](bin/vista/Pantalla_principal.png)
+
+Selección de entrenadores
+
+![Selección de entrenadores](bin/vista/Seleccion_de_entrenadores.png)
+
+Selección de pokemones
+
+![Selección de pokemones 1](bin/vista/Seleccion_de_pokemones.png)
+
+![Selección de pokemones 2](bin/vista/Seleccion_de_pokemon_2.png)
 
 Combate
 
-![Combate]()
+![Combate](bin/vista/Combate.png)
+![Combate 2](bin/vista/Combate_2.png)
 
 
 ---
