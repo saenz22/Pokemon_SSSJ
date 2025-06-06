@@ -5,17 +5,28 @@ import java.util.List;
 public class Entrenador extends SerVivo {
 
     // Atributos
+    private int victorias;
     private ArrayList<Pokemon> equipo = new ArrayList<>();
 
     // Constructor
     public Entrenador(String nombre) {
         // Heredando nombre
         super(nombre);
+        this.victorias = 0;
     }
 
-    // Getter
+    // Getters
     public ArrayList<Pokemon> getEquipo() {
         return equipo;
+    }
+
+    public int getVictorias() {
+        return victorias;
+    }
+    
+    // Setter
+    public void aumentarVictorias() {
+        this.victorias +=1;
     }
 
     //Factory method para capturar un entrenador por consola sin necesidad de instanciar un objeto con new

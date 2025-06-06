@@ -11,6 +11,9 @@ import modelo.Entrenador;
 import modelo.Pokemon;
 import modelo.Ataque;
 
+// Hacer método para que revivan y reiniciar el juego en 0 si guarda al terminar el juego
+// Hacer cola de últimos ataques y que se muestre en la vista
+
 public class Controlador {
     private VistaPokemon vista;
     private Batalla batalla;
@@ -54,10 +57,16 @@ public class Controlador {
         this.listaEntrenadores = new ArrayList<>(Arrays.asList(nombre1, nombre2));
     }
 
+    public void setBatalla(Batalla batalla) {
+        this.entrenador1 = batalla.getEntrenador1();
+        this.entrenador2 = batalla.getEntrenador2();
+        this.escena = 6; // Cambiamos la escena a la de elegir pokemon
+        actualizarEscena();
+    }
+
     public Controlador(boolean esGui) {
        this.esGui = esGui;
        this.crearVista();
-       vista.setControlador(this);
        this.listaPokemones = new ArrayList<>();
        this.listaEntrenadores = new ArrayList<>();
        this.escena = 0;
@@ -96,7 +105,7 @@ public class Controlador {
             case 6:
                 batalla = Batalla.instanciarBatalla(entrenador1, entrenador2);
                 vista.elegirPokemon(entrenador1, entrenador2);
-                break;        
+                break;
         }        
     }
 
@@ -134,8 +143,12 @@ public class Controlador {
             break;
         case 1:
             vista.ganador(entrenador1);
+            entrenador1.aumentarVictorias();
+            break;
         case 2:
             vista.ganador(entrenador2);
+            entrenador2.aumentarVictorias();
+            break;
         }
     }
 

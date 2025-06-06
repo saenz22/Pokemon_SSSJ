@@ -11,6 +11,14 @@ public class Batalla {
     Entrenador e1, e2;
     ArrayList<Pokemon> disponibles1, disponibles2;
 
+    public Entrenador getEntrenador1() {
+        return e1;
+    }
+
+    public Entrenador getEntrenador2() {
+        return e2;
+    }
+
     public Batalla(Entrenador e1, Entrenador e2) {
         this.e1 = e1;
         this.e2 = e2;
@@ -19,7 +27,6 @@ public class Batalla {
     }
 
     public int turno(Pokemon atacante, Ataque ataqueElegido, Pokemon atacado) {
-
          // Si ambos tienen la misma velocidad, el primero que llege a la batalla, lo ataca
         atacante.atacar(ataqueElegido, atacado);
         if (atacado.getVivo() == false) {
@@ -64,4 +71,4 @@ public class Batalla {
         }
         return new ArrayList<Pokemon>(Arrays.asList(atacante, atacado));
     }
-}   
+}

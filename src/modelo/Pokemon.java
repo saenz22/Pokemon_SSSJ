@@ -181,6 +181,11 @@ public class Pokemon extends SerVivo {
     }
 
     private static boolean yaElegido(String nombreAtk, ArrayList<Ataque> ataques) {
-        return ataques.stream().anyMatch(a -> nombreAtk.contains(a.getNombre()));
+        for (Ataque ataque : ataques) {
+            if (ataque.getNombre().equals(nombreAtk)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -3,6 +3,7 @@ package vista;
 import controlador.Controlador;
 import modelo.Entrenador;
 import modelo.Pokemon;
+
 import java.util.ArrayList;
 
 public interface VistaPokemon {
