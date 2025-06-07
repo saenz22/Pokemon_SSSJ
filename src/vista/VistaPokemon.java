@@ -17,5 +17,6 @@ public interface VistaPokemon {
    void elegirAtaque(Pokemon pokemon);
    void setControlador(Controlador controlador);
    void continuar();
+   void mostrarLogro(String nombre, String descripcion, String nombreEntrenador);
    boolean isError();
 }

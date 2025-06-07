@@ -4,25 +4,63 @@ import vista.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.LinkedList;
 
 import modelo.Batalla;
 import modelo.Entrenador;
+import modelo.HistorialAtaques;
+import modelo.Ranking;
+import modelo.Logros;
 import modelo.Pokemon;
 import modelo.Ataque;
+import modelo.PersistenciaBatallas;
+import modelo.ManejadorLogros;
 
-// Hacer método para que revivan y reiniciar el juego en 0 si guarda al terminar el juego
-// Hacer cola de últimos ataques y que se muestre en la vista
+// Hacer funcionar desde la vista historialAtaques, ranking y logros
 
-public class Controlador {
+// NOTA: la idea es que en la vista cuando se quiera comprobar si un logro se ha desbloqueado, se llame:
+// agregarLogro(Logros logro, Entrenador entrenador);
+// Y para mostrar los logros, desbloqueados o no según si tiene null o el entrenador que lo desbloqueó, se llame:
+// getLogrosDesbloqueados();
+
+public class Controlador implements PersistenciaBatallas {
+
+    // Atributos
+    private static Controlador controlador = null;
     private VistaPokemon vista;
+    private ManejadorLogros manejadorLogros;
+    private HistorialAtaques historialAtaques;
+    private Ranking ranking;
     private Batalla batalla;
     private Entrenador entrenador1, entrenador2;
     private Pokemon pokemon1, pokemon2;
-    private ArrayList<Pokemon> orden;
+    private LinkedList<Pokemon> orden;
     private ArrayList<String> listaPokemones, listaEntrenadores;
     public boolean esGui;
     public byte escena;
+
+    public Controlador(boolean esGui) {
+       this.esGui = esGui;
+       this.crearVista();
+       this.listaPokemones = new ArrayList<>();
+       this.listaEntrenadores = new ArrayList<>();
+       this.escena = 0;
+       this.pokemon1 = null;
+       this.pokemon2 = null;
+       this.manejadorLogros = ManejadorLogros.instanciar(this);
+       this.historialAtaques = HistorialAtaques.instanciar();
+       this.ranking = Ranking.instanciar();
+       this.orden = new LinkedList<>();
+    }
+
+    // Método para instanciar el controlador (Singleton)
+    // Este método asegura que solo haya una instancia del controlador en toda la aplicación   ordenBatalla
+    public static Controlador instanciar(boolean esGui) {
+        if (controlador == null) {
+            controlador = new Controlador(esGui);
+        }
+        return controlador;
+    }
 
     public ArrayList<Entrenador> getListaEntrenadores() {
         return new ArrayList<>(Arrays.asList(entrenador1, entrenador2)); 
@@ -36,8 +74,7 @@ public class Controlador {
         return entrenador2.getEquipo();
     }
 
-
-    public ArrayList<Pokemon> getOrden() {
+    public LinkedList<Pokemon> getOrden() {
         return orden;
     }
 
@@ -62,16 +99,6 @@ public class Controlador {
         this.entrenador2 = batalla.getEntrenador2();
         this.escena = 6; // Cambiamos la escena a la de elegir pokemon
         actualizarEscena();
-    }
-
-    public Controlador(boolean esGui) {
-       this.esGui = esGui;
-       this.crearVista();
-       this.listaPokemones = new ArrayList<>();
-       this.listaEntrenadores = new ArrayList<>();
-       this.escena = 0;
-       this.pokemon1 = null;
-       this.pokemon2 = null;
     }
 
     public void actualizarEscena() {
@@ -114,14 +141,45 @@ public class Controlador {
         escena++;
         actualizarEscena();
     }
+
     public void atacar(Ataque ataqueElegido) {
         // Entonces cada vez que seleccione un ataque tiene que llamar a este método y pasarle el ataque
         byte estadoCombate = (byte) batalla.turno(orden.get(0), ataqueElegido, orden.get(1));
         iniciarCombate(estadoCombate);
     }
+
     public void ordenarContrincantes() {
         // Este método será el que usaremos para avanzar de escena entre la elección de pokemones y la pelea
         orden = batalla.ordenBatalla(pokemon1, pokemon2);
+    }
+
+    public void guardarBatalla() {
+        ArrayList<Batalla> batallas = PersistenciaBatallas.cargar();
+        if (batallas == null || batallas.isEmpty()) {
+            batallas = new ArrayList<>();
+        }
+        batallas.add(batalla);
+        PersistenciaBatallas.guardar(batallas);
+    }
+
+    public ArrayList<Batalla> cargarBatalla() {
+        ArrayList<Batalla> batallas = PersistenciaBatallas.cargar();
+        if (batallas == null || batallas.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return batallas;
+    }
+
+    public void notificarLogro(String nombre, String descripcion, String entrenador) {
+        vista.mostrarLogro(nombre, descripcion, entrenador);
+    }
+
+    public void llamadaAgregarLogro(Logros logro, Entrenador entrenador) {
+        manejadorLogros.agregarLogro(logro, entrenador);
+    }
+
+    public void logroSecreto() {
+        manejadorLogros.logroSecreto();
     }
 
     public void iniciarCombate(byte estadoCombate) {
@@ -137,17 +195,26 @@ public class Controlador {
             vista.continuar();
             break;
         case 0:
-        // Si pokemon2 sigue vivo, es turno de pokemon2
-            Collections.reverse(orden);
+        // Si pokemon atacado sigue vivo, es su turno
+            Pokemon atacante = orden.poll();
+            orden.addLast(atacante);
             vista.continuar();
             break;
         case 1:
             vista.ganador(entrenador1);
             entrenador1.aumentarVictorias();
+            entrenador2.aumentarDerrotas();
+            // Restaurar el equipo de ambos entrenadores
+            entrenador1.restaurarEquipo();
+            entrenador2.restaurarEquipo();
             break;
         case 2:
             vista.ganador(entrenador2);
             entrenador2.aumentarVictorias();
+            entrenador1.aumentarDerrotas();
+            // Restaurar el equipo de ambos entrenadores
+            entrenador1.restaurarEquipo();
+            entrenador2.restaurarEquipo();
             break;
         }
     }

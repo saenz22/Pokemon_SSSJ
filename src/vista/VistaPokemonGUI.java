@@ -1599,6 +1599,13 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     public void continuar() {
         
     }
+
+
+    @Override
+    public void mostrarLogro(String nombre, String descripcion) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarLogro'");
+    }
 }
 
 

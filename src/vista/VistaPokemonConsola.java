@@ -248,4 +248,12 @@ public class VistaPokemonConsola implements VistaPokemon {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
+
+    @Override
+    public void mostrarLogro(String nombre, String descripcion, String entrenador) {
+        System.out.println("\n¡Felicidades " + entrenador + "!");
+        System.out.println("Logro Desbloqueado: " + nombre);
+        System.out.println("Descripción: " + descripcion);
+        limpiarConsola();
+    }
 }

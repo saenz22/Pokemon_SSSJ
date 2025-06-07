@@ -6,7 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class PersistenciaBatallas {
+public interface PersistenciaBatallas {
     public static void guardar(ArrayList<Batalla> batallas) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("batallas.ser"))) {
             oos.writeObject(batallas);
