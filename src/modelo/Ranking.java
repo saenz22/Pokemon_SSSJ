@@ -23,6 +23,12 @@ public class Ranking {
     }
 
     public void generarRanking(ArrayList<Batalla> batallas) {
+        // Limpiar el ranking actual
+        if (batallas == null || batallas.isEmpty()) {
+            ganadores.clear();
+            return;
+        }
+        ganadores.clear();
         for (Batalla batalla : batallas) {
             Entrenador entrenador1 = batalla.getEntrenador1();
             Entrenador entrenador2 = batalla.getEntrenador2();

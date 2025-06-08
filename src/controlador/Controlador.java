@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.TreeSet;
 
 import modelo.Batalla;
 import modelo.Entrenador;
@@ -17,7 +18,7 @@ import modelo.Ataque;
 import modelo.PersistenciaBatallas;
 import modelo.ManejadorLogros;
 
-// Hacer funcionar desde la vista historialAtaques, ranking y logros
+// ME FALTAN LOS LOGROS Y EVITAR QUE SE GUARDEN MÁS DE 4 BATALLAS, PODER BORRAR BATALLAS
 
 // NOTA: la idea es que en la vista cuando se quiera comprobar si un logro se ha desbloqueado, se llame:
 // agregarLogro(Logros logro, Entrenador entrenador);
@@ -30,8 +31,8 @@ public class Controlador implements PersistenciaBatallas {
     private static Controlador controlador = null;
     private VistaPokemon vista;
     private ManejadorLogros manejadorLogros;
-    private HistorialAtaques historialAtaques;
-    private Ranking ranking;
+    private static HistorialAtaques historialAtaques;
+    private static Ranking ranking;
     private Batalla batalla;
     private Entrenador entrenador1, entrenador2;
     private Pokemon pokemon1, pokemon2;
@@ -111,6 +112,7 @@ public class Controlador implements PersistenciaBatallas {
         switch(escena) {
             case 0:
                 vista.bienvenido();
+                ranking.generarRanking(PersistenciaBatallas.cargar());
                 break;
             case 1:
                 vista.entrenadores();
@@ -167,7 +169,7 @@ public class Controlador implements PersistenciaBatallas {
 
     public ArrayList<Batalla> cargarBatalla() {
         ArrayList<Batalla> batallas = PersistenciaBatallas.cargar();
-        PersistenciaBatallas.guardar(batallas); // Aseguramos que el archivo exista
+        //PersistenciaBatallas.guardar(batallas); Aseguramos que el archivo exista
         return batallas;
     }
 
@@ -200,15 +202,19 @@ public class Controlador implements PersistenciaBatallas {
 
     // Métodos del historial de ataques obtener
 
-    public void agregarAtaqueHistorial(String descripcionAtaque) {
+    public static  ArrayList<Ataque> getHistorialAtaques() {
+        return (ArrayList<Ataque>)historialAtaques.obtenerHistorial();
+    }
+    public void agregarAtaqueHistorial(Ataque descripcionAtaque) {
         historialAtaques.guardarAtaque(descripcionAtaque);
     }
 
-    // Método para ranking
-    public void generarRanking(ArrayList<Batalla> batallas) {
-        ranking.generarRanking(batallas);
-    }
+    // Métodos del ranking
     
+    public static TreeSet<Entrenador> generarRanking() {
+        TreeSet<Entrenador> listaGanadores = ranking.getGanadores();
+        return listaGanadores;
+    }
 
     public void iniciarCombate(byte estadoCombate) {
         switch(estadoCombate) {
@@ -229,16 +235,18 @@ public class Controlador implements PersistenciaBatallas {
             vista.continuar();
             break;
         case 1:
-            vista.ganador(entrenador1);
+            vista.ganador(entrenador1);  
             entrenador1.aumentarVictorias();
             entrenador2.aumentarDerrotas();
             // Restaurar el equipo de ambos entrenadores
+            ranking.generarRanking(PersistenciaBatallas.cargar());
             break;
         case 2:
             vista.ganador(entrenador2);
             entrenador2.aumentarVictorias();
             entrenador1.aumentarDerrotas();
             // Restaurar el equipo de ambos entrenadores
+            ranking.generarRanking(PersistenciaBatallas.cargar());
             break;
         }
     }
