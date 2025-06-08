@@ -40,9 +40,12 @@ public class ManejadorLogros {
         return logrosDesbloqueados;
     }
 
-    public void agregarLogro(Logros logro, Entrenador entrenador) {
-        entrenador.desbloquearLogro(logro, this);
-        controlador.notificarLogro(logro.getNombre(), logro.getDescripcion(), entrenador.getNombre());
+    public void agregarLogro(Entrenador entrenador) {
+        for (Logros logro : listaLogros) {
+            entrenador.desbloquearLogro(logro, this);
+            controlador.notificarLogro(logro.getNombre(), logro.getDescripcion(), entrenador.getNombre());
+            break; // Solo se agrega el primer logro que cumpla las condiciones
+        }
     }
 
     public void logroSecreto() {

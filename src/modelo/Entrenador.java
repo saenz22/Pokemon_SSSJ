@@ -56,11 +56,12 @@ public class Entrenador extends SerVivo {
     public void restaurarEquipo() {
         this.equipo = new ArrayList<>(equipoDerrotados); // Restaura el equipo derrotado
         this.equipoDerrotados.clear(); // Limpia la lista de derrotados
+        for (Pokemon pokemon : equipo) {
+            pokemon.revivir(); // Restaura cada Pokemon del equipo
+        }
     }
 
     public void agregarDerrotado(Pokemon pokemon) {
-        pokemon.setVivo(true); // Marca el pokemon como derrotado
-        pokemon.setHp(pokemon.getHPMAX()); // Establece los puntos de vida a 0
         this.equipoDerrotados.add(pokemon); // Agrega el pokemon derrotado al equipo de derrotados
     }
 

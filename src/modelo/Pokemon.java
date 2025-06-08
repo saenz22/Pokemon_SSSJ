@@ -176,6 +176,12 @@ public class Pokemon extends SerVivo {
         }
     }
 
+    public void revivir() {
+        // Método para revivir al Pokemon
+        this.setHp(this.getHPMAX());
+        this.setVivo(true);
+    }
+
     private static short aleatorio(int max, int min) {
         return (short) (Math.random() * (max - min + 1) + min);
     }

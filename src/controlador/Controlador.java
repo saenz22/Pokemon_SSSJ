@@ -2,6 +2,8 @@ package controlador;
 
 import vista.*;
 
+import java.io.File;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -10,7 +12,6 @@ import modelo.Batalla;
 import modelo.Entrenador;
 import modelo.HistorialAtaques;
 import modelo.Ranking;
-import modelo.Logros;
 import modelo.Pokemon;
 import modelo.Ataque;
 import modelo.PersistenciaBatallas;
@@ -51,6 +52,11 @@ public class Controlador implements PersistenciaBatallas {
        this.historialAtaques = HistorialAtaques.instanciar();
        this.ranking = Ranking.instanciar();
        this.orden = new LinkedList<>();
+       File archivoBatallas = new File("batallas.ser");
+        if(!archivoBatallas.exists() || archivoBatallas.length() == 0) {
+            // Si el archivo no existe o está vacío, inicializamos la persistencia con una lista vacía
+            PersistenciaBatallas.guardar(new ArrayList<Batalla>());
+        }
     }
 
     // Método para instanciar el controlador (Singleton)
@@ -155,31 +161,47 @@ public class Controlador implements PersistenciaBatallas {
 
     public void guardarBatalla() {
         ArrayList<Batalla> batallas = PersistenciaBatallas.cargar();
-        if (batallas == null || batallas.isEmpty()) {
-            batallas = new ArrayList<>();
-        }
         batallas.add(batalla);
         PersistenciaBatallas.guardar(batallas);
     }
 
     public ArrayList<Batalla> cargarBatalla() {
         ArrayList<Batalla> batallas = PersistenciaBatallas.cargar();
-        if (batallas == null || batallas.isEmpty()) {
-            return new ArrayList<>();
-        }
+        PersistenciaBatallas.guardar(batallas); // Aseguramos que el archivo exista
         return batallas;
     }
 
+    public void reiniciarPartida() {
+        // Reinicia la partida, reseteando los entrenadores y pokemones
+        entrenador1.restaurarEquipo();
+        entrenador2.restaurarEquipo();
+        pokemon1 = null;
+        pokemon2 = null;
+        orden.clear();
+        escena = 0; // Volvemos a la escena de bienvenida
+        actualizarEscena();
+    }
+
+    // Métodos para ManejadorLogros
+
+    // Método para vistaPokemon
     public void notificarLogro(String nombre, String descripcion, String entrenador) {
         vista.mostrarLogro(nombre, descripcion, entrenador);
     }
 
-    public void llamadaAgregarLogro(Logros logro, Entrenador entrenador) {
-        manejadorLogros.agregarLogro(logro, entrenador);
+    // Método para ManejadorLogros
+    public void llamadaAgregarLogro(Entrenador entrenador) {
+        manejadorLogros.agregarLogro(entrenador);
     }
 
     public void logroSecreto() {
         manejadorLogros.logroSecreto();
+    }
+
+    // Métodos del historial de ataques
+
+    public void agregarAtaqueHistorial(String descripcionAtaque) {
+        historialAtaques.guardarAtaque(descripcionAtaque);
     }
 
     public void iniciarCombate(byte estadoCombate) {
@@ -205,16 +227,12 @@ public class Controlador implements PersistenciaBatallas {
             entrenador1.aumentarVictorias();
             entrenador2.aumentarDerrotas();
             // Restaurar el equipo de ambos entrenadores
-            entrenador1.restaurarEquipo();
-            entrenador2.restaurarEquipo();
             break;
         case 2:
             vista.ganador(entrenador2);
             entrenador2.aumentarVictorias();
             entrenador1.aumentarDerrotas();
             // Restaurar el equipo de ambos entrenadores
-            entrenador1.restaurarEquipo();
-            entrenador2.restaurarEquipo();
             break;
         }
     }
