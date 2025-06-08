@@ -14,6 +14,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -21,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -31,7 +34,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+
 import javax.swing.Timer;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+
+import org.w3c.dom.events.MouseEvent;
 
 
 public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
@@ -165,6 +174,424 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         return panel;
     }
 
+    private JPanel showWelcomePanel(boolean isCargar) {
+          JPanel welcomePanel = new JPanel();
+    welcomePanel.setLayout(null);
+    welcomePanel.setBackground(new Color(10, 20, 48));
+
+     
+        
+        JLabel labelTitulo = new JLabel(new ImageIcon(getClass().getResource("/vista/titulo.png")));
+        labelTitulo.setBounds(35,-70,500, 300);
+        welcomePanel.add(labelTitulo);
+
+    // Panel 1 - Cargar o Continuar
+    JPanel primeraOpcion = new JPanel();
+    primeraOpcion.setLayout(null);
+    primeraOpcion.setBackground(Color.WHITE);
+    primeraOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    primeraOpcion.setBounds(50, 180, 200, 30);
+
+    JLabel continuarCargar = new JLabel(isCargar ? "Cargar Partida" : "Continuar Partida", JLabel.CENTER);
+    continuarCargar.setFont(new Font("Monospaced", Font.BOLD, 20));
+    continuarCargar.setBounds(10, 5, 200, 20);
+    primeraOpcion.add(continuarCargar);
+
+    JButton boton1 = new JButton();
+    boton1.setBounds(0, 0, 200, 30);
+    boton1.setContentAreaFilled(false);
+    boton1.setBorderPainted(false);
+    boton1.setFocusPainted(false);
+    boton1.setOpaque(false);
+    // Ejemplo: ocultar tras click
+    boton1.addActionListener(e -> {
+       
+        
+        if (isCargar) {
+            switchToNextPanel(showCargarPartida());
+        } else {
+           
+        }
+     
+    });
+    primeraOpcion.add(boton1);
+
+    // Panel 2 - Nueva Partida
+    JPanel segundaOpcion = new JPanel();
+    segundaOpcion.setLayout(null);
+    segundaOpcion.setBackground(Color.WHITE);
+    segundaOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    segundaOpcion.setBounds(50, 230, 200, 30);
+
+    JLabel nuevaPartida = new JLabel("Nueva Partida", JLabel.CENTER);
+    nuevaPartida.setFont(new Font("Monospaced", Font.BOLD, 20));
+    nuevaPartida.setBounds(10, 5, 200, 20);
+    segundaOpcion.add(nuevaPartida);
+
+    JButton boton2 = new JButton();
+    boton2.setBounds(0, 0, 200, 30);
+    boton2.setContentAreaFilled(false);
+    boton2.setBorderPainted(false);
+    boton2.setFocusPainted(false);
+    boton2.setOpaque(false);
+    boton2.addActionListener(e -> {
+        
+        
+        switchToNextPanel(showSecondPanel());
+    });
+    segundaOpcion.add(boton2);
+
+    // Panel 3 - Logros
+    JPanel terceraOpcion = new JPanel();
+    terceraOpcion.setLayout(null);
+    terceraOpcion.setBackground(Color.WHITE);
+    terceraOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    terceraOpcion.setBounds(350, 180, 200, 30);
+
+    JLabel logrosLabel = new JLabel("Logros", JLabel.CENTER);
+    logrosLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
+    logrosLabel.setBounds(10, 5, 200, 20);
+    terceraOpcion.add(logrosLabel);
+
+    JButton boton3 = new JButton();
+    boton3.setBounds(0, 0, 200, 30);
+    boton3.setContentAreaFilled(false);
+    boton3.setBorderPainted(false);
+    boton3.setFocusPainted(false);
+    boton3.setOpaque(false);
+    boton3.addActionListener(e -> {
+        switchToNextPanel(showLogros());
+        
+    });
+    terceraOpcion.add(boton3);
+
+    // Panel 4 - Ranking
+    JPanel cuartaOpcion = new JPanel();
+    cuartaOpcion.setLayout(null);
+    cuartaOpcion.setBackground(Color.WHITE);
+    cuartaOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    cuartaOpcion.setBounds(350,230, 200, 30);
+
+    JLabel ranking = new JLabel("Ranking", JLabel.CENTER);
+    ranking.setFont(new Font("Monospaced", Font.BOLD, 20));
+    ranking.setBounds(10, 5, 200, 20);
+    cuartaOpcion.add(ranking);
+
+    JButton boton4 = new JButton();
+    boton4.setBounds(0, 0, 200, 30);
+    boton4.setContentAreaFilled(false);
+    boton4.setBorderPainted(false);
+    boton4.setFocusPainted(false);
+    boton4.setOpaque(false);
+    boton4.addActionListener(e -> {
+        switchToNextPanel(showRanking());
+        
+    });
+    cuartaOpcion.add(boton4);
+
+    // Añadir todos los paneles al panel principal
+    welcomePanel.add(primeraOpcion);
+    welcomePanel.add(segundaOpcion);
+    welcomePanel.add(terceraOpcion);
+    welcomePanel.add(cuartaOpcion);
+
+    this.add(welcomePanel); // si 'this' es JFrame
+    return welcomePanel;
+    }
+
+    private JPanel showCargarPartida() {
+            JPanel cargarPanel = new JPanel();
+    cargarPanel.setLayout(null);
+    cargarPanel.setBackground(new Color(10, 20, 48)); // fondo azul
+
+    // Medidas
+    int panelWidth = 280;
+    int panelHeight = 120;
+    int paddingX = 50;
+    int paddingY = 50;
+    int startX = 10;
+    int startY = 25;
+
+    // PRIMERA PARTIDA
+    JPanel primeraPartida = new JPanel();
+    primeraPartida.setLayout(null);
+    primeraPartida.setBackground(Color.WHITE);
+    primeraPartida.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    primeraPartida.setBounds(startX, startY, panelWidth, panelHeight);
+
+    JLabel titulo1 = new JLabel("PARTIDA 1");
+    titulo1.setFont(new Font("Monospaced", Font.BOLD, 18));
+    titulo1.setBounds(15, 10, 200, 20);
+    primeraPartida.add(titulo1);
+
+    JLabel jugador1 = new JLabel("JUGADOR   Zhecare");
+    jugador1.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    jugador1.setBounds(15, 40, 250, 20);
+    primeraPartida.add(jugador1);
+
+    JLabel tiempo1 = new JLabel("TIEMPO J.  0:01");
+    tiempo1.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    tiempo1.setBounds(15, 60, 250, 20);
+    primeraPartida.add(tiempo1);
+
+    JLabel medallas1 = new JLabel("MEDALLAS  0");
+    medallas1.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    medallas1.setBounds(15, 80, 250, 20);
+    primeraPartida.add(medallas1);
+
+    JButton boton1 = new JButton();
+    boton1.setBounds(0, 0, panelWidth, panelHeight);
+    boton1.setContentAreaFilled(false);
+    boton1.setBorderPainted(false);
+    boton1.setFocusPainted(false);
+    boton1.setOpaque(false);
+    boton1.addActionListener(e -> {
+        System.out.println("Se seleccionó la partida 1");
+    });
+    primeraPartida.add(boton1);
+    cargarPanel.add(primeraPartida);
+
+    // SEGUNDA PARTIDA
+    JPanel segundaPartida = new JPanel();
+    segundaPartida.setLayout(null);
+    segundaPartida.setBackground(Color.WHITE);
+    segundaPartida.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    segundaPartida.setBounds(startX + panelWidth + 10, startY, panelWidth, panelHeight);
+
+    JLabel titulo2 = new JLabel("PARTIDA 2");
+    titulo2.setFont(new Font("Monospaced", Font.BOLD, 18));
+    titulo2.setBounds(15, 10, 200, 20);
+    segundaPartida.add(titulo2);
+
+    JLabel jugador2 = new JLabel("JUGADOR   Zhecare");
+    jugador2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    jugador2.setBounds(15, 40, 250, 20);
+    segundaPartida.add(jugador2);
+
+    JLabel tiempo2 = new JLabel("TIEMPO J.  0:02");
+    tiempo2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    tiempo2.setBounds(15, 60, 250, 20);
+    segundaPartida.add(tiempo2);
+
+    JLabel medallas2 = new JLabel("MEDALLAS  0");
+    medallas2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    medallas2.setBounds(15, 80, 250, 20);
+    segundaPartida.add(medallas2);
+
+    JButton boton2 = new JButton();
+    boton2.setBounds(0, 0, panelWidth, panelHeight);
+    boton2.setContentAreaFilled(false);
+    boton2.setBorderPainted(false);
+    boton2.setFocusPainted(false);
+    boton2.setOpaque(false);
+    boton2.addActionListener(e -> {
+        System.out.println("Se seleccionó la partida 2");
+    });
+    segundaPartida.add(boton2);
+    cargarPanel.add(segundaPartida);
+
+    // TERCERA PARTIDA
+    JPanel terceraPartida = new JPanel();
+    terceraPartida.setLayout(null);
+    terceraPartida.setBackground(Color.WHITE);
+    terceraPartida.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    terceraPartida.setBounds(startX, startY + panelHeight + 7 , panelWidth, panelHeight);
+
+    JLabel titulo3 = new JLabel("PARTIDA 3");
+    titulo3.setFont(new Font("Monospaced", Font.BOLD, 18));
+    titulo3.setBounds(15, 10, 200, 20);
+    terceraPartida.add(titulo3);
+
+    JLabel jugador3 = new JLabel("JUGADOR   Zhecare");
+    jugador3.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    jugador3.setBounds(15, 40, 250, 20);
+    terceraPartida.add(jugador3);
+
+    JLabel tiempo3 = new JLabel("TIEMPO J.  0:03");
+    tiempo3.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    tiempo3.setBounds(15, 60, 250, 20);
+    terceraPartida.add(tiempo3);
+
+    JLabel medallas3 = new JLabel("MEDALLAS  0");
+    medallas3.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    medallas3.setBounds(15, 80, 250, 20);
+    terceraPartida.add(medallas3);
+
+    JButton boton3 = new JButton();
+    boton3.setBounds(0, 0, panelWidth, panelHeight);
+    boton3.setContentAreaFilled(false);
+    boton3.setBorderPainted(false);
+    boton3.setFocusPainted(false);
+    boton3.setOpaque(false);
+    boton3.addActionListener(e -> {
+        System.out.println("Se seleccionó la partida 3");
+    });
+    terceraPartida.add(boton3);
+    cargarPanel.add(terceraPartida);
+
+    // CUARTA PARTIDA
+    JPanel cuartaPartida = new JPanel();
+    cuartaPartida.setLayout(null);
+    cuartaPartida.setBackground(Color.WHITE);
+    cuartaPartida.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    cuartaPartida.setBounds(startX + panelWidth + 10, startY + panelHeight + 7, panelWidth, panelHeight);
+
+    JLabel titulo4 = new JLabel("PARTIDA 4");
+    titulo4.setFont(new Font("Monospaced", Font.BOLD, 18));
+    titulo4.setBounds(15, 10, 200, 20);
+    cuartaPartida.add(titulo4);
+
+    JLabel jugador4 = new JLabel("JUGADOR   Zhecare");
+    jugador4.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    jugador4.setBounds(15, 40, 250, 20);
+    cuartaPartida.add(jugador4);
+
+    JLabel tiempo4 = new JLabel("TIEMPO J.  0:04");
+    tiempo4.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    tiempo4.setBounds(15, 60, 250, 20);
+    cuartaPartida.add(tiempo4);
+
+    JLabel medallas4 = new JLabel("MEDALLAS  0");
+    medallas4.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    medallas4.setBounds(15, 80, 250, 20);
+    cuartaPartida.add(medallas4);
+
+    JButton boton4 = new JButton();
+    boton4.setBounds(0, 0, panelWidth, panelHeight);
+    boton4.setContentAreaFilled(false);
+    boton4.setBorderPainted(false);
+    boton4.setFocusPainted(false);
+    boton4.setOpaque(false);
+    boton4.addActionListener(e -> {
+        System.out.println("Se seleccionó la partida 4");
+    });
+    cuartaPartida.add(boton4);
+    cargarPanel.add(cuartaPartida);
+
+    return cargarPanel;
+    }
+
+    private JPanel showLogros() {
+         JPanel logroPanel = new JPanel();
+    logroPanel.setLayout(null);
+    logroPanel.setBackground(new Color(10, 20, 48));
+    
+    ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    
+    JButton boton = new JButton(configuracion);
+    boton.setBounds(530, 20, 30, 30);
+    boton.setBorderPainted(false);
+    boton.setContentAreaFilled(false);
+    boton.setFocusPainted(false);
+
+    boton.addActionListener(e -> {
+        switchToNextPanel(showWelcomePanel(true));
+    });
+    
+    logroPanel.add(boton);
+
+    String[] columnas = {"ENTRENADOR", "LOGRO 1", "LOGRO 2", "LOGRO 3"};
+    Object[][] datos = {
+        {"Zhecare", "✔ ", "✔ ", "✖ "},
+        {"Ash", "✔ ", "✖ ", "✖ "},
+        {"Misty", "✔ ", "✔ ", "✔ "},
+        {"Brock", "✖ ", "✔ ", "✖ "},
+        {"Gary", "✖ ", "✖ ", "✖ "},
+        {"May", "✔ ", "✖ ", "✔ "},
+        {"Dawn", "✔ ", "✔ ", "✖ "},
+        {"Tracey", "✔ ", "✖ ", "✔ "}
+    };
+
+    JTable tabla = new JTable(datos, columnas);
+    tabla.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    tabla.setRowHeight(28);
+    tabla.setEnabled(false);
+    tabla.setBackground(Color.WHITE);
+
+    DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
+    centrado.setHorizontalAlignment(SwingConstants.CENTER);
+    for (int i = 0; i < tabla.getColumnCount(); i++) {
+        tabla.getColumnModel().getColumn(i).setCellRenderer(centrado);
+    }
+
+    JTableHeader cabecera = tabla.getTableHeader();
+    cabecera.setFont(new Font("Monospaced", Font.BOLD, 16));
+    cabecera.setBackground(Color.WHITE);
+    cabecera.setForeground(Color.BLACK);
+
+    JScrollPane scroll = new JScrollPane(tabla);
+    scroll.setBounds(10, 70, 565, 200);
+    scroll.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    scroll.setBackground(Color.WHITE);
+
+    logroPanel.add(scroll);
+    return logroPanel;
+    }
+    
+      private JPanel showRanking() {
+        JPanel rankingPanel = new JPanel();
+        rankingPanel.setLayout(null);
+        rankingPanel.setBackground(new Color(10, 20, 48));
+        ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+
+        // Crear el botón con la imagen
+        JButton boton = new JButton(configuracion);
+        boton.setBounds(530, 20, 30, 30); // Ajusta el tamaño y la posición del botón
+
+        // Opcional: quitar el borde, el fondo, etc.
+        boton.setBorderPainted(false);
+        boton.setContentAreaFilled(false);
+        boton.setFocusPainted(false);
+
+        // Agregar acción al botón
+        boton.addActionListener(e -> {
+            switchToNextPanel(showWelcomePanel(true));
+                   });
+        // Añadir el botón al panel de ranking
+        rankingPanel.add(boton);
+
+         String[] columnas = {"PUESTO", "ENTRENADOR", "#VICTORIAS", "#DERROTAS"};
+    Object[][] datos = {
+        {"1", "Zhecare", "15", "2"},
+        {"2", "Ash", "13", "4"},
+        {"3", "Misty", "12", "5"},
+        {"4", "Brock", "11", "6"},
+        {"5", "Gary", "10", "7"},
+        {"6", "May", "9", "8"},
+        {"7", "Dawn", "8", "9"},
+        {"8", "Tracey", "7", "10"},
+    };
+
+    JTable tabla = new JTable(datos, columnas);
+    tabla.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    tabla.setRowHeight(28);
+    tabla.setEnabled(false); // No editable
+
+     // Centrar el texto en todas las celdas
+    DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
+    centrado.setHorizontalAlignment(SwingConstants.CENTER);
+    for (int i = 0; i < tabla.getColumnCount(); i++) {
+        tabla.getColumnModel().getColumn(i).setCellRenderer(centrado);
+    }
+
+    JTableHeader cabecera = tabla.getTableHeader();
+    cabecera.setFont(new Font("Monospaced", Font.BOLD, 16));
+    cabecera.setBackground(Color.WHITE);
+    cabecera.setForeground(Color.BLACK);
+
+
+    // Contenedor con Scroll y borde
+    JScrollPane scroll = new JScrollPane(tabla);
+    scroll.setBounds(10, 70, 565, 200);
+    scroll.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    scroll.setBackground(Color.WHITE);
+    tabla.setBackground(Color.WHITE);
+
+    rankingPanel.add(scroll);
+
+       return rankingPanel; // Usamos 'this' para añadir el panel de logros
+    }
+
     public void switchToNextPanel(JPanel panel) {
         getContentPane().removeAll(); // Limpiar la ventana
         add(panel); // Añadir el nuevo panel
@@ -233,7 +660,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     @Override
     public void actionPerformed(ActionEvent e) {
         // Este método se ejecutará cuando el temporizador haya terminado (3 segundos)
-            switchToNextPanel(showSecondPanel()); 
+            switchToNextPanel(showWelcomePanel(true)); 
              // Mostrar el segundo panel
         
         // Cambiar al siguiente panel
@@ -706,6 +1133,22 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         labelFondo.setBounds(0, 0, 605, 327);
         layeredPane.add(labelFondo, Integer.valueOf(0));
 
+        
+    ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    
+    JButton boton = new JButton(configuracion);
+    boton.setBounds(530, 20, 30, 30);
+    boton.setBorderPainted(false);
+    boton.setContentAreaFilled(false);
+    boton.setFocusPainted(false);
+
+    boton.addActionListener(e -> {
+        switchToNextPanel(showWelcomePanel(false));
+    });
+    
+    layeredPane.add(boton, Integer.valueOf(2));
+
+
     
         // 3. Pokémon
         ImageIcon jugador2 = ICONOS_TIPO_ATACANTE.get(atacante.getTipo());
@@ -881,12 +1324,28 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, 605, 327);
 
+        
+
         // 1. Fondo
         ImageIcon fondoBatalla = new ImageIcon(getClass().getResource("/vista/fondo.png"));
         Image imagenFondo = fondoBatalla.getImage().getScaledInstance(605, 327, Image.SCALE_SMOOTH);
         JLabel labelFondo = new JLabel(new ImageIcon(imagenFondo));
         labelFondo.setBounds(0, 0, 605, 327);
         layeredPane.add(labelFondo, Integer.valueOf(0));
+
+        ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    
+    JButton boton = new JButton(configuracion);
+    boton.setBounds(530, 20, 30, 30);
+    boton.setBorderPainted(false);
+    boton.setContentAreaFilled(false);
+    boton.setFocusPainted(false);
+
+    boton.addActionListener(e -> {
+        switchToNextPanel(showWelcomePanel(false));
+    });
+    
+    layeredPane.add(boton, Integer.valueOf(2));
 
     
         // 3. Pokémon
@@ -1138,8 +1597,11 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     }
     @Override
     public void continuar() {
+        
     }
 }
+
+
 
 // Botón personalizado para mostrar el Pokémon
 
