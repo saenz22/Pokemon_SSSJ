@@ -1564,7 +1564,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
                     if (contadorPokemones < 2) {
                         contadorPokemones++;
                         switchToNextPanel(showSixthPanel(listaPokemones.get(contadorPokemones)));
-                    } // Cambiar al sexto panel
+                    } // Cambiar al sexto panel seventh
                     else{
                         contadorPokemones = 0;
                         if (contadorEntrenadores < 1) {

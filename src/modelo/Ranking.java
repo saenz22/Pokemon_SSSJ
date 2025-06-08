@@ -1,10 +1,12 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 public class Ranking {
     
-    private ArrayList<Entrenador> ganadores = new ArrayList<>();
+    private TreeSet<Entrenador> ganadores = new TreeSet<>(Comparator.comparingInt(Entrenador::getVictorias).reversed());
     private static Ranking instancia = null;
 
     // Constructor privado para implementar el patrón Singleton
@@ -16,7 +18,7 @@ public class Ranking {
     }
 
     // Getter
-    public ArrayList<Entrenador> getGanadores() {
+    public TreeSet<Entrenador> getGanadores() {
         return ganadores;
     }
 
@@ -24,18 +26,8 @@ public class Ranking {
         for (Batalla batalla : batallas) {
             Entrenador entrenador1 = batalla.getEntrenador1();
             Entrenador entrenador2 = batalla.getEntrenador2();
-
-            if (entrenador1.getVictorias() > entrenador2.getVictorias()) {
-                ganadores.add(entrenador1);
-            }
-            else if (entrenador1.getVictorias() < entrenador2.getVictorias()) {
-                ganadores.add(entrenador2);
-            } 
-            else {
-                // En caso de empate, se pueden agregar ambos entrenadores
-                ganadores.add(entrenador1);
-                ganadores.add(entrenador2);
-            }
+            ganadores.add(entrenador1);
+            ganadores.add(entrenador2);
         }
     }
 }
