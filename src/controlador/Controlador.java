@@ -198,11 +198,17 @@ public class Controlador implements PersistenciaBatallas {
         manejadorLogros.logroSecreto();
     }
 
-    // Métodos del historial de ataques
+    // Métodos del historial de ataques obtener
 
     public void agregarAtaqueHistorial(String descripcionAtaque) {
         historialAtaques.guardarAtaque(descripcionAtaque);
     }
+
+    // Método para ranking
+    public void generarRanking(ArrayList<Batalla> batallas) {
+        ranking.generarRanking(batallas);
+    }
+    
 
     public void iniciarCombate(byte estadoCombate) {
         switch(estadoCombate) {
