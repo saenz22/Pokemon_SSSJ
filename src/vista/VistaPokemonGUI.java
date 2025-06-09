@@ -659,10 +659,10 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         secondPanel.add(textArea);
 
         // Crear la flecha roja
-        JLabel flecha = new JLabel("▼");
+        JLabel flecha = new JLabel("Presiona Enter para continuar...");
         flecha.setForeground(Color.RED);
-        flecha.setBounds(450, 250, 30, 30); // Nueva posición razonable de la flecha
-        flecha.setFont(new Font("Arial", Font.BOLD, 20)); // Fuente de la flecha
+        flecha.setBounds(350, 250, 500, 30); // Nueva posición razonable de la flecha
+        flecha.setFont(new Font("Arial", Font.BOLD, 10)); // Fuente de la flecha
 
         // Añadir la flecha encima del cuadro de texto
         secondPanel.add(flecha);
@@ -1476,7 +1476,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     else{
     ganadorLabel = new JLabel("¡" + atacante.getNombre() + " ha hecho");
     ganadorLabel2 = new JLabel((int)(defensor.getHPMAX() - defensor.getHp()) + " puntos de daño!");
-     panel.addKeyListener(new KeyListener() {
+    panel.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -1608,7 +1608,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
                     if (contadorPokemones < 2) {
                         contadorPokemones++;
                         switchToNextPanel(showSixthPanel(listaPokemones.get(contadorPokemones)));
-                    } // Cambiar al sexto panel
+                    } // Cambiar al sexto panel seventh
                     else{
                         contadorPokemones = 0;
                         if (contadorEntrenadores < 1) {
@@ -1642,6 +1642,13 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     @Override
     public void continuar() {
         
+    }
+
+
+    @Override
+    public void mostrarLogro(String nombre, String descripcion) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarLogro'");
     }
 }
 

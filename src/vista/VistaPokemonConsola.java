@@ -8,7 +8,6 @@ import modelo.Pokemon;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.NoSuchElementException;
-import java.util.InputMismatchException;
 
 public class VistaPokemonConsola implements VistaPokemon {
     private Scanner scanner;
@@ -23,8 +22,6 @@ public class VistaPokemonConsola implements VistaPokemon {
         this.pokemon2 = "";
         this.pokemon3 = "";
     }
-
-    // Hacer souts mucho más descriptivos y estéticos, sería bueno agregar un await o algo parecido, métodos para que se sienta más ameno
     
     @Override
     public void bienvenido() {
@@ -36,6 +33,7 @@ public class VistaPokemonConsola implements VistaPokemon {
                     Te cruzarás con rivales y criaturas
                     salvajes que querrán luchar contigo,
                     pero ¡ánimo, tú puedes!""");
+        limpiarConsola();
         controlador.avanzarEscena();
     }
 
@@ -71,7 +69,7 @@ public class VistaPokemonConsola implements VistaPokemon {
         }
 
         String texto = """
-                Bienvenidos a Pokémon {jugador1} y
+                        Bienvenidos a Pokémon {jugador1} y
                         {jugador2} les espera un gran
                         desafío en su aventura.
 
@@ -83,6 +81,7 @@ public class VistaPokemonConsola implements VistaPokemon {
         texto = texto.replace("{jugador1}", nombre1).replace("{jugador2}", nombre2);
         System.out.println(texto);
         controlador.setListaEntrenadores(nombre1, nombre2);
+        limpiarConsola();
         controlador.avanzarEscena();
     }
 
@@ -114,13 +113,7 @@ public class VistaPokemonConsola implements VistaPokemon {
                     scanner.nextLine();
                     continue;
                 }
-
                 PokemonValidos = true; // Si todos los nombres no están vacíos, salimos del bucle
-
-                System.out.println("Los Pokémon ingresados son:");
-                System.out.println("1. " + pokemon1);
-                System.out.println("2. " + pokemon2);
-                System.out.println("3. " + pokemon3);
                 
             } catch (NoSuchElementException e) {
                 System.err.println("Error: No se encontró más entrada. Puede que la entrada haya sido interrumpida.");
@@ -128,6 +121,7 @@ public class VistaPokemonConsola implements VistaPokemon {
             }
         }
         controlador.setListaPokemones(pokemon1, pokemon2, pokemon3);
+        limpiarConsola();
         controlador.avanzarEscena();
     }
 
@@ -136,6 +130,7 @@ public class VistaPokemonConsola implements VistaPokemon {
         controlador.setPokemonActivoEntrenador1(entrenador1.getEquipo().get(eleccion(entrenador1)-1));
         controlador.setPokemonActivoEntrenador2(entrenador2.getEquipo().get(eleccion(entrenador2)-1));
         controlador.ordenarContrincantes();
+        System.out.println(controlador.getOrden().get(0).getNombre() + " vs " + controlador.getOrden().get(1).getNombre());
     }
 
     private byte eleccion(Entrenador entrenador) {
@@ -145,23 +140,32 @@ public class VistaPokemonConsola implements VistaPokemon {
         for (int i = 0; i < pokemones.size(); i++) {
             System.out.println((i + 1) + ". " + pokemones.get(i).getNombre());
         }
-        try {
+        while(true) {
             if (scanner.hasNextInt()) {
                 opcion = scanner.nextInt();
                 switch (opcion) {
-                    case 1 -> System.out.println("Has elegido a " + pokemones.get(0).getNombre()); 
-                    case 2 -> System.out.println("Has elegido a " + pokemones.get(1).getNombre());
-                    case 3 -> System.out.println("Has elegido a " + pokemones.get(2).getNombre());
-                    default -> System.out.println("Opción no válida. Elige un número entre 1 y 3.");
+                    case 1:
+                        System.out.println("Has elegido a " + pokemones.get(0).getNombre());
+                        break; 
+                    case 2:
+                        System.out.println("Has elegido a " + pokemones.get(1).getNombre());
+                        break;
+                    case 3:
+                        System.out.println("Has elegido a " + pokemones.get(2).getNombre());
+                        break;
+                    default:
+                        System.out.println("Opción no válida. Elige un número entre 1 y 3.");
+                }
+                if (opcion >= 1 && opcion <= 3) {
+                    break;
                 }
             } else {
                 System.out.println("Entrada no válida. Por favor, ingresa un número.");
                 scanner.nextLine();
-                }
-        } catch (InputMismatchException e) {
-            System.out.println("Error: Entrada no válida. Por favor, ingresa un número.");
-            scanner.nextLine();
+                scanner.nextLine();
+            }
         }
+        limpiarConsola();
         return (byte) opcion;
     }
 
@@ -171,26 +175,37 @@ public class VistaPokemonConsola implements VistaPokemon {
         int opcion = 0; 
         System.out.println("Elige un Ataque para : " + pokemon.getNombre());
         for (int i = 0; i < ataques.size(); i++) {
-            System.out.println((i + 1) + ". " + ataques.get(i).getNombre());
+            System.out.println((i + 1) + ". " + ataques.get(i).getNombre() + " / " + ataques.get(i).getPoder());
         }
-        try {
+        while(true) {
             if (scanner.hasNextInt()) {
                 opcion = scanner.nextInt();
                 switch (opcion) {
-                    case 1 -> System.out.println("Has elegido a " + ataques.get(0).getNombre()); 
-                    case 2 -> System.out.println("Has elegido a " + ataques.get(1).getNombre());
-                    case 3 -> System.out.println("Has elegido a " + ataques.get(2).getNombre());
-                    case 4 -> System.out.println("Has elegido a " + ataques.get(3).getNombre());
-                    default -> System.out.println("Opción no válida. Elige un número entre 1 y 4.");
+                    case 1:
+                        System.out.println("Has elegido a " + ataques.get(0).getNombre());
+                        break;
+                    case 2:
+                        System.out.println("Has elegido a " + ataques.get(1).getNombre());
+                        break;
+                    case 3:
+                        System.out.println("Has elegido a " + ataques.get(2).getNombre());
+                        break;
+                    case 4:
+                        System.out.println("Has elegido a " + ataques.get(3).getNombre());
+                        break;
+                    default:
+                        System.out.println("Opción no válida. Elige un número entre 1 y 4.");
+                }
+                if (opcion >= 1 && opcion <= 4) {
+                    break;
                 }
             } else {
                 System.out.println("Entrada no válida. Por favor, ingresa un número.");
                 scanner.nextLine();
+                scanner.nextLine();
             }
-        } catch (InputMismatchException e) {
-            System.out.println("Error: Entrada no válida. Por favor, ingresa un número.");
-            scanner.next();
         }
+        limpiarConsola();
         controlador.atacar(ataques.get(opcion-1));
     }
 
@@ -202,15 +217,10 @@ public class VistaPokemonConsola implements VistaPokemon {
     @Override
     public void mostrarPokemon(ArrayList<Pokemon> pokemon) {
         for (int i = 0; i < pokemon.size(); i++) {  
-            System.out.println("Pokémon: " + pokemon.get(i).getNombre());
-            System.out.println("Tipo: " + pokemon.get(i).getTipo());
-            System.out.println("Nivel: " + String.valueOf(pokemon.get(i).getNivel()));
-            System.out.println("HP: " + String.valueOf(pokemon.get(i).getHp()));
-            System.out.println("ATAQUE: " + String.valueOf(pokemon.get(i).getAtk()));
-            System.out.println("DEFENSA: " + String.valueOf(pokemon.get(i).getDf()));
-            System.out.println("ATAQUE ESPECIAL: " + String.valueOf(pokemon.get(i).getAtkEs()));
-            System.out.println("DEFENSA ESPECIAL: " + String.valueOf(pokemon.get(i).getDfEs()));
-            System.out.println("VELOCIDAD: " +  String.valueOf(pokemon.get(i).getVelocidad()) + "\n");
+            String stats = "Pokémon: " + pokemon.get(i).getNombre() + " | Tipo: " + pokemon.get(i).getTipo().toString() + "\nNivel: " + String.valueOf(pokemon.get(i).getNivel()) + " | HP: " + String.valueOf(pokemon.get(i).getHp()) + "\nAtaque: " + String.valueOf(pokemon.get(i).getAtk()) + " | Ataque Especial: " + String.valueOf(pokemon.get(i).getAtkEs()) + "\nDefensa: " + String.valueOf(pokemon.get(i).getDf()) + " | Defensa Especial: " + String.valueOf(pokemon.get(i).getDfEs()) + "\nVelocidad: " + String.valueOf(pokemon.get(i).getVelocidad());
+            System.out.println(stats);
+            System.out.println("\n");
+            limpiarConsola();
         }
         controlador.avanzarEscena();
         elegirAtaque(controlador.getOrden().get(0));
@@ -219,6 +229,7 @@ public class VistaPokemonConsola implements VistaPokemon {
     @Override
     public void ganador(Entrenador entrenador) {
         System.out.println("\n¡El ganador es: " + entrenador.getNombre() + "!");
+        System.exit(0);
     }
 
     @Override
@@ -229,5 +240,20 @@ public class VistaPokemonConsola implements VistaPokemon {
     @Override
     public void continuar() {
         elegirAtaque(controlador.getOrden().get(0));
+    }
+
+    public void limpiarConsola() {
+        System.out.println("Presiona Enter para continuar...");
+        scanner.nextLine();
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    @Override
+    public void mostrarLogro(String nombre, String descripcion, String entrenador) {
+        System.out.println("\n¡Felicidades " + entrenador + "!");
+        System.out.println("Logro Desbloqueado: " + nombre);
+        System.out.println("Descripción: " + descripcion);
+        limpiarConsola();
     }
 }

@@ -3,7 +3,7 @@ package modelo;
 public abstract class SerVivo {
 
     // Esta es la clase Padre de Entrenador y Pokemon
-    private String nombre;
+    protected String nombre;
 
     public String getNombre() {
         return nombre;

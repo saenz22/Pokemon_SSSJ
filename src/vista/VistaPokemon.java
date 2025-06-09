@@ -3,6 +3,7 @@ package vista;
 import controlador.Controlador;
 import modelo.Entrenador;
 import modelo.Pokemon;
+
 import java.util.ArrayList;
 
 public interface VistaPokemon {
@@ -16,5 +17,6 @@ public interface VistaPokemon {
    void elegirAtaque(Pokemon pokemon);
    void setControlador(Controlador controlador);
    void continuar();
+   void mostrarLogro(String nombre, String descripcion, String nombreEntrenador);
    boolean isError();
 }

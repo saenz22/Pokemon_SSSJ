@@ -87,7 +87,7 @@ public class Pokemon extends SerVivo {
         // Trayendo herencia: atributo nombre
         super(nombre);
         this.vivo = true;
-        this.hp = aleatorio(500, 50);
+        this.hp = aleatorio(100, 50);
         this.HPMAX = this.hp;
         this.imagen = null;
     }
@@ -176,11 +176,20 @@ public class Pokemon extends SerVivo {
         }
     }
 
+    public void revivir() {
+        // Método para revivir al Pokemon
+        this.setHp(this.getHPMAX());
+        this.setVivo(true);
+    }
+
     private static short aleatorio(int max, int min) {
         return (short) (Math.random() * (max - min + 1) + min);
     }
 
     private static boolean yaElegido(String nombreAtk, ArrayList<Ataque> ataques) {
-        return ataques.stream().anyMatch(a -> nombreAtk.contains(a.getNombre()));
+        for (Ataque ataque : ataques) {
+            return ataque.getNombre().equals(nombreAtk);
+        }
+        return false; // Si no se encuentra el ataque, retorna false
     }
 }

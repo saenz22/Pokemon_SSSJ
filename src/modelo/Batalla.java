@@ -1,7 +1,7 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Batalla {
@@ -11,6 +11,14 @@ public class Batalla {
     Entrenador e1, e2;
     ArrayList<Pokemon> disponibles1, disponibles2;
 
+    public Entrenador getEntrenador1() {
+        return e1;
+    }
+
+    public Entrenador getEntrenador2() {
+        return e2;
+    }
+
     public Batalla(Entrenador e1, Entrenador e2) {
         this.e1 = e1;
         this.e2 = e2;
@@ -19,7 +27,6 @@ public class Batalla {
     }
 
     public int turno(Pokemon atacante, Ataque ataqueElegido, Pokemon atacado) {
-
          // Si ambos tienen la misma velocidad, el primero que llege a la batalla, lo ataca
         atacante.atacar(ataqueElegido, atacado);
         if (atacado.getVivo() == false) {
@@ -27,6 +34,7 @@ public class Batalla {
             // Verificar el pokemon de quién perdió
             if (disponibles1.contains(atacado)) {
                 disponibles1.remove(atacado);
+                e1.agregarDerrotado(atacado); // Agregar a la lista de derrotados del entrenador 1
                 if (disponibles1.isEmpty()) {
                     System.out.println("El entrenador " + e2.getNombre() + " ha ganado la batalla");
                     return 2; // el ganador es el entrenador 2
@@ -38,6 +46,7 @@ public class Batalla {
             }
             else if (disponibles2.contains(atacado)) {
                 disponibles2.remove(atacado);
+                e2.agregarDerrotado(atacado); // Agregar a la lista de derrotados del entrenador 2
                 System.out.println("El pokemon " + atacado.getNombre() + " ha sido derrotado");
                 if (disponibles2.isEmpty()) {
                     return 1; // El ganador es el entrenador 1
@@ -57,11 +66,15 @@ public class Batalla {
         return new Batalla(e1, e2);
     }
 
-    public ArrayList<Pokemon> ordenBatalla(Pokemon atacante, Pokemon atacado) {
-
-        if ((atacado.getVelocidad() > atacante.getVelocidad())) {
-            return new ArrayList<Pokemon>(Arrays.asList(atacado, atacante));
-        }
-        return new ArrayList<Pokemon>(Arrays.asList(atacante, atacado));
+    public LinkedList<Pokemon> ordenBatalla(Pokemon atacante, Pokemon atacado) {
+    LinkedList<Pokemon> orden = new LinkedList<>();
+    if (atacante.getVelocidad() >= atacado.getVelocidad()) {
+        orden.add(atacante);
+        orden.add(atacado);
+    } else {
+        orden.add(atacado);
+        orden.add(atacante);
     }
-}   
+    return orden;
+}
+}
