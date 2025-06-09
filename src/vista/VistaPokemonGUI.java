@@ -244,7 +244,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     boton2.setBorderPainted(false);
     boton2.setFocusPainted(false);
     boton2.setOpaque(false);
-    boton2.addActionListener(e -> {
+    boton2.addActionListener(_ -> {
         
         if(isCargar)
         {
@@ -389,7 +389,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     segundaPartida.add(boton2);
     cargarPanel.add(segundaPartida);
 
-    // TERCERA PARTIDA
+    // TERCERA PARTIDA guardar cargar
     JPanel terceraPartida = new JPanel();
     terceraPartida.setLayout(null);
     terceraPartida.setBackground(Color.WHITE);
@@ -1036,7 +1036,7 @@ for (int i = 0; i < ataques.size(); i++) {
         fondo.setBackground(new Color(25, 95, 95));
         fondo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ActionListener elegirPokemon
+        // ActionListener elegirPokemon cargar
         fondo.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {

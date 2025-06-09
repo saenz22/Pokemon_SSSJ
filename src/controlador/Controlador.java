@@ -19,6 +19,8 @@ import modelo.PersistenciaBatallas;
 import modelo.ManejadorLogros;
 
 // ME FALTAN LOS LOGROS Y EVITAR QUE SE GUARDEN MÁS DE 4 BATALLAS, PODER BORRAR BATALLAS
+// Me falta verificar por qué hay un error al guardar las batallas, parece que no se guarda correctamente el archivo
+// LÍNEA 215 Y 319 -> Cargar partida
 
 // NOTA: la idea es que en la vista cuando se quiera comprobar si un logro se ha desbloqueado, se llame:
 // agregarLogro(Logros logro, Entrenador entrenador);
@@ -200,7 +202,7 @@ public class Controlador implements PersistenciaBatallas {
         manejadorLogros.logroSecreto();
     }
 
-    // Métodos del historial de ataques obtener
+    // Métodos del historial de ataques obtenerHistorial
 
     public static  ArrayList<Ataque> getHistorialAtaques() {
         return (ArrayList<Ataque>)historialAtaques.obtenerHistorial();

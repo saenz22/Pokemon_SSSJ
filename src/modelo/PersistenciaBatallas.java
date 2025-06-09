@@ -23,4 +23,12 @@ public interface PersistenciaBatallas {
             return new ArrayList<>();
         }
     }
+
+    public static void borrarBatallas() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("batallas.ser"))) {
+            oos.writeObject(new ArrayList<Batalla>());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
