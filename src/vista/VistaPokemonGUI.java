@@ -174,7 +174,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         return panel;
     }
 
-    private JPanel showWelcomePanel(boolean isCargar) {
+    private JPanel showWelcomePanel(boolean isCargar, Pokemon atacante, Pokemon defensor, Entrenador ganador, boolean isWinner) {
           JPanel welcomePanel = new JPanel();
     welcomePanel.setLayout(null);
     welcomePanel.setBackground(new Color(10, 20, 48));
@@ -192,7 +192,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     primeraOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
     primeraOpcion.setBounds(50, 180, 200, 30);
 
-    JLabel continuarCargar = new JLabel(isCargar ? "Cargar Partida" : "Continuar Partida", JLabel.CENTER);
+    JLabel continuarCargar = new JLabel(isCargar ? "Cargar Partida" : "Continuar", JLabel.CENTER);
     continuarCargar.setFont(new Font("Monospaced", Font.BOLD, 20));
     continuarCargar.setBounds(10, 5, 200, 20);
     primeraOpcion.add(continuarCargar);
@@ -210,7 +210,15 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         if (isCargar) {
             switchToNextPanel(showCargarPartida());
         } else {
+          
+            if(currentPanel == 7){
+                switchToNextPanel(showSeventhPanel(atacante, defensor));
+            }
+            else if (currentPanel == 8){
+                switchToNextPanel(WinnerPanel(ganador, atacante, defensor, isWinner));
+            }
            
+        
         }
      
     });
@@ -223,7 +231,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     segundaOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
     segundaOpcion.setBounds(50, 230, 200, 30);
 
-    JLabel nuevaPartida = new JLabel("Nueva Partida", JLabel.CENTER);
+    JLabel nuevaPartida = new JLabel(isCargar ? "Nueva Partida" : "Hist. Atks", JLabel.CENTER);
     nuevaPartida.setFont(new Font("Monospaced", Font.BOLD, 20));
     nuevaPartida.setBounds(10, 5, 200, 20);
     segundaOpcion.add(nuevaPartida);
@@ -236,8 +244,14 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     boton2.setOpaque(false);
     boton2.addActionListener(e -> {
         
+        if(isCargar)
+        {
+            switchToNextPanel(showSecondPanel());
+        }
+        else{
+
+        }
         
-        switchToNextPanel(showSecondPanel());
     });
     segundaOpcion.add(boton2);
 
@@ -288,6 +302,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         
     });
     cuartaOpcion.add(boton4);
+
 
     // Añadir todos los paneles al panel principal
     welcomePanel.add(primeraOpcion);
@@ -485,7 +500,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     boton.setFocusPainted(false);
 
     boton.addActionListener(e -> {
-        switchToNextPanel(showWelcomePanel(true));
+        switchToNextPanel(showWelcomePanel(true, null, null, null, false));
     });
     
     logroPanel.add(boton);
@@ -545,7 +560,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
         // Agregar acción al botón
         boton.addActionListener(e -> {
-            switchToNextPanel(showWelcomePanel(true));
+            switchToNextPanel(showWelcomePanel(true, null, null, null, false));
                    });
         // Añadir el botón al panel de ranking
         rankingPanel.add(boton);
@@ -660,7 +675,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     @Override
     public void actionPerformed(ActionEvent e) {
         // Este método se ejecutará cuando el temporizador haya terminado (3 segundos)
-            switchToNextPanel(showWelcomePanel(true)); 
+            switchToNextPanel(showWelcomePanel(true, null, null, null, false)); 
              // Mostrar el segundo panel
         
         // Cambiar al siguiente panel
@@ -1134,19 +1149,33 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         layeredPane.add(labelFondo, Integer.valueOf(0));
 
         
-    ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    ImageIcon guardar = new ImageIcon(getClass().getResource("/vista/guardar.png"));
     
-    JButton boton = new JButton(configuracion);
-    boton.setBounds(530, 20, 30, 30);
-    boton.setBorderPainted(false);
-    boton.setContentAreaFilled(false);
-    boton.setFocusPainted(false);
+    JButton botonGuardar = new JButton(guardar);
+    botonGuardar.setBounds(505, 15, 30, 30);
+    botonGuardar.setBorderPainted(false);
+    botonGuardar.setContentAreaFilled(false);
+    botonGuardar.setFocusPainted(false);
 
-    boton.addActionListener(e -> {
-        switchToNextPanel(showWelcomePanel(false));
+    botonGuardar.addActionListener(e -> {
+      switchToNextPanel(showWelcomePanel(false, atacante, defensor, null, false));
     });
     
-    layeredPane.add(boton, Integer.valueOf(2));
+    layeredPane.add(botonGuardar, Integer.valueOf(2));
+
+        ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    
+    JButton botonConfiguracion = new JButton(configuracion);
+    botonConfiguracion.setBounds(540, 15, 30, 30);
+    botonConfiguracion.setBorderPainted(false);
+    botonConfiguracion.setContentAreaFilled(false);
+    botonConfiguracion.setFocusPainted(false);
+
+    botonConfiguracion.addActionListener(e -> {
+      switchToNextPanel(showWelcomePanel(false, atacante, defensor, null, false));
+    });
+    
+    layeredPane.add(botonConfiguracion, Integer.valueOf(2));
 
 
     
@@ -1333,19 +1362,34 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         labelFondo.setBounds(0, 0, 605, 327);
         layeredPane.add(labelFondo, Integer.valueOf(0));
 
-        ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    ImageIcon guardar = new ImageIcon(getClass().getResource("/vista/guardar.png"));
     
-    JButton boton = new JButton(configuracion);
-    boton.setBounds(530, 20, 30, 30);
-    boton.setBorderPainted(false);
-    boton.setContentAreaFilled(false);
-    boton.setFocusPainted(false);
+    JButton botonGuardar = new JButton(guardar);
+    botonGuardar.setBounds(505, 15, 30, 30);
+    botonGuardar.setBorderPainted(false);
+    botonGuardar.setContentAreaFilled(false);
+    botonGuardar.setFocusPainted(false);
 
-    boton.addActionListener(e -> {
-        switchToNextPanel(showWelcomePanel(false));
+    botonGuardar.addActionListener(e -> {
+      switchToNextPanel(showWelcomePanel(false, atacante, defensor, ganador, isWinner));
     });
     
-    layeredPane.add(boton, Integer.valueOf(2));
+    layeredPane.add(botonGuardar, Integer.valueOf(2));
+
+        ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    
+    JButton botonConfiguracion = new JButton(configuracion);
+    botonConfiguracion.setBounds(540, 15, 30, 30);
+    botonConfiguracion.setBorderPainted(false);
+    botonConfiguracion.setContentAreaFilled(false);
+    botonConfiguracion.setFocusPainted(false);
+
+    botonConfiguracion.addActionListener(e -> {
+        switchToNextPanel(showWelcomePanel(false, atacante, defensor, ganador, isWinner));
+    });
+    
+    layeredPane.add(botonConfiguracion, Integer.valueOf(2));
+
 
     
         // 3. Pokémon
