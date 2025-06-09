@@ -1,8 +1,11 @@
 package modelo;
 
-public class Ataque {
+import java.io.Serializable;
+
+public class Ataque implements Serializable {
 
     // Atributos
+    private static final long serialVersionUID = 1L; // Serialización para guardar ataques
     private String nombre;
     private float poder, stab;
     private TipoAtaque tipo;

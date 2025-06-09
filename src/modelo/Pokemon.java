@@ -11,6 +11,7 @@ import vista.VistaPokemonGUI;
 public class Pokemon extends SerVivo {
 
     // Inicializando atributos
+    private static final long serialVersionUID = 1L; // Serialización para guardar pokemons
     private TipoAtaquePokemon tipo;
     private ArrayList<Ataque> ataques = new ArrayList<>();
     private boolean vivo; // vivo se encanga de inhabilitar al Pokemon cuando hp=0
@@ -18,7 +19,7 @@ public class Pokemon extends SerVivo {
     private final float HPMAX;
     private byte velocidad, nivel;
     private short df, dfEs, atk, atkEs;
-    private ImageIcon imagen;
+    private transient ImageIcon imagen;
     
     // Getters y Setters
 

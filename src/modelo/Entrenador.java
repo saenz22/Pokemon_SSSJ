@@ -5,6 +5,7 @@ import java.util.List;
 public class Entrenador extends SerVivo {
 
     // Atributos
+    private static final long serialVersionUID = 1L; // Serialización para guardar entrenadores
     private byte victorias, derrotas, victoriasSeguidas, derrotasSeguidas;
     private ArrayList<Pokemon> equipo = new ArrayList<>();
     private ArrayList<Pokemon> equipoDerrotados = new ArrayList<>(); // Copia del equipo para restaurar después de una batalla

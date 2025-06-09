@@ -181,8 +181,8 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
     private JPanel showWelcomePanel(boolean isCargar, Pokemon atacante, Pokemon defensor, Entrenador ganador, boolean isWinner) {
           JPanel welcomePanel = new JPanel();
-    welcomePanel.setLayout(null);
-    welcomePanel.setBackground(new Color(10, 20, 48));
+        welcomePanel.setLayout(null);
+        welcomePanel.setBackground(new Color(10, 20, 48));
 
      
         
@@ -251,7 +251,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
             switchToNextPanel(showSecondPanel());
         }
         else{
-                mostrarHistorialAtaques(Controlador.getHistorialAtaques(), defensor);
+            mostrarHistorialAtaques(Controlador.getHistorialAtaques(), defensor);
         }
         
     });
@@ -299,7 +299,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     boton4.setBorderPainted(false);
     boton4.setFocusPainted(false);
     boton4.setOpaque(false);
-    boton4.addActionListener(e -> {
+    boton4.addActionListener(_ -> {
         switchToNextPanel(showRanking(Controlador.generarRanking()));
         
     });
@@ -316,18 +316,31 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     return welcomePanel;
     }
 
-    private JPanel showCargarPartida(ArrayList<Batalla> batallas) {
-            JPanel cargarPanel = new JPanel();
-    cargarPanel.setLayout(null);
-    cargarPanel.setBackground(new Color(10, 20, 48)); // fondo azul
+    private String[] manejoBatallas(ArrayList<Batalla> batallas) {
+        String[] mensajes = new String[]{"Ranura 1", "Ranura 2", "Ranura 3", "Ranura 4"};
 
-    // Medidas
-    int panelWidth = 280;
-    int panelHeight = 120;
-    int paddingX = 50;
-    int paddingY = 50;
-    int startX = 10;
-    int startY = 25;
+        if (!batallas.isEmpty()) {
+            for (int i = 0; i < batallas.size(); i++) {
+                Batalla batalla = batallas.get(i);
+                mensajes[i] = "Batalla " + (i + 1) + ": " + batalla.getEntrenador1().getNombre() + " vs " + batalla.getEntrenador2().getNombre();
+            }
+        }
+        return mensajes;
+    }
+
+    private JPanel showCargarPartida(ArrayList<Batalla> batallas) {
+        JPanel cargarPanel = new JPanel();
+        cargarPanel.setLayout(null);
+        cargarPanel.setBackground(new Color(10, 20, 48)); // fondo azul
+        String[] mensajes = manejoBatallas(batallas);
+
+        // Medidas
+        int panelWidth = 280;
+        int panelHeight = 120;
+        int paddingX = 50;
+        int paddingY = 50;
+        int startX = 10;
+        int startY = 25;
 
     // PRIMERA PARTIDA
     JPanel primeraPartida = new JPanel();
@@ -341,12 +354,16 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     titulo1.setBounds(15, 10, 200, 20);
     primeraPartida.add(titulo1);
 
-    JLabel jugador1 = new JLabel(batallas.get(0).getEntrenador1().getNombre() + " vs " + batallas.get(0).getEntrenador2().getNombre());
+    JLabel jugador1 = new JLabel(mensajes[0]);
     jugador1.setFont(new Font("Monospaced", Font.PLAIN, 16));
     jugador1.setBounds(15, 40, 250, 20);
     primeraPartida.add(jugador1);
 
     JButton boton1 = new JButton();
+    if (mensajes[0].equals("Ranura 1")) {
+        boton1.setEnabled(false); // Deshabilitar el botón si no hay partida
+        primeraPartida.setBackground(Color.LIGHT_GRAY); // Cambiar el color de fondo si no hay partida
+    }
     boton1.setBounds(0, 0, panelWidth, panelHeight);
     boton1.setContentAreaFilled(false);
     boton1.setBorderPainted(false);
@@ -371,12 +388,16 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     titulo2.setBounds(15, 10, 200, 20);
     segundaPartida.add(titulo2);
 
-    JLabel jugador2 = new JLabel(batallas.get(1).getEntrenador1().getNombre() + " vs " + batallas.get(1).getEntrenador2().getNombre());
+    JLabel jugador2 = new JLabel(mensajes[1]);
     jugador2.setFont(new Font("Monospaced", Font.PLAIN, 16));
     jugador2.setBounds(15, 40, 250, 20);
     segundaPartida.add(jugador2);
 
     JButton boton2 = new JButton();
+    if (mensajes[1].equals("Ranura 2")) {
+        boton2.setEnabled(false); // Deshabilitar el botón si no hay partida
+        segundaPartida.setBackground(Color.LIGHT_GRAY); // Cambiar el color de fondo si no hay partida
+    }
     boton2.setBounds(0, 0, panelWidth, panelHeight);
     boton2.setContentAreaFilled(false);
     boton2.setBorderPainted(false);
@@ -401,12 +422,16 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     titulo3.setBounds(15, 10, 200, 20);
     terceraPartida.add(titulo3);
 
-    JLabel jugador3 = new JLabel(batallas.get(2).getEntrenador1().getNombre() + " vs " + batallas.get(2).getEntrenador2().getNombre());
+    JLabel jugador3 = new JLabel(mensajes[2]);
     jugador3.setFont(new Font("Monospaced", Font.PLAIN, 16));
     jugador3.setBounds(15, 40, 250, 20);
     terceraPartida.add(jugador3);
 
     JButton boton3 = new JButton();
+    if (mensajes[2].equals("Ranura 3")) {
+        boton3.setEnabled(false); // Deshabilitar el botón si no hay partida
+        terceraPartida.setBackground(Color.LIGHT_GRAY); // Cambiar el color de fondo si no hay partida
+    }
     boton3.setBounds(0, 0, panelWidth, panelHeight);
     boton3.setContentAreaFilled(false);
     boton3.setBorderPainted(false);
@@ -431,12 +456,16 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     titulo4.setBounds(15, 10, 200, 20);
     cuartaPartida.add(titulo4);
 
-    JLabel jugador4 = new JLabel(batallas.get(3).getEntrenador1().getNombre() + " vs " + batallas.get(3).getEntrenador2().getNombre());
+    JLabel jugador4 = new JLabel(mensajes[3]);
     jugador4.setFont(new Font("Monospaced", Font.PLAIN, 16));
     jugador4.setBounds(15, 40, 250, 20);
     cuartaPartida.add(jugador4);
 
     JButton boton4 = new JButton();
+    if (mensajes[3].equals("Ranura 4")) {
+        boton4.setEnabled(false); // Deshabilitar el botón si no hay partida
+        cuartaPartida.setBackground(Color.LIGHT_GRAY); // Cambiar el color de fondo si no hay partida
+    }
     boton4.setBounds(0, 0, panelWidth, panelHeight);
     boton4.setContentAreaFilled(false);
     boton4.setBorderPainted(false);
@@ -1163,7 +1192,7 @@ for (int i = 0; i < ataques.size(); i++) {
         currentPanel = 7;
 
         JPanel panel = new JPanel();
-        panel.setLayout(null); // para que el LayeredPane funcione bien cargar
+        panel.setLayout(null); // para que el LayeredPane funcione bien controlador.cargarBatalla()
         panel.setPreferredSize(new java.awt.Dimension(605, 327));
 
         JLayeredPane layeredPane = new JLayeredPane();

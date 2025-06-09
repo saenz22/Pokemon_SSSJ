@@ -1,12 +1,14 @@
 package modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class Batalla {
+public class Batalla implements Serializable {
     
     // Objetos globales
+    private static final long serialVersionUID = 1L; // Serialización para guardar batallas
     static Random random = new Random(); // Generar aleatoriedad
     Entrenador e1, e2;
     ArrayList<Pokemon> disponibles1, disponibles2;

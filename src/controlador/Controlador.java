@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 
 import modelo.Batalla;
@@ -18,6 +19,10 @@ import modelo.Ataque;
 import modelo.PersistenciaBatallas;
 import modelo.ManejadorLogros;
 
+
+// Hay un error al continuar la batalla viniendo desde otras ventanas
+// Llamar método para reiniciar la partida al finalizar la batalla, en el último panel en la vista
+// Crear botón para borrar partidas guardadas en el panel cargar partida
 // ME FALTAN LOS LOGROS Y EVITAR QUE SE GUARDEN MÁS DE 4 BATALLAS, PODER BORRAR BATALLAS
 // Me falta verificar por qué hay un error al guardar las batallas, parece que no se guarda correctamente el archivo
 // LÍNEA 215 Y 319 -> Cargar partida
@@ -106,6 +111,13 @@ public class Controlador implements PersistenciaBatallas {
     public void setBatalla(Batalla batalla) {
         this.entrenador1 = batalla.getEntrenador1();
         this.entrenador2 = batalla.getEntrenador2();
+        // Restaurar imágenes luego de cargar
+        for (Pokemon pokemon : entrenador1.getEquipo()) {
+            pokemon.setImagen(); // asumimos que este método asigna la imagen correcta según el nombre
+        }
+        for (Pokemon pokemon : entrenador2.getEquipo()) {
+            pokemon.setImagen();
+        }
         this.escena = 6; // Cambiamos la escena a la de elegir pokemon
         actualizarEscena();
     }
@@ -121,6 +133,7 @@ public class Controlador implements PersistenciaBatallas {
                 break;
             case 2:
                 vista.pokemones();
+                manejadorLogros.agregarLogro(entrenador1);
                 break;
             case 3:
               if (vista.isError() == false){
@@ -131,6 +144,7 @@ public class Controlador implements PersistenciaBatallas {
                 break;
             case 4:
                 vista.pokemones();
+                manejadorLogros.agregarLogro(entrenador2);
                 break;
             case 5:
                if (vista.isError() == false){
@@ -165,16 +179,54 @@ public class Controlador implements PersistenciaBatallas {
 
     public void guardarBatalla() {
         ArrayList<Batalla> batallas = PersistenciaBatallas.cargar();
+        // Si la batalla ya existe, la sobreescribimos
+        for (Batalla b : batallas) {
+            if (esMismaBatalla(batalla, b)) {
+                batallas.remove(b);
+                break;
+            }
+        }
         batallas.add(batalla);
         PersistenciaBatallas.guardar(batallas);
     }
 
+        private boolean esMismaBatalla(Batalla b1, Batalla b2) {
+        Entrenador e1a = b1.getEntrenador1();
+        Entrenador e1b = b2.getEntrenador1();
+        Entrenador e2a = b1.getEntrenador2();
+        Entrenador e2b = b2.getEntrenador2();
+
+        return e1a.getNombre().equals(e1b.getNombre()) &&
+            e2a.getNombre().equals(e2b.getNombre()) &&
+            compararEquipos(e1a.getEquipo(), e1b.getEquipo()) &&
+            compararEquipos(e2a.getEquipo(), e2b.getEquipo());
+    }
+
+    private boolean compararEquipos(List<Pokemon> eq1, List<Pokemon> eq2) {
+        if (eq1.size() != eq2.size()) return false;
+        for (int i = 0; i < eq1.size(); i++) {
+            Pokemon p1 = eq1.get(i);
+            Pokemon p2 = eq2.get(i);
+            if (!p1.getNombre().equals(p2.getNombre()) ||
+                !p1.getTipo().equals(p2.getTipo())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public ArrayList<Batalla> cargarBatalla() {
         ArrayList<Batalla> batallas = PersistenciaBatallas.cargar();
-        //PersistenciaBatallas.guardar(batallas); Aseguramos que el archivo exista
+        PersistenciaBatallas.guardar(batallas); // Aseguramos que el archivo exista
         return batallas;
     }
 
+    public void borrarBatallas() {
+        // Borra el archivo de batallas
+        PersistenciaBatallas.borrarBatallas();
+    }
+
+    // Llamar este método al guardar una batalla en el último panel
     public void reiniciarPartida() {
         // Reinicia la partida, reseteando los entrenadores y pokemones
         entrenador1.restaurarEquipo();
@@ -182,8 +234,6 @@ public class Controlador implements PersistenciaBatallas {
         pokemon1 = null;
         pokemon2 = null;
         orden.clear();
-        escena = 0; // Volvemos a la escena de bienvenida
-        actualizarEscena();
     }
 
     // Métodos para ManejadorLogros
