@@ -1,6 +1,7 @@
 package vista;
 
 import controlador.Controlador;
+import modelo.Ataque;
 import modelo.Entrenador;
 import modelo.Pokemon;
 
@@ -18,5 +19,8 @@ public interface VistaPokemon {
    void setControlador(Controlador controlador);
    void continuar();
    void mostrarLogro(String nombre, String descripcion, String nombreEntrenador);
+   void mostrarHistorialAtaques(ArrayList<Ataque> ataques, Pokemon defensor);
+   void mostrarRanking(ArrayList<Entrenador> entrenadores);
+   void mostrarLogros(ArrayList<String> logros);
    boolean isError();
 }

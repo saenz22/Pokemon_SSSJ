@@ -256,4 +256,28 @@ public class VistaPokemonConsola implements VistaPokemon {
         System.out.println("Descripción: " + descripcion);
         limpiarConsola();
     }
+
+    @Override
+    public void mostrarHistorialAtaques(ArrayList<String> ataques) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarHistorialAtaques'");
+    }
+
+    @Override
+    public void mostrarRanking(ArrayList<Entrenador> entrenadores) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarRanking'");
+    }
+
+    @Override
+    public void mostrarLogros(ArrayList<String> logros) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarLogros'");
+    }
+
+    @Override
+    public void mostrarHistorialAtaques(ArrayList<Ataque> ataques, Pokemon defensor) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarHistorialAtaques'");
+    }
 }
