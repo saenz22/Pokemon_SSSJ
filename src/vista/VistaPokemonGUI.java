@@ -464,7 +464,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
     JButton boton4 = new JButton();
     if (mensajes[3].equals("Ranura 4")) {
-        boton4.setEnabled(false); // Deshabilitar el botón si no hay partida
+        boton4.setEnabled(false); // Deshabilitar el botón si no hay partida     winnerPanel
         cuartaPartida.setBackground(Color.LIGHT_GRAY); // Cambiar el color de fondo si no hay partida
     }
     boton4.setBounds(0, 0, panelWidth, panelHeight);
@@ -1453,7 +1453,7 @@ for (int i = 0; i < ataques.size(); i++) {
     
     layeredPane.add(botonGuardar, Integer.valueOf(2));
 
-        ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
     
     JButton botonConfiguracion = new JButton(configuracion);
     botonConfiguracion.setBounds(540, 15, 30, 30);

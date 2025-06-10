@@ -171,6 +171,7 @@ public class Controlador implements PersistenciaBatallas {
     }
 
     public void guardarBatalla() {
+        System.out.println("Guardando batalla");
         ArrayList<Batalla> batallas = PersistenciaBatallas.cargar();
         // Si la batalla ya existe, la sobreescribimos
         for (Batalla b : batallas) {
