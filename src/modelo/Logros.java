@@ -3,12 +3,6 @@ package modelo;
 import java.util.ArrayList;
 
 public enum Logros {
-
-    IMBATIDO("Imbatido", "Vence a tu rival sin perder ningún Pokémon") {
-        public boolean cumple(Entrenador entrenador) {
-            return entrenador.getEquipo().size() == 3;
-        }
-    },
     POKEMON_LEGENDARIO("Pokémon legendario", "Obtén un Pokémon con nivel 90 o superior") {
         public boolean cumple(Entrenador entrenador) {
             for (Pokemon pokemon : entrenador.getEquipo()) {
@@ -38,11 +32,6 @@ public enum Logros {
     ROCKET("Como en los viejos tiempos", "Únete al equipo Rocket siendo derrotado por tercera vez consecutiva") {
         public boolean cumple(Entrenador entrenador) {
             return entrenador.getDerrotasSeguidas() >= 3;
-        }
-    },
-    SECRETO("¡Atrápalos ya!", "Completa el juego al 100%") {
-        public boolean cumple(Entrenador entrenador) {
-            return true;
         }
     };
 

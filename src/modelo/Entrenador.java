@@ -84,12 +84,14 @@ public class Entrenador extends SerVivo {
         }
     }
 
-    public void desbloquearLogro(Logros logro, ManejadorLogros manejador) {
+    public boolean desbloquearLogro(Logros logro, ManejadorLogros manejador) {
         if (logro.cumple(this) && manejador.getLogrosDesbloqueados().get(logro) == null) {
             manejador.getLogrosDesbloqueados().put(logro, this); // Agrega el logro al mapa de logros desbloqueados
             if (logro == Logros.ROCKET) {
                 this.nombre = this.nombre + " Rocket"; // Cambia el nombre del entrenador si desbloquea el logro Rocket
             }
+            return true; // Devuelve true si se desbloquea el logro
         }
+        return false; // Devuelve false si no se cumple el logro
     }
 }

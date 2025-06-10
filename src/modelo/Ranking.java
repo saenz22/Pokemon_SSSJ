@@ -17,16 +17,11 @@ public class Ranking {
         return instancia;
     }
 
-    // Getter
-    public TreeSet<Entrenador> getGanadores() {
-        return ganadores;
-    }
-
-    public void generarRanking(ArrayList<Batalla> batallas) {
+    public TreeSet<Entrenador> generarRanking(ArrayList<Batalla> batallas) {
         // Limpiar el ranking actual
         if (batallas == null || batallas.isEmpty()) {
             ganadores.clear();
-            return;
+            return ganadores;
         }
         ganadores.clear();
         for (Batalla batalla : batallas) {
@@ -35,5 +30,6 @@ public class Ranking {
             ganadores.add(entrenador1);
             ganadores.add(entrenador2);
         }
+        return ganadores;
     }
 }

@@ -19,18 +19,9 @@ import modelo.Ataque;
 import modelo.PersistenciaBatallas;
 import modelo.ManejadorLogros;
 
-
-// Hay un error al continuar la batalla viniendo desde otras ventanas
-// Llamar método para reiniciar la partida al finalizar la batalla, en el último panel en la vista
-// Crear botón para borrar partidas guardadas en el panel cargar partida
-// ME FALTAN LOS LOGROS Y EVITAR QUE SE GUARDEN MÁS DE 4 BATALLAS, PODER BORRAR BATALLAS
-// Me falta verificar por qué hay un error al guardar las batallas, parece que no se guarda correctamente el archivo
-// LÍNEA 215 Y 319 -> Cargar partida
-
-// NOTA: la idea es que en la vista cuando se quiera comprobar si un logro se ha desbloqueado, se llame:
-// agregarLogro(Logros logro, Entrenador entrenador);
-// Y para mostrar los logros, desbloqueados o no según si tiene null o el entrenador que lo desbloqueó, se llame:
-// getLogrosDesbloqueados();
+// Falta ranking, cuadrar botones correctamente entre ventanas y corregir bugs del botón continuar
+// Falta implementar el método de reiniciar partida y el de borrar batallas (método controlador.borrarBatallas()) 
+// generarRanking
 
 public class Controlador implements PersistenciaBatallas {
 
@@ -57,8 +48,8 @@ public class Controlador implements PersistenciaBatallas {
        this.pokemon1 = null;
        this.pokemon2 = null;
        this.manejadorLogros = ManejadorLogros.instanciar(this);
-       this.historialAtaques = HistorialAtaques.instanciar();
-       this.ranking = Ranking.instanciar();
+       Controlador.historialAtaques = HistorialAtaques.instanciar();
+       Controlador.ranking = Ranking.instanciar();
        this.orden = new LinkedList<>();
        File archivoBatallas = new File("batallas.ser");
         if(!archivoBatallas.exists() || archivoBatallas.length() == 0) {
@@ -68,7 +59,7 @@ public class Controlador implements PersistenciaBatallas {
     }
 
     // Método para instanciar el controlador (Singleton)
-    // Este método asegura que solo haya una instancia del controlador en toda la aplicación   ordenBatalla
+    // Este método asegura que solo haya una instancia del controlador en toda la aplicación   vista.mostrarLogro
     public static Controlador instanciar(boolean esGui) {
         if (controlador == null) {
             controlador = new Controlador(esGui);
@@ -126,7 +117,6 @@ public class Controlador implements PersistenciaBatallas {
         switch(escena) {
             case 0:
                 vista.bienvenido();
-                ranking.generarRanking(PersistenciaBatallas.cargar());
                 break;
             case 1:
                 vista.entrenadores();
@@ -159,7 +149,10 @@ public class Controlador implements PersistenciaBatallas {
                 break;
         }        
     }
-
+// getter para el manejador de logros
+    public ManejadorLogros getManejadorLogros() {
+        return manejadorLogros;
+    }
     public void avanzarEscena() {
         // Este método será el que usará la vista para avanzar de escena
         escena++;
@@ -186,6 +179,11 @@ public class Controlador implements PersistenciaBatallas {
                 break;
             }
         }
+        if (batallas.size() == 4) {
+            // No es posible guardar más de 4 batallas
+            vista.mostrarLogro("", "No es posible guardar más de 4 batallas.", "");
+            return;
+        }
         batallas.add(batalla);
         PersistenciaBatallas.guardar(batallas);
     }
@@ -197,27 +195,12 @@ public class Controlador implements PersistenciaBatallas {
         Entrenador e2b = b2.getEntrenador2();
 
         return e1a.getNombre().equals(e1b.getNombre()) &&
-            e2a.getNombre().equals(e2b.getNombre()) &&
-            compararEquipos(e1a.getEquipo(), e1b.getEquipo()) &&
-            compararEquipos(e2a.getEquipo(), e2b.getEquipo());
-    }
-
-    private boolean compararEquipos(List<Pokemon> eq1, List<Pokemon> eq2) {
-        if (eq1.size() != eq2.size()) return false;
-        for (int i = 0; i < eq1.size(); i++) {
-            Pokemon p1 = eq1.get(i);
-            Pokemon p2 = eq2.get(i);
-            if (!p1.getNombre().equals(p2.getNombre()) ||
-                !p1.getTipo().equals(p2.getTipo())) {
-                return false;
-            }
-        }
-        return true;
+            e2a.getNombre().equals(e2b.getNombre());
     }
 
     public ArrayList<Batalla> cargarBatalla() {
         ArrayList<Batalla> batallas = PersistenciaBatallas.cargar();
-        PersistenciaBatallas.guardar(batallas); // Aseguramos que el archivo exista
+        PersistenciaBatallas.guardar(batallas); // Aseguramos que el archivo exista  guardarAtaque
         return batallas;
     }
 
@@ -229,8 +212,12 @@ public class Controlador implements PersistenciaBatallas {
     // Llamar este método al guardar una batalla en el último panel
     public void reiniciarPartida() {
         // Reinicia la partida, reseteando los entrenadores y pokemones
-        entrenador1.restaurarEquipo();
-        entrenador2.restaurarEquipo();
+        if (entrenador1 != null) {
+            entrenador1.restaurarEquipo();
+        }
+        if (entrenador2 != null) {
+            entrenador2.restaurarEquipo();
+        }
         pokemon1 = null;
         pokemon2 = null;
         orden.clear();
@@ -248,11 +235,7 @@ public class Controlador implements PersistenciaBatallas {
         manejadorLogros.agregarLogro(entrenador);
     }
 
-    public void logroSecreto() {
-        manejadorLogros.logroSecreto();
-    }
-
-    // Métodos del historial de ataques obtenerHistorial
+    // Métodos del historial de ataques obtenerHistorial linea 1540
 
     public static  ArrayList<Ataque> getHistorialAtaques() {
         return (ArrayList<Ataque>)historialAtaques.obtenerHistorial();
@@ -264,7 +247,11 @@ public class Controlador implements PersistenciaBatallas {
     // Métodos del ranking
     
     public static TreeSet<Entrenador> generarRanking() {
-        TreeSet<Entrenador> listaGanadores = ranking.getGanadores();
+        TreeSet<Entrenador> listaGanadores = ranking.generarRanking(PersistenciaBatallas.cargar());
+        System.out.println("Viendo el ranking: ");
+        for (Entrenador ganador : listaGanadores) {
+            System.out.println("Ganador: " + ganador.getNombre());
+        }
         return listaGanadores;
     }
 
@@ -290,15 +277,21 @@ public class Controlador implements PersistenciaBatallas {
             vista.ganador(entrenador1);  
             entrenador1.aumentarVictorias();
             entrenador2.aumentarDerrotas();
+            this.reiniciarPartida();
+            this.guardarBatalla();
+            System.out.println("El ganador es: " + entrenador1.getNombre() + " con " + entrenador1.getVictorias() + " victorias y " + entrenador1.getDerrotas() + " derrotas.");
+            manejadorLogros.agregarLogro(entrenador1);
             // Restaurar el equipo de ambos entrenadores
-            ranking.generarRanking(PersistenciaBatallas.cargar());
             break;
         case 2:
             vista.ganador(entrenador2);
             entrenador2.aumentarVictorias();
             entrenador1.aumentarDerrotas();
+            this.reiniciarPartida();
+            this.guardarBatalla();
+            manejadorLogros.agregarLogro(entrenador2);
+            System.out.println("El ganador es: " + entrenador2.getNombre() + " con " + entrenador2.getVictorias() + " victorias y " + entrenador2.getDerrotas() + " derrotas.");
             // Restaurar el equipo de ambos entrenadores
-            ranking.generarRanking(PersistenciaBatallas.cargar());
             break;
         }
     }

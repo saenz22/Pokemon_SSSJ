@@ -28,12 +28,11 @@ public class ManejadorLogros {
     }
 
     static {
-        logrosDesbloqueados.put(listaLogros.get(0), null); // IMBATIDO
-        logrosDesbloqueados.put(listaLogros.get(1), null); // POKEMON_LEGENDARIO
-        logrosDesbloqueados.put(listaLogros.get(2), null); // PELOS
-        logrosDesbloqueados.put(listaLogros.get(3), null); // MAESTRO_POKEMON
-        logrosDesbloqueados.put(listaLogros.get(4), null); // YO_TE_ELIJO
-        logrosDesbloqueados.put(listaLogros.get(5), null); // ROCKET
+        logrosDesbloqueados.put(listaLogros.get(0), null); // POKEMON_LEGENDARIO
+        logrosDesbloqueados.put(listaLogros.get(1), null); // PELOS
+        logrosDesbloqueados.put(listaLogros.get(2), null); // MAESTRO_POKEMON
+        logrosDesbloqueados.put(listaLogros.get(3), null); // YO_TE_ELIJO
+        logrosDesbloqueados.put(listaLogros.get(4), null); // ROCKET
     }
 
     public Map<Logros, Entrenador> getLogrosDesbloqueados() {
@@ -42,8 +41,9 @@ public class ManejadorLogros {
 
     public void agregarLogro(Entrenador entrenador) {
         for (Logros logro : listaLogros) {
-            entrenador.desbloquearLogro(logro, this);
-            controlador.notificarLogro(logro.getNombre(), logro.getDescripcion(), entrenador.getNombre());
+            if (entrenador.desbloquearLogro(logro, this)) {   
+                controlador.notificarLogro(logro.getNombre(), logro.getDescripcion(), entrenador.getNombre());
+            }
         }
     }
 

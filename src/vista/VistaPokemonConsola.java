@@ -8,7 +8,7 @@ import modelo.Pokemon;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.NoSuchElementException;
-
+// mostrarHistorialAtaques
 public class VistaPokemonConsola implements VistaPokemon {
     private Scanner scanner;
     private String nombre1, nombre2, pokemon1, pokemon2, pokemon3;
@@ -255,12 +255,6 @@ public class VistaPokemonConsola implements VistaPokemon {
         System.out.println("Logro Desbloqueado: " + nombre);
         System.out.println("Descripción: " + descripcion);
         limpiarConsola();
-    }
-
-    @Override
-    public void mostrarHistorialAtaques(ArrayList<String> ataques) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mostrarHistorialAtaques'");
     }
 
     @Override

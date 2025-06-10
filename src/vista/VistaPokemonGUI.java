@@ -4,6 +4,7 @@ import controlador.Controlador;
 import modelo.Ataque;
 import modelo.Batalla;
 import modelo.Entrenador;
+import modelo.Logros;
 import modelo.Pokemon;
 import modelo.TipoAtaquePokemon;
 
@@ -494,23 +495,25 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     boton.setContentAreaFilled(false);
     boton.setFocusPainted(false);
 
-    boton.addActionListener(e -> {
+    boton.addActionListener(_ -> {
         switchToNextPanel(showWelcomePanel(true, null, null, null, false));
     });
     
     logroPanel.add(boton);
 
-    String[] columnas = {"ENTRENADOR", "LOGRO 1", "LOGRO 2", "LOGRO 3"};
-    Object[][] datos = {
-        {"Zhecare", "✔ ", "✔ ", "✖ "},
-        {"Ash", "✔ ", "✖ ", "✖ "},
-        {"Misty", "✔ ", "✔ ", "✔ "},
-        {"Brock", "✖ ", "✔ ", "✖ "},
-        {"Gary", "✖ ", "✖ ", "✖ "},
-        {"May", "✔ ", "✖ ", "✔ "},
-        {"Dawn", "✔ ", "✔ ", "✖ "},
-        {"Tracey", "✔ ", "✖ ", "✔ "}
-    };
+    String[] columnas = {"Nombre", "Descripción","Conseguido:"};
+    Object[][] datos = new Object[Logros.values().length][3];
+    for (int i = 0; i < Logros.values().length; i++) {
+        Logros logro = Logros.values()[i];
+        datos[i][0] = logro.getNombre();
+        datos[i][1] = logro.getDescripcion();
+        // Verificar si el logro ha sido desbloqueado
+        if (controlador.getManejadorLogros().getLogrosDesbloqueados().get(logro) != null) {
+            datos[i][2] = "✓";
+        } else {
+            datos[i][2] = "✗";
+        }
+    }
 
     JTable tabla = new JTable(datos, columnas);
     tabla.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -543,6 +546,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         rankingPanel.setLayout(null);
         rankingPanel.setBackground(new Color(10, 20, 48));
         ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+        //Controlador.actualizarRanking(controlador.cargarBatalla());
 
         // Crear el botón con la imagen
         JButton boton = new JButton(configuracion);
@@ -554,24 +558,24 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         boton.setFocusPainted(false);
 
         // Agregar acción al botón
-        boton.addActionListener(e -> {
+        boton.addActionListener(_ -> {
             switchToNextPanel(showWelcomePanel(true, null, null, null, false));
                    });
         // Añadir el botón al panel de ranking
         rankingPanel.add(boton);
 
          String[] columnas = {"PUESTO", "ENTRENADOR", "#VICTORIAS", "#DERROTAS"};
-   Object[][] datos = new Object[entrenadores.size()][2];
+        Object[][] datos = new Object[entrenadores.size()][4];
 
-   int contador_puesto = 0;
-for (Entrenador entrenador : entrenadores) {
-    
-    datos[contador_puesto][0] = contador_puesto + 1; // PUESTO
-    datos[contador_puesto][1] = entrenador; // Muestra el daño infligido
-    datos[contador_puesto][2] = entrenador.getVictorias(); // Número de victorias
-    datos[contador_puesto][3] = entrenador.getDerrotas(); // Número de derrotas
-    contador_puesto++;
-}
+        System.out.println("Entrenadores: " + entrenadores);
+        for (int i = 0; i < entrenadores.size(); i++) {
+            Entrenador entrenador = entrenadores.toArray(new Entrenador[0])[i];
+            datos[i][0] = i + 1; // PUESTO
+            datos[i][1] = entrenador.getNombre(); // Muestra el nombre del entrenador
+            datos[i][2] = entrenador.getVictorias(); // Número de victorias
+            datos[i][3] = entrenador.getDerrotas(); // Número de derrotas
+            System.out.println("Entrenador: " + entrenador.getNombre() + ", Victorias: " + entrenador.getVictorias() + ", Derrotas: " + entrenador.getDerrotas());
+        }
 
     JTable tabla = new JTable(datos, columnas);
     tabla.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -600,11 +604,11 @@ for (Entrenador entrenador : entrenadores) {
 
     rankingPanel.add(scroll);
 
-       return rankingPanel; // Usamos 'this' para añadir el panel de logros   guardar
+       return rankingPanel; // Usamos 'this' para añadir el panel de logros   ranking
     }
 
     private JPanel historialAtaques(ArrayList<Ataque> ataques, Pokemon defensor) {
-         JPanel rankingPanel = new JPanel();
+        JPanel rankingPanel = new JPanel();
         rankingPanel.setLayout(null);
         rankingPanel.setBackground(new Color(10, 20, 48));
         ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
@@ -626,13 +630,22 @@ for (Entrenador entrenador : entrenadores) {
         rankingPanel.add(boton);
 
         String[] columnas = {"Nombre del Ataque", "Daño"};
+
 Object[][] datos = new Object[ataques.size()][2];
 
 for (int i = 0; i < ataques.size(); i++) {
     Ataque atk = ataques.get(i);
     datos[i][0] = atk.getNombre();
-    datos[i][1] = defensor.getHPMAX() - defensor.getHp() ; // Muestra el daño infligido
+    datos[i][1] = atk.getTipo() + " / " + atk.getPoder(); // Muestra el daño infligido
 }
+
+// mostrar tabla en sout
+
+    System.out.println("Datos de la tabla:");
+    for (Object[] fila : datos) {
+        System.out.println("Ataque: " + fila[0] + ", Daño: " + fila[1]);
+    }
+
 
     JTable tabla = new JTable(datos, columnas);
     tabla.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -1192,7 +1205,7 @@ for (int i = 0; i < ataques.size(); i++) {
         currentPanel = 7;
 
         JPanel panel = new JPanel();
-        panel.setLayout(null); // para que el LayeredPane funcione bien controlador.cargarBatalla()
+        panel.setLayout(null); // para que el LayeredPane funcione bien controlador.cargarBatalla()  ordenarContrincantes
         panel.setPreferredSize(new java.awt.Dimension(605, 327));
 
         JLayeredPane layeredPane = new JLayeredPane();
@@ -1229,13 +1242,11 @@ for (int i = 0; i < ataques.size(); i++) {
     botonConfiguracion.setContentAreaFilled(false);
     botonConfiguracion.setFocusPainted(false);
 
-    botonConfiguracion.addActionListener(e -> {
+    botonConfiguracion.addActionListener(_ -> {
       switchToNextPanel(showWelcomePanel(false, atacante, defensor, null, false));
     });
     
     layeredPane.add(botonConfiguracion, Integer.valueOf(2));
-
-
     
         // 3. Pokémon
         ImageIcon jugador2 = ICONOS_TIPO_ATACANTE.get(atacante.getTipo());
@@ -1336,8 +1347,10 @@ for (int i = 0; i < ataques.size(); i++) {
                 controlador.agregarAtaqueHistorial(atacante.getAtaques().get(1));
                 // Aquí puedes manejar la acción del botón 2
                 controlador.atacar(atacante.getAtaques().get(1));
-                if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
+                if (controlador.getOrden() != null) {
+                    if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
                     switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                    }
                 }
             }
         });
@@ -1353,8 +1366,10 @@ for (int i = 0; i < ataques.size(); i++) {
                 controlador.agregarAtaqueHistorial(atacante.getAtaques().get(2));
                 // Aquí puedes manejar la acción del botón 3
                 controlador.atacar(atacante.getAtaques().get(2));
-                if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
-                   switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                if (controlador.getOrden() != null) {
+                    if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
+                    switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                    }
                 }
             }
         });
@@ -1370,8 +1385,10 @@ for (int i = 0; i < ataques.size(); i++) {
                 // Aquí puedes manejar la acción del botón 4
                 controlador.agregarAtaqueHistorial(atacante.getAtaques().get(3));
                 controlador.atacar(atacante.getAtaques().get(3));
-                if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
-                   switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                if (controlador.getOrden() != null) {
+                    if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
+                    switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                    }
                 }
             }
         });
@@ -1415,8 +1432,6 @@ for (int i = 0; i < ataques.size(); i++) {
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, 605, 327);
 
-        
-
         // 1. Fondo
         ImageIcon fondoBatalla = new ImageIcon(getClass().getResource("/vista/fondo.png"));
         Image imagenFondo = fondoBatalla.getImage().getScaledInstance(605, 327, Image.SCALE_SMOOTH);
@@ -1432,7 +1447,7 @@ for (int i = 0; i < ataques.size(); i++) {
     botonGuardar.setContentAreaFilled(false);
     botonGuardar.setFocusPainted(false);
 
-    botonGuardar.addActionListener(e -> {
+    botonGuardar.addActionListener(_ -> {
       switchToNextPanel(showWelcomePanel(false, atacante, defensor, ganador, isWinner));
     });
     
@@ -1446,7 +1461,7 @@ for (int i = 0; i < ataques.size(); i++) {
     botonConfiguracion.setContentAreaFilled(false);
     botonConfiguracion.setFocusPainted(false);
 
-    botonConfiguracion.addActionListener(e -> {
+    botonConfiguracion.addActionListener(_ -> {
         switchToNextPanel(showWelcomePanel(false, atacante, defensor, ganador, isWinner));
     });
     
@@ -1603,7 +1618,7 @@ for (int i = 0; i < ataques.size(); i++) {
             switchToNextPanel(showFourthPanel());
         }
     }
-    
+    // Object[][]
     public void pokemones() {
         pokemon1 =  poke1Field.getText();
         pokemon2 =  poke2Field.getText();
@@ -1727,7 +1742,7 @@ for (int i = 0; i < ataques.size(); i++) {
 
     @Override
     public void mostrarRanking(ArrayList<Entrenador> entrenadores) {
-        // TODO Auto-generated method stub
+        // TODO Auto-generated method stub # derrotas
         throw new UnsupportedOperationException("Unimplemented method 'mostrarRanking'");
     }
 
