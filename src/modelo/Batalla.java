@@ -36,7 +36,6 @@ public class Batalla implements Serializable {
             // Verificar el pokemon de quién perdió
             if (disponibles1.contains(atacado)) {
                 disponibles1.remove(atacado);
-                e1.agregarDerrotado(atacado); // Agregar a la lista de derrotados del entrenador 1
                 if (disponibles1.isEmpty()) {
                     System.out.println("El entrenador " + e2.getNombre() + " ha ganado la batalla");
                     return 2; // el ganador es el entrenador 2
@@ -48,7 +47,6 @@ public class Batalla implements Serializable {
             }
             else if (disponibles2.contains(atacado)) {
                 disponibles2.remove(atacado);
-                e2.agregarDerrotado(atacado); // Agregar a la lista de derrotados del entrenador 2
                 System.out.println("El pokemon " + atacado.getNombre() + " ha sido derrotado");
                 if (disponibles2.isEmpty()) {
                     return 1; // El ganador es el entrenador 1

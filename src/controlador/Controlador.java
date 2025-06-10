@@ -7,21 +7,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
 
 import modelo.Batalla;
 import modelo.Entrenador;
 import modelo.HistorialAtaques;
-import modelo.Ranking;
 import modelo.Pokemon;
 import modelo.Ataque;
 import modelo.PersistenciaBatallas;
 import modelo.ManejadorLogros;
 
-// Falta ranking, cuadrar botones correctamente entre ventanas y corregir bugs del botón continuar
-// Falta implementar el método de reiniciar partida y el de borrar batallas (método controlador.borrarBatallas()) 
-// generarRanking
+// Falta implementar el método de borrar batallas (método controlador.borrarBatallas()) 
 
 public class Controlador implements PersistenciaBatallas {
 
@@ -30,7 +25,6 @@ public class Controlador implements PersistenciaBatallas {
     private VistaPokemon vista;
     private ManejadorLogros manejadorLogros;
     private static HistorialAtaques historialAtaques;
-    private static Ranking ranking;
     private Batalla batalla;
     private Entrenador entrenador1, entrenador2;
     private Pokemon pokemon1, pokemon2;
@@ -49,7 +43,6 @@ public class Controlador implements PersistenciaBatallas {
        this.pokemon2 = null;
        this.manejadorLogros = ManejadorLogros.instanciar(this);
        Controlador.historialAtaques = HistorialAtaques.instanciar();
-       Controlador.ranking = Ranking.instanciar();
        this.orden = new LinkedList<>();
        File archivoBatallas = new File("batallas.ser");
         if(!archivoBatallas.exists() || archivoBatallas.length() == 0) {
@@ -210,18 +203,10 @@ public class Controlador implements PersistenciaBatallas {
         PersistenciaBatallas.borrarBatallas();
     }
 
-    // Llamar este método al guardar una batalla en el último panel
-    public void reiniciarPartida() {
-        // Reinicia la partida, reseteando los entrenadores y pokemones
-        if (entrenador1 != null) {
-            entrenador1.restaurarEquipo();
-        }
-        if (entrenador2 != null) {
-            entrenador2.restaurarEquipo();
-        }
-        pokemon1 = null;
-        pokemon2 = null;
-        orden.clear();
+    public void borrarBatalla() {
+        ArrayList<Batalla> batallas = cargarBatalla();
+        batallas.remove(batalla);
+        PersistenciaBatallas.guardar(batallas);
     }
 
     // Métodos para ManejadorLogros
@@ -245,17 +230,6 @@ public class Controlador implements PersistenciaBatallas {
         historialAtaques.guardarAtaque(descripcionAtaque);
     }
 
-    // Métodos del ranking
-    
-    public static TreeSet<Entrenador> generarRanking() {
-        TreeSet<Entrenador> listaGanadores = ranking.generarRanking(PersistenciaBatallas.cargar());
-        System.out.println("Viendo el ranking: ");
-        for (Entrenador ganador : listaGanadores) {
-            System.out.println("Ganador: " + ganador.getNombre());
-        }
-        return listaGanadores;
-    }
-
     public void iniciarCombate(byte estadoCombate) {
         switch(estadoCombate) {
         case -2:
@@ -276,23 +250,12 @@ public class Controlador implements PersistenciaBatallas {
             break;
         case 1:
             vista.ganador(entrenador1);  
-            entrenador1.aumentarVictorias();
-            entrenador2.aumentarDerrotas();
-            this.reiniciarPartida();
-            this.guardarBatalla();
-            System.out.println("El ganador es: " + entrenador1.getNombre() + " con " + entrenador1.getVictorias() + " victorias y " + entrenador1.getDerrotas() + " derrotas.");
             manejadorLogros.agregarLogro(entrenador1);
             // Restaurar el equipo de ambos entrenadores
             break;
         case 2:
             vista.ganador(entrenador2);
-            entrenador2.aumentarVictorias();
-            entrenador1.aumentarDerrotas();
-            this.reiniciarPartida();
-            this.guardarBatalla();
             manejadorLogros.agregarLogro(entrenador2);
-            System.out.println("El ganador es: " + entrenador2.getNombre() + " con " + entrenador2.getVictorias() + " victorias y " + entrenador2.getDerrotas() + " derrotas.");
-            // Restaurar el equipo de ambos entrenadores
             break;
         }
     }

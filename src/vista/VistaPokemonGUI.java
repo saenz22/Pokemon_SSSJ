@@ -1533,7 +1533,7 @@ for (int i = 0; i < ataques.size(); i++) {
 
 
     // 6. Panel de opciones de ataque
-    // Panel de comandos personalizado (capa 2) mostrarPokemon
+    // Panel de comandos personalizado (capa 2) mostrarPokemon       ranking
     JPanel comandos = new JPanel();
     comandos.setLayout(new GridLayout(2, 2, 10, 10));
     comandos.setBounds(8, 190, 400, 100);
@@ -1549,6 +1549,9 @@ for (int i = 0; i < ataques.size(); i++) {
     if (isWinner) {
      ganadorLabel = new JLabel("¡" + ganador.getNombre() + " ha ganado !");
      ganadorLabel2 = new JLabel("el combate!");
+     controlador.getListaEntrenadores().get(0).restaurarEquipo();
+     controlador.getListaEntrenadores().get(1).restaurarEquipo();
+     controlador.guardarBatalla();
     }
     else{
     ganadorLabel = new JLabel("¡" + atacante.getNombre() + " ha hecho");
@@ -1739,12 +1742,7 @@ for (int i = 0; i < ataques.size(); i++) {
        
     }
 
-
-    @Override
-    public void mostrarRanking(ArrayList<Entrenador> entrenadores) {
-        // TODO Auto-generated method stub # derrotas
-        throw new UnsupportedOperationException("Unimplemented method 'mostrarRanking'");
-    }
+    // ranking
 
 
     @Override

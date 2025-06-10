@@ -8,7 +8,6 @@ public class Entrenador extends SerVivo {
     private static final long serialVersionUID = 1L; // Serialización para guardar entrenadores
     private byte victorias, derrotas, victoriasSeguidas, derrotasSeguidas;
     private ArrayList<Pokemon> equipo = new ArrayList<>();
-    private ArrayList<Pokemon> equipoDerrotados = new ArrayList<>(); // Copia del equipo para restaurar después de una batalla
 
     // Constructor
     public Entrenador(String nombre) {
@@ -52,18 +51,6 @@ public class Entrenador extends SerVivo {
         this.derrotas +=1;
         this.derrotasSeguidas += 1; // Aumenta las derrotas seguidas
         this.victoriasSeguidas = 0; // Reinicia las victorias seguidas
-    }
-
-    public void restaurarEquipo() {
-        this.equipo = new ArrayList<>(equipoDerrotados); // Restaura el equipo derrotado
-        this.equipoDerrotados.clear(); // Limpia la lista de derrotados
-        for (Pokemon pokemon : equipo) {
-            pokemon.revivir(); // Restaura cada Pokemon del equipo
-        }
-    }
-
-    public void agregarDerrotado(Pokemon pokemon) {
-        this.equipoDerrotados.add(pokemon); // Agrega el pokemon derrotado al equipo de derrotados
     }
 
     //Factory method para capturar un entrenador por consola sin necesidad de instanciar un objeto con new

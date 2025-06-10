@@ -20,7 +20,6 @@ public interface VistaPokemon {
    void continuar();
    void mostrarLogro(String nombre, String descripcion, String nombreEntrenador);
    void mostrarHistorialAtaques(ArrayList<Ataque> ataques, Pokemon defensor);
-   void mostrarRanking(ArrayList<Entrenador> entrenadores);
    void mostrarLogros(ArrayList<String> logros);
    boolean isError();
 }

@@ -46,13 +46,4 @@ public class ManejadorLogros {
             }
         }
     }
-
-    public void logroSecreto() {
-        // Método para desbloquear el logro secreto
-        for (Entrenador entrenadorLogro : logrosDesbloqueados.values()) {
-            if (entrenadorLogro != null) {
-                controlador.notificarLogro(Logros.SECRETO.getNombre(), Logros.SECRETO.getDescripcion(), "Ash");
-            }
-        }
-    }
 }
