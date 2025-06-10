@@ -205,7 +205,9 @@ public class Controlador implements PersistenciaBatallas {
 
     public void borrarBatalla() {
         ArrayList<Batalla> batallas = cargarBatalla();
-        batallas.remove(batalla);
+        if (batallas.contains(batalla)) {
+            batallas.remove(batalla);
+        }
         PersistenciaBatallas.guardar(batallas);
     }
 
