@@ -186,7 +186,7 @@ public class Pokemon extends SerVivo {
     }
 
     /**
-     * Verifica si un ataque ya fue seleccionado. Su objetivo es evitar repeticiones
+     * Verifica si un ataque ya fue seleccionado. Usado para evitar ataques duplicados.
      * @param nombreAtk Nombre del ataque.
      * @param ataques Lista de ataques ya elegidos.
      * @return true si ya fue elegido, false en caso contrario.
