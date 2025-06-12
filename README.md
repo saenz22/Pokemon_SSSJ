@@ -1,4 +1,4 @@
-# 🎮 Pokémon Battle Simulator MVC
+# 🎮 Pokémon Battle Simulator MVC Versión final
 
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
 ![GitHub](https://img.shields.io/badge/Git%20&%20GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
@@ -47,8 +47,8 @@ Este proyecto tiene como objetivo la creación de una GUI en Java para simular c
 
 - Samuel Agudelo Sosa - Código: 202459419
 - Sebastián Saenz Mejia - Código: 202459528
-- Samuel Romero Martinez - Código: 202459464(Temporalmente inmovilizado el brazo derecho)
-- José Manuel Castaño Rojas - Código 202459522(Acordado)
+- Samuel Romero Martinez - Código: 202459464
+- José Manuel Castaño Rojas - Código 202459522
 
 ---
 

@@ -1,19 +1,26 @@
 package vista;
 
 import controlador.Controlador;
+import modelo.Ataque;
+import modelo.Batalla;
 import modelo.Entrenador;
+import modelo.Logros;
 import modelo.Pokemon;
 import modelo.TipoAtaquePokemon;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
+import java.util.ResourceBundle.Control;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -21,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -31,7 +39,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.lang.reflect.Array;
+
 import javax.swing.Timer;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+
+import org.w3c.dom.events.MouseEvent;
 
 
 public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListener, VistaPokemon { // Implementamos ActionListener
@@ -165,6 +180,503 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         return panel;
     }
 
+    private JPanel showWelcomePanel(boolean isCargar, Pokemon atacante, Pokemon defensor, Entrenador ganador, boolean isWinner) {
+          JPanel welcomePanel = new JPanel();
+        welcomePanel.setLayout(null);
+        welcomePanel.setBackground(new Color(10, 20, 48));
+
+     
+        
+        JLabel labelTitulo = new JLabel(new ImageIcon(getClass().getResource("/vista/titulo.png")));
+        labelTitulo.setBounds(35,-70,500, 300);
+        welcomePanel.add(labelTitulo);
+
+    // Panel 1 - Cargar o Continuar
+    JPanel primeraOpcion = new JPanel();
+    primeraOpcion.setLayout(null);
+    primeraOpcion.setBackground(Color.WHITE);
+    primeraOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    primeraOpcion.setBounds(50, 180, 200, 30);
+
+    JLabel continuarCargar = new JLabel(isCargar ? "Cargar Partida" : "Continuar", JLabel.CENTER);
+    continuarCargar.setFont(new Font("Monospaced", Font.BOLD, 20));
+    continuarCargar.setBounds(10, 5, 200, 20);
+    primeraOpcion.add(continuarCargar);
+
+    JButton boton1 = new JButton();
+    boton1.setBounds(0, 0, 200, 30);
+    boton1.setContentAreaFilled(false);
+    boton1.setBorderPainted(false);
+    boton1.setFocusPainted(false);
+    boton1.setOpaque(false);
+    // Ejemplo: ocultar tras click
+    boton1.addActionListener(_ -> {
+        if (isCargar) {
+            ArrayList<Batalla> batallas = controlador.cargarBatalla();
+            switchToNextPanel(showCargarPartida(batallas));
+        } else {
+          
+            if(currentPanel == 7){
+                switchToNextPanel(showSeventhPanel(atacante, defensor));
+            }
+            else if (currentPanel == 8){
+                switchToNextPanel(WinnerPanel(ganador, atacante, defensor, isWinner));
+            }
+        }
+     
+    });
+    primeraOpcion.add(boton1);
+
+    // Panel 2 - Nueva Partida
+    JPanel segundaOpcion = new JPanel();
+    segundaOpcion.setLayout(null);
+    segundaOpcion.setBackground(Color.WHITE);
+    segundaOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    segundaOpcion.setBounds(50, 230, 200, 30);
+
+    JLabel nuevaPartida = new JLabel(isCargar ? "Nueva Partida" : "Hist. Atks", JLabel.CENTER);
+    nuevaPartida.setFont(new Font("Monospaced", Font.BOLD, 20));
+    nuevaPartida.setBounds(10, 5, 200, 20);
+    segundaOpcion.add(nuevaPartida);
+
+    JButton boton2 = new JButton();
+    boton2.setBounds(0, 0, 200, 30);
+    boton2.setContentAreaFilled(false);
+    boton2.setBorderPainted(false);
+    boton2.setFocusPainted(false);
+    boton2.setOpaque(false);
+    boton2.addActionListener(_ -> {
+        
+        if(isCargar)
+        {
+            switchToNextPanel(showSecondPanel());
+        }
+        else{
+            mostrarHistorialAtaques(Controlador.getHistorialAtaques(), defensor);
+        }
+        
+    });
+    segundaOpcion.add(boton2);
+
+    // Panel 3 - Logros
+    JPanel terceraOpcion = new JPanel();
+    terceraOpcion.setLayout(null);
+    terceraOpcion.setBackground(Color.WHITE);
+    terceraOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    terceraOpcion.setBounds(350, 180, 200, 30);
+
+    JLabel logrosLabel = new JLabel("Logros", JLabel.CENTER);
+    logrosLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
+    logrosLabel.setBounds(10, 5, 200, 20);
+    terceraOpcion.add(logrosLabel);
+
+    JButton boton3 = new JButton();
+    boton3.setBounds(0, 0, 200, 30);
+    boton3.setContentAreaFilled(false);
+    boton3.setBorderPainted(false);
+    boton3.setFocusPainted(false);
+    boton3.setOpaque(false);
+    boton3.addActionListener(e -> {
+        switchToNextPanel(showLogros());
+        
+    });
+    terceraOpcion.add(boton3);
+
+    // Panel 4 - Ranking
+    JPanel cuartaOpcion = new JPanel();
+    cuartaOpcion.setLayout(null);
+    cuartaOpcion.setBackground(Color.WHITE);
+    cuartaOpcion.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 3));
+    cuartaOpcion.setBounds(350,230, 200, 30);
+
+    JLabel ranking = new JLabel("Ranking", JLabel.CENTER);
+    ranking.setFont(new Font("Monospaced", Font.BOLD, 20));
+    ranking.setBounds(10, 5, 200, 20);
+    cuartaOpcion.add(ranking);
+
+    JButton boton4 = new JButton();
+    boton4.setBounds(0, 0, 200, 30);
+    boton4.setContentAreaFilled(false);
+    boton4.setBorderPainted(false);
+    boton4.setFocusPainted(false);
+    boton4.setOpaque(false);
+    boton4.addActionListener(_ -> {
+        switchToNextPanel(showRanking(Controlador.generarRanking()));
+        
+    });
+    cuartaOpcion.add(boton4);
+
+
+    // Añadir todos los paneles al panel principal
+    welcomePanel.add(primeraOpcion);
+    welcomePanel.add(segundaOpcion);
+    welcomePanel.add(terceraOpcion);
+    welcomePanel.add(cuartaOpcion);
+
+    this.add(welcomePanel); // si 'this' es JFrame
+    return welcomePanel;
+    }
+
+    private String[] manejoBatallas(ArrayList<Batalla> batallas) {
+        String[] mensajes = new String[]{"Ranura 1", "Ranura 2", "Ranura 3", "Ranura 4"};
+
+        if (!batallas.isEmpty()) {
+            for (int i = 0; i < batallas.size(); i++) {
+                Batalla batalla = batallas.get(i);
+                mensajes[i] = "Batalla " + (i + 1) + ": " + batalla.getEntrenador1().getNombre() + " vs " + batalla.getEntrenador2().getNombre();
+            }
+        }
+        return mensajes;
+    }
+
+    private JPanel showCargarPartida(ArrayList<Batalla> batallas) {
+        JPanel cargarPanel = new JPanel();
+        cargarPanel.setLayout(null);
+        cargarPanel.setBackground(new Color(10, 20, 48)); // fondo azul
+        String[] mensajes = manejoBatallas(batallas);
+
+        // Medidas
+        int panelWidth = 280;
+        int panelHeight = 120;
+        int paddingX = 50;
+        int paddingY = 50;
+        int startX = 10;
+        int startY = 25;
+
+    // PRIMERA PARTIDA
+    JPanel primeraPartida = new JPanel();
+    primeraPartida.setLayout(null);
+    primeraPartida.setBackground(Color.WHITE);
+    primeraPartida.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    primeraPartida.setBounds(startX, startY, panelWidth, panelHeight);
+
+    JLabel titulo1 = new JLabel("PARTIDA 1");
+    titulo1.setFont(new Font("Monospaced", Font.BOLD, 18));
+    titulo1.setBounds(15, 10, 200, 20);
+    primeraPartida.add(titulo1);
+
+    JLabel jugador1 = new JLabel(mensajes[0]);
+    jugador1.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    jugador1.setBounds(15, 40, 250, 20);
+    primeraPartida.add(jugador1);
+
+    JButton boton1 = new JButton();
+    if (mensajes[0].equals("Ranura 1")) {
+        boton1.setEnabled(false); // Deshabilitar el botón si no hay partida
+        primeraPartida.setBackground(Color.LIGHT_GRAY); // Cambiar el color de fondo si no hay partida
+    }
+    boton1.setBounds(0, 0, panelWidth, panelHeight);
+    boton1.setContentAreaFilled(false);
+    boton1.setBorderPainted(false);
+    boton1.setFocusPainted(false);
+    boton1.setOpaque(false);
+    boton1.addActionListener(_ -> {
+        System.out.println("Se seleccionó la partida 1");
+        controlador.setBatalla(batallas.get(0));
+    });
+    primeraPartida.add(boton1);
+    cargarPanel.add(primeraPartida);
+
+    // SEGUNDA PARTIDA
+    JPanel segundaPartida = new JPanel();
+    segundaPartida.setLayout(null);
+    segundaPartida.setBackground(Color.WHITE);
+    segundaPartida.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    segundaPartida.setBounds(startX + panelWidth + 10, startY, panelWidth, panelHeight);
+
+    JLabel titulo2 = new JLabel("PARTIDA 2");
+    titulo2.setFont(new Font("Monospaced", Font.BOLD, 18));
+    titulo2.setBounds(15, 10, 200, 20);
+    segundaPartida.add(titulo2);
+
+    JLabel jugador2 = new JLabel(mensajes[1]);
+    jugador2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    jugador2.setBounds(15, 40, 250, 20);
+    segundaPartida.add(jugador2);
+
+    JButton boton2 = new JButton();
+    if (mensajes[1].equals("Ranura 2")) {
+        boton2.setEnabled(false); // Deshabilitar el botón si no hay partida
+        segundaPartida.setBackground(Color.LIGHT_GRAY); // Cambiar el color de fondo si no hay partida
+    }
+    boton2.setBounds(0, 0, panelWidth, panelHeight);
+    boton2.setContentAreaFilled(false);
+    boton2.setBorderPainted(false);
+    boton2.setFocusPainted(false);
+    boton2.setOpaque(false);
+    boton2.addActionListener(_ -> {
+        System.out.println("Se seleccionó la partida 2");
+        controlador.setBatalla(batallas.get(1));
+    });
+    segundaPartida.add(boton2);
+    cargarPanel.add(segundaPartida);
+
+    // TERCERA PARTIDA guardar cargar
+    JPanel terceraPartida = new JPanel();
+    terceraPartida.setLayout(null);
+    terceraPartida.setBackground(Color.WHITE);
+    terceraPartida.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    terceraPartida.setBounds(startX, startY + panelHeight + 7 , panelWidth, panelHeight);
+
+    JLabel titulo3 = new JLabel("PARTIDA 3");
+    titulo3.setFont(new Font("Monospaced", Font.BOLD, 18));
+    titulo3.setBounds(15, 10, 200, 20);
+    terceraPartida.add(titulo3);
+
+    JLabel jugador3 = new JLabel(mensajes[2]);
+    jugador3.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    jugador3.setBounds(15, 40, 250, 20);
+    terceraPartida.add(jugador3);
+
+    JButton boton3 = new JButton();
+    if (mensajes[2].equals("Ranura 3")) {
+        boton3.setEnabled(false); // Deshabilitar el botón si no hay partida
+        terceraPartida.setBackground(Color.LIGHT_GRAY); // Cambiar el color de fondo si no hay partida
+    }
+    boton3.setBounds(0, 0, panelWidth, panelHeight);
+    boton3.setContentAreaFilled(false);
+    boton3.setBorderPainted(false);
+    boton3.setFocusPainted(false);
+    boton3.setOpaque(false);
+    boton3.addActionListener(_ -> {
+        System.out.println("Se seleccionó la partida 3");
+        controlador.setBatalla(batallas.get(2));
+    });
+    terceraPartida.add(boton3);
+    cargarPanel.add(terceraPartida);
+
+    // CUARTA PARTIDA
+    JPanel cuartaPartida = new JPanel();
+    cuartaPartida.setLayout(null);
+    cuartaPartida.setBackground(Color.WHITE);
+    cuartaPartida.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    cuartaPartida.setBounds(startX + panelWidth + 10, startY + panelHeight + 7, panelWidth, panelHeight);
+
+    JLabel titulo4 = new JLabel("PARTIDA 4");
+    titulo4.setFont(new Font("Monospaced", Font.BOLD, 18));
+    titulo4.setBounds(15, 10, 200, 20);
+    cuartaPartida.add(titulo4);
+
+    JLabel jugador4 = new JLabel(mensajes[3]);
+    jugador4.setFont(new Font("Monospaced", Font.PLAIN, 16));
+    jugador4.setBounds(15, 40, 250, 20);
+    cuartaPartida.add(jugador4);
+
+    JButton boton4 = new JButton();
+    if (mensajes[3].equals("Ranura 4")) {
+        boton4.setEnabled(false); // Deshabilitar el botón si no hay partida     winnerPanel
+        cuartaPartida.setBackground(Color.LIGHT_GRAY); // Cambiar el color de fondo si no hay partida
+    }
+    boton4.setBounds(0, 0, panelWidth, panelHeight);
+    boton4.setContentAreaFilled(false);
+    boton4.setBorderPainted(false);
+    boton4.setFocusPainted(false);
+    boton4.setOpaque(false);
+    boton4.addActionListener(_ -> {
+        System.out.println("Se seleccionó la partida 4");
+        controlador.setBatalla(batallas.get(3));
+    });
+    cuartaPartida.add(boton4);
+    cargarPanel.add(cuartaPartida);
+
+    return cargarPanel;
+    }
+
+    private JPanel showLogros() {
+         JPanel logroPanel = new JPanel();
+    logroPanel.setLayout(null);
+    logroPanel.setBackground(new Color(10, 20, 48));
+    
+    ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    
+    JButton boton = new JButton(configuracion);
+    boton.setBounds(530, 20, 30, 30);
+    boton.setBorderPainted(false);
+    boton.setContentAreaFilled(false);
+    boton.setFocusPainted(false);
+
+    boton.addActionListener(_ -> {
+        switchToNextPanel(showWelcomePanel(true, null, null, null, false));
+    });
+    
+    logroPanel.add(boton);
+
+    String[] columnas = {"Nombre", "Descripción","Conseguido:"};
+    Object[][] datos = new Object[Logros.values().length][3];
+    for (int i = 0; i < Logros.values().length; i++) {
+        Logros logro = Logros.values()[i];
+        datos[i][0] = logro.getNombre();
+        datos[i][1] = logro.getDescripcion();
+        // Verificar si el logro ha sido desbloqueado
+        if (controlador.getManejadorLogros().getLogrosDesbloqueados().get(logro) != null) {
+            datos[i][2] = "✓";
+        } else {
+            datos[i][2] = "✗";
+        }
+    }
+
+    JTable tabla = new JTable(datos, columnas);
+    tabla.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    tabla.setRowHeight(28);
+    tabla.setEnabled(false);
+    tabla.setBackground(Color.WHITE);
+
+    DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
+    centrado.setHorizontalAlignment(SwingConstants.CENTER);
+    for (int i = 0; i < tabla.getColumnCount(); i++) {
+        tabla.getColumnModel().getColumn(i).setCellRenderer(centrado);
+    }
+
+    JTableHeader cabecera = tabla.getTableHeader();
+    cabecera.setFont(new Font("Monospaced", Font.BOLD, 16));
+    cabecera.setBackground(Color.WHITE);
+    cabecera.setForeground(Color.BLACK);
+
+    JScrollPane scroll = new JScrollPane(tabla);
+    scroll.setBounds(10, 70, 565, 200);
+    scroll.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    scroll.setBackground(Color.WHITE);
+
+    logroPanel.add(scroll);
+    return logroPanel;
+    }
+    
+      private JPanel showRanking(TreeSet<Entrenador> entrenadores) {
+        JPanel rankingPanel = new JPanel();
+        rankingPanel.setLayout(null);
+        rankingPanel.setBackground(new Color(10, 20, 48));
+        ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+        //Controlador.actualizarRanking(controlador.cargarBatalla());
+
+        // Crear el botón con la imagen
+        JButton boton = new JButton(configuracion);
+        boton.setBounds(530, 20, 30, 30); // Ajusta el tamaño y la posición del botón
+
+        // Opcional: quitar el borde, el fondo, etc.
+        boton.setBorderPainted(false);
+        boton.setContentAreaFilled(false);
+        boton.setFocusPainted(false);
+
+        // Agregar acción al botón
+        boton.addActionListener(_ -> {
+            switchToNextPanel(showWelcomePanel(true, null, null, null, false));
+                   });
+        // Añadir el botón al panel de ranking
+        rankingPanel.add(boton);
+
+         String[] columnas = {"PUESTO", "ENTRENADOR", "#VICTORIAS", "#DERROTAS"};
+        Object[][] datos = new Object[entrenadores.size()][4];
+
+        System.out.println("Entrenadores: " + entrenadores);
+        for (int i = 0; i < entrenadores.size(); i++) {
+            Entrenador entrenador = entrenadores.toArray(new Entrenador[0])[i];
+            datos[i][0] = i + 1; // PUESTO
+            datos[i][1] = entrenador.getNombre(); // Muestra el nombre del entrenador
+            datos[i][2] = entrenador.getVictorias(); // Número de victorias
+            datos[i][3] = entrenador.getDerrotas(); // Número de derrotas
+            System.out.println("Entrenador: " + entrenador.getNombre() + ", Victorias: " + entrenador.getVictorias() + ", Derrotas: " + entrenador.getDerrotas());
+        }
+
+    JTable tabla = new JTable(datos, columnas);
+    tabla.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    tabla.setRowHeight(28);
+    tabla.setEnabled(false); // No editable
+
+     // Centrar el texto en todas las celdas
+    DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
+    centrado.setHorizontalAlignment(SwingConstants.CENTER);
+    for (int i = 0; i < tabla.getColumnCount(); i++) {
+        tabla.getColumnModel().getColumn(i).setCellRenderer(centrado);
+    }
+
+    JTableHeader cabecera = tabla.getTableHeader();
+    cabecera.setFont(new Font("Monospaced", Font.BOLD, 16));
+    cabecera.setBackground(Color.WHITE);
+    cabecera.setForeground(Color.BLACK);
+
+
+    // Contenedor con Scroll y borde
+    JScrollPane scroll = new JScrollPane(tabla);
+    scroll.setBounds(10, 70, 565, 200);
+    scroll.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    scroll.setBackground(Color.WHITE);
+    tabla.setBackground(Color.WHITE);
+
+    rankingPanel.add(scroll);
+
+       return rankingPanel; // Usamos 'this' para añadir el panel de logros   ranking
+    }
+
+    private JPanel historialAtaques(ArrayList<Ataque> ataques, Pokemon defensor) {
+        JPanel rankingPanel = new JPanel();
+        rankingPanel.setLayout(null);
+        rankingPanel.setBackground(new Color(10, 20, 48));
+        ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+
+        // Crear el botón con la imagen
+        JButton boton = new JButton(configuracion);
+        boton.setBounds(530, 20, 30, 30); // Ajusta el tamaño y la posición del botón
+
+        // Opcional: quitar el borde, el fondo, etc.
+        boton.setBorderPainted(false);
+        boton.setContentAreaFilled(false);
+        boton.setFocusPainted(false);
+
+        // Agregar acción al botón
+        boton.addActionListener(_ -> {
+            switchToNextPanel(showWelcomePanel(false, null, null, null, false));
+                   });
+        // Añadir el botón al panel de ranking
+        rankingPanel.add(boton);
+
+        String[] columnas = {"Nombre del Ataque", "Daño"};
+
+Object[][] datos = new Object[ataques.size()][2];
+
+for (int i = 0; i < ataques.size(); i++) {
+    Ataque atk = ataques.get(i);
+    datos[i][0] = atk.getNombre();
+    datos[i][1] = atk.getTipo() + " / " + atk.getPoder(); // Muestra el daño infligido
+}
+
+// mostrar tabla en sout
+
+    System.out.println("Datos de la tabla:");
+    for (Object[] fila : datos) {
+        System.out.println("Ataque: " + fila[0] + ", Daño: " + fila[1]);
+    }
+
+
+    JTable tabla = new JTable(datos, columnas);
+    tabla.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    tabla.setRowHeight(28);
+    tabla.setEnabled(false); // No editable
+
+     // Centrar el texto en todas las celdas
+    DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
+    centrado.setHorizontalAlignment(SwingConstants.CENTER);
+    for (int i = 0; i < tabla.getColumnCount(); i++) {
+        tabla.getColumnModel().getColumn(i).setCellRenderer(centrado);
+    }
+
+    JTableHeader cabecera = tabla.getTableHeader();
+    cabecera.setFont(new Font("Monospaced", Font.BOLD, 16));
+    cabecera.setBackground(Color.WHITE);
+    cabecera.setForeground(Color.BLACK);
+
+
+    // Contenedor con Scroll y borde
+    JScrollPane scroll = new JScrollPane(tabla);
+    scroll.setBounds(10, 70, 565, 200);
+    scroll.setBorder(BorderFactory.createLineBorder(new Color(184, 115, 51), 4));
+    scroll.setBackground(Color.WHITE);
+    tabla.setBackground(Color.WHITE);
+
+    rankingPanel.add(scroll);
+
+       return rankingPanel; // Usamos 'this' para añadir el panel de logros
+    }
+
     public void switchToNextPanel(JPanel panel) {
         getContentPane().removeAll(); // Limpiar la ventana
         add(panel); // Añadir el nuevo panel
@@ -217,10 +729,10 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         secondPanel.add(textArea);
 
         // Crear la flecha roja
-        JLabel flecha = new JLabel("Presiona Enter para continuar...");
+        JLabel flecha = new JLabel("▼");
         flecha.setForeground(Color.RED);
-        flecha.setBounds(350, 250, 500, 30); // Nueva posición razonable de la flecha
-        flecha.setFont(new Font("Arial", Font.BOLD, 10)); // Fuente de la flecha
+        flecha.setBounds(450, 250, 30, 30); // Nueva posición razonable de la flecha
+        flecha.setFont(new Font("Arial", Font.BOLD, 20)); // Fuente de la flecha
 
         // Añadir la flecha encima del cuadro de texto
         secondPanel.add(flecha);
@@ -233,7 +745,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     @Override
     public void actionPerformed(ActionEvent e) {
         // Este método se ejecutará cuando el temporizador haya terminado (3 segundos)
-            switchToNextPanel(showSecondPanel()); 
+            switchToNextPanel(showWelcomePanel(true, null, null, null, false)); 
              // Mostrar el segundo panel
         
         // Cambiar al siguiente panel
@@ -566,7 +1078,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         fondo.setBackground(new Color(25, 95, 95));
         fondo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ActionListener elegirPokemon
+        // ActionListener elegirPokemon cargar
         fondo.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -589,7 +1101,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         // Hacer foco en el panel para detectar la tecla
         fondo.setFocusable(true);
         fondo.requestFocusInWindow(); // Requiere que la ventana esté visible
-
+    
         // Equipos
         List<Pokemon> equipoE1 = e1.getEquipo();
         List<Pokemon> equipoE2 = e2.getEquipo();
@@ -693,7 +1205,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         currentPanel = 7;
 
         JPanel panel = new JPanel();
-        panel.setLayout(null); // para que el LayeredPane funcione bien
+        panel.setLayout(null); // para que el LayeredPane funcione bien controlador.cargarBatalla()  ordenarContrincantes
         panel.setPreferredSize(new java.awt.Dimension(605, 327));
 
         JLayeredPane layeredPane = new JLayeredPane();
@@ -706,6 +1218,35 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         labelFondo.setBounds(0, 0, 605, 327);
         layeredPane.add(labelFondo, Integer.valueOf(0));
 
+        
+    ImageIcon guardar = new ImageIcon(getClass().getResource("/vista/guardar.png"));
+    
+    JButton botonGuardar = new JButton(guardar);
+    botonGuardar.setBounds(505, 15, 30, 30);
+    botonGuardar.setBorderPainted(false);
+    botonGuardar.setContentAreaFilled(false);
+    botonGuardar.setFocusPainted(false);
+
+    botonGuardar.addActionListener(_ -> {
+        controlador.guardarBatalla();
+      switchToNextPanel(showWelcomePanel(false, atacante, defensor, null, false));
+    });
+    
+    layeredPane.add(botonGuardar, Integer.valueOf(2));
+
+        ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    
+    JButton botonConfiguracion = new JButton(configuracion);
+    botonConfiguracion.setBounds(540, 15, 30, 30);
+    botonConfiguracion.setBorderPainted(false);
+    botonConfiguracion.setContentAreaFilled(false);
+    botonConfiguracion.setFocusPainted(false);
+
+    botonConfiguracion.addActionListener(_ -> {
+      switchToNextPanel(showWelcomePanel(false, atacante, defensor, null, false));
+    });
+    
+    layeredPane.add(botonConfiguracion, Integer.valueOf(2));
     
         // 3. Pokémon
         ImageIcon jugador2 = ICONOS_TIPO_ATACANTE.get(atacante.getTipo());
@@ -786,6 +1327,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         boton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                controlador.agregarAtaqueHistorial(atacante.getAtaques().get(0));
                 // Aquí puedes manejar la acción del botón 1
                 controlador.atacar(atacante.getAtaques().get(0));
                 if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
@@ -802,10 +1344,13 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         boton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                controlador.agregarAtaqueHistorial(atacante.getAtaques().get(1));
                 // Aquí puedes manejar la acción del botón 2
                 controlador.atacar(atacante.getAtaques().get(1));
-                if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
+                if (controlador.getOrden() != null) {
+                    if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
                     switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                    }
                 }
             }
         });
@@ -818,10 +1363,13 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         boton3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                controlador.agregarAtaqueHistorial(atacante.getAtaques().get(2));
                 // Aquí puedes manejar la acción del botón 3
                 controlador.atacar(atacante.getAtaques().get(2));
-                if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
-                   switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                if (controlador.getOrden() != null) {
+                    if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
+                    switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                    }
                 }
             }
         });
@@ -835,9 +1383,12 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Aquí puedes manejar la acción del botón 4
+                controlador.agregarAtaqueHistorial(atacante.getAtaques().get(3));
                 controlador.atacar(atacante.getAtaques().get(3));
-                if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
-                   switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                if (controlador.getOrden() != null) {
+                    if(controlador.getOrden().get(0).getVivo() == true && controlador.getOrden().get(1).getVivo() == true) {
+                    switchToNextPanel(WinnerPanel(null, atacante, defensor,  false));
+                    }
                 }
             }
         });
@@ -887,6 +1438,35 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
         JLabel labelFondo = new JLabel(new ImageIcon(imagenFondo));
         labelFondo.setBounds(0, 0, 605, 327);
         layeredPane.add(labelFondo, Integer.valueOf(0));
+
+    ImageIcon guardar = new ImageIcon(getClass().getResource("/vista/guardar.png"));
+    
+    JButton botonGuardar = new JButton(guardar);
+    botonGuardar.setBounds(505, 15, 30, 30);
+    botonGuardar.setBorderPainted(false);
+    botonGuardar.setContentAreaFilled(false);
+    botonGuardar.setFocusPainted(false);
+
+    botonGuardar.addActionListener(_ -> {
+      switchToNextPanel(showWelcomePanel(false, atacante, defensor, ganador, isWinner));
+    });
+    
+    layeredPane.add(botonGuardar, Integer.valueOf(2));
+
+    ImageIcon configuracion = new ImageIcon(getClass().getResource("/vista/ajustes.png"));
+    
+    JButton botonConfiguracion = new JButton(configuracion);
+    botonConfiguracion.setBounds(540, 15, 30, 30);
+    botonConfiguracion.setBorderPainted(false);
+    botonConfiguracion.setContentAreaFilled(false);
+    botonConfiguracion.setFocusPainted(false);
+
+    botonConfiguracion.addActionListener(_ -> {
+        switchToNextPanel(showWelcomePanel(false, atacante, defensor, ganador, isWinner));
+    });
+    
+    layeredPane.add(botonConfiguracion, Integer.valueOf(2));
+
 
     
         // 3. Pokémon
@@ -953,7 +1533,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
 
 
     // 6. Panel de opciones de ataque
-    // Panel de comandos personalizado (capa 2) mostrarPokemon
+    // Panel de comandos personalizado (capa 2) mostrarPokemon       ranking
     JPanel comandos = new JPanel();
     comandos.setLayout(new GridLayout(2, 2, 10, 10));
     comandos.setBounds(8, 190, 400, 100);
@@ -969,11 +1549,14 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     if (isWinner) {
      ganadorLabel = new JLabel("¡" + ganador.getNombre() + " ha ganado !");
      ganadorLabel2 = new JLabel("el combate!");
+     controlador.getListaEntrenadores().get(0).restaurarEquipo();
+     controlador.getListaEntrenadores().get(1).restaurarEquipo();
+     controlador.guardarBatalla();
     }
     else{
     ganadorLabel = new JLabel("¡" + atacante.getNombre() + " ha hecho");
     ganadorLabel2 = new JLabel((int)(defensor.getHPMAX() - defensor.getHp()) + " puntos de daño!");
-    panel.addKeyListener(new KeyListener() {
+     panel.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -1038,7 +1621,7 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
             switchToNextPanel(showFourthPanel());
         }
     }
-    
+    // Object[][]
     public void pokemones() {
         pokemon1 =  poke1Field.getText();
         pokemon2 =  poke2Field.getText();
@@ -1138,8 +1721,38 @@ public class VistaPokemonGUI extends JFrame implements ActionListener, KeyListen
     }
     @Override
     public void continuar() {
+        
+    }
+
+
+    @Override
+    public void mostrarLogro(String nombre, String descripcion, String nombreEntrenador) {
+       //mensaje de dialogo ventana emergente
+        JOptionPane.showMessageDialog(this, "¡Logro desbloqueado!(" + nombre + ") por " + nombreEntrenador +  "\n" + descripcion, "Logro", JOptionPane.INFORMATION_MESSAGE);
+        // Aquí puedes agregar la lógica para guardar el logro en el perfil del entrenador
+      
+        
+       
+    }
+
+
+    @Override
+    public void mostrarHistorialAtaques(ArrayList<Ataque> ataques, Pokemon defensor) {
+        switchToNextPanel(historialAtaques(ataques, defensor));
+       
+    }
+
+    // ranking
+
+
+    @Override
+    public void mostrarLogros(ArrayList<String> logros) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarLogros'");
     }
 }
+
+
 
 // Botón personalizado para mostrar el Pokémon
 

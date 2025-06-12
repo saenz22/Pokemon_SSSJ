@@ -1,12 +1,12 @@
 import controlador.Controlador;
+import vista.VistaPokemonConsola;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        Controlador controlador;
+        Controlador controlador = Controlador.instanciar(false);
 
         // Para probar el juego, ingresa en el parámetro del controlador
         // true si deseas la aventura visual o false si deseas la aventura por consola
         // Para avanzar entre escenas, presiona Enter
-        controlador = new Controlador(true);
     }
 }

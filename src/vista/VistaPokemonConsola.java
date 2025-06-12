@@ -1,13 +1,20 @@
 package vista;
 
 import controlador.Controlador;
+import excepciones.AtaqueNoDisponibleException;
+import excepciones.PokemonDebilitadoException;
 import modelo.Ataque;
 import modelo.Entrenador;
 import modelo.Pokemon;
+import modelo.Batalla;
+import modelo.Logros;
+import modelo.ManejadorLogros;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.NoSuchElementException;
+import java.util.Map;
 
 /**
  * Implementación de la interfaz VistaPokemon para interacción por consola.
@@ -32,20 +39,155 @@ public class VistaPokemonConsola implements VistaPokemon {
         this.pokemon2 = "";
         this.pokemon3 = "";
     }
-    
+
+    public void menuPrincipal() {
+        while (true) {
+            System.out.println("\n--- MENÚ PRINCIPAL ---");
+            System.out.println("1. Nueva Partida");
+            System.out.println("2. Cargar Partida");
+            System.out.println("3. Logros");
+            System.out.println("4. Créditos");
+            System.out.println("5. Salir");
+            System.out.print("Selecciona una opción: ");
+            String opcion = scanner.nextLine();
+            try {
+                switch (opcion) {
+                    case "1":
+                        controlador.iniciarNuevaPartida();
+                        return;
+                    case "2":
+                        mostrarPartidasGuardadas();
+                        break;
+                    case "3":
+                        mostrarLogrosConsola();
+                        break;
+                    case "4":
+                        mostrarCreditos();
+                        break;
+                    case "5":
+                        System.out.println("¡Hasta luego!");
+                        System.exit(0);
+                    default:
+                        System.out.println("Opción no válida.");
+                }
+            } catch (Exception e) {
+                System.err.println("Error: " + e.getMessage());
+            }
+        }
+    }
+
+    private void mostrarPartidasGuardadas() {
+        ArrayList<Batalla> batallas = controlador.cargarBatalla();
+        if (batallas == null || batallas.isEmpty()) {
+            System.out.println("No hay partidas guardadas.");
+            limpiarConsola();
+            return;
+        }
+        System.out.println("\n--- PARTIDAS GUARDADAS ---");
+        for (int i = 0; i < batallas.size(); i++) {
+            Batalla b = batallas.get(i);
+            System.out
+                    .println((i + 1) + ". " + b.getEntrenador1().getNombre() + " vs " + b.getEntrenador2().getNombre());
+        }
+        System.out.print("Selecciona el número de la partida a cargar (o 0 para cancelar): ");
+        try {
+            int seleccion = Integer.parseInt(scanner.nextLine());
+            if (seleccion > 0 && seleccion <= batallas.size()) {
+                controlador.setBatalla(batallas.get(seleccion - 1));
+                System.out.println("Partida cargada correctamente.");
+                limpiarConsola();
+                controlador.reanudarPartida(); // Método para continuar la partida cargada
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada no válida.");
+        }
+    }
+
+    // Guardar partida actual
+    public void guardarPartida() {
+        try {
+            controlador.guardarBatalla();
+            System.out.println("Partida guardada exitosamente.");
+        } catch (Exception e) {
+            System.err.println("No se pudo guardar la partida: " + e.getMessage());
+        }
+        limpiarConsola();
+    }
+
+    // Mostrar logros desbloqueados
+    private void mostrarLogrosConsola() {
+        ManejadorLogros manejador = controlador.getManejadorLogros();
+        Map<Logros, Entrenador> logros = manejador.getLogrosDesbloqueados();
+        System.out.println("\n--- LOGROS DESBLOQUEADOS ---");
+        for (Logros logro : Logros.values()) {
+            Entrenador e = logros.get(logro);
+            String estado = (e != null) ? "✅ (" + e.getNombre() + ")" : "❌";
+            System.out.println(logro.name() + ": " + logro.getDescripcion() + " " + estado);
+        }
+        limpiarConsola();
+    }
+
+    // Mostrar logros (implementación de la interfaz)
+    @Override
+    public void mostrarLogros(ArrayList<String> logros) {
+        System.out.println("\n--- LOGROS ---");
+        for (String l : logros) {
+            System.out.println(l);
+        }
+        limpiarConsola();
+    }
+
+    // Mostrar logro desbloqueado
+    @Override
+    public void mostrarLogro(String nombre, String descripcion, String nombreEntrenador) {
+        System.out.println("\n¡Logro desbloqueado!");
+        System.out.println("Entrenador: " + nombreEntrenador);
+        System.out.println("Logro: " + nombre + " - " + descripcion);
+        limpiarConsola();
+    }
+
+    @Override
+    public void continuar() {
+        // Si la batalla terminó, muestra el menu principal
+        if (controlador.isFinDeBatalla()) {
+            System.out.println("\n¿Deseas guardar la partida? (s/n)");
+            String resp = scanner.nextLine().trim().toLowerCase();
+            if (resp.equals("s")) {
+                guardarPartida();
+            }
+            menuPrincipal();
+        } else {
+            // si es durante la batalla, sigue el flujo normal
+            elegirAtaque(controlador.getOrden().get(0));
+        }
+
+    }
+
+    // Muestra los créditos del proyecto.
+    private void mostrarCreditos() {
+        System.out.println("\n--- CRÉDITOS ---");
+        System.out.println("Desarrollado por:");
+        System.out.println("Samuel Agudelo Sosa");
+        System.out.println("Sebastián Saenz Mejia");
+        System.out.println("Samuel Romero Martinez");
+        System.out.println("José Manuel Castaño Rojas");
+        System.out.println("Universidad / Curso / Año");
+        limpiarConsola();
+    }
+
     /**
      * Muestra la pantalla de bienvenida y avanza a la siguiente escena.
      */
     @Override
     public void bienvenido() {
-        System.out.println(""" 
-                    Estás a punto de sumergirte en un
-                    mundo lleno de aventuras de las
-                    que vas a ser protagonista.
+        System.out.println("""
+                Estás a punto de sumergirte en un
+                mundo lleno de aventuras de las
+                que vas a ser protagonista.
 
-                    Te cruzarás con rivales y criaturas
-                    salvajes que querrán luchar contigo,
-                    pero ¡ánimo, tú puedes!""");
+                Te cruzarás con rivales y criaturas
+                salvajes que querrán luchar contigo,
+                pero ¡ánimo, tú puedes!""");
         limpiarConsola();
         controlador.avanzarEscena();
     }
@@ -60,11 +202,11 @@ public class VistaPokemonConsola implements VistaPokemon {
         while (!nombresValidos) {
             try {
                 System.out.print("Ingrese el nombre del Entrenador 1: ");
-                nombre1 = scanner.nextLine().trim(); 
+                nombre1 = scanner.nextLine().trim();
                 if (nombre1.isEmpty()) {
                     System.out.println("Error: El nombre del Entrenador 1 no puede estar vacío.");
                     scanner.nextLine();
-                    continue; 
+                    continue;
                 }
 
                 System.out.print("Ingrese el nombre del Entrenador 2: ");
@@ -72,17 +214,19 @@ public class VistaPokemonConsola implements VistaPokemon {
                 if (nombre2.isEmpty()) {
                     System.out.println("Error: El nombre del Entrenador 2 no puede estar vacío.");
                     scanner.nextLine();
-                    continue; 
+                    continue;
                 }
-                nombresValidos = true; 
+                nombresValidos = true;
 
-            } catch (NoSuchElementException e) {
+            } catch (NoSuchElementException e) { // esta atrapa de las entradas cuando intenta acceder a un elemento que
+                                                 // no existe
                 System.err.println("Error: No se encontró más entrada. Saliendo...");
                 break;
             } catch (IllegalStateException e) {
                 System.err.println("Error: El scanner ha sido cerrado. Saliendo...");
                 break;
-            }
+            } // ilegal state exeption es para cuando se quiere evitar que una funcion se
+              // invoque este en un momento inadecuado
         }
 
         String texto = """
@@ -102,9 +246,9 @@ public class VistaPokemonConsola implements VistaPokemon {
         controlador.avanzarEscena();
     }
 
-    /**
+    /*
      * Solicita los nombres de los Pokémon para el equipo y avanza la escena.
-     * Valida que los nombres no estén vacíos.
+     * salida que los nombres no estén vacíos.
      */
     @Override
     public void pokemones() {
@@ -135,7 +279,7 @@ public class VistaPokemonConsola implements VistaPokemon {
                     continue;
                 }
                 PokemonValidos = true; // Si todos los nombres no están vacíos, salimos del bucle
-                
+
             } catch (NoSuchElementException e) {
                 System.err.println("Error: No se encontró más entrada. Puede que la entrada haya sido interrumpida.");
                 break; // O podrías decidir salir del programa aquí
@@ -146,119 +290,114 @@ public class VistaPokemonConsola implements VistaPokemon {
         controlador.avanzarEscena();
     }
 
-    /**
-     * Permite al usuario elegir el Pokémon activo para el combate de cada entrenador.
+    /*
+     * Permite al usuario elegir el Pokémon activo para el combate de cada
+     * entrenador.
      * Llama a un método auxiliar para la selección.
      */
     @Override
     public void elegirPokemon(Entrenador entrenador1, Entrenador entrenador2) {
-        controlador.setPokemonActivoEntrenador1(entrenador1.getEquipo().get(eleccion(entrenador1)-1));
-        controlador.setPokemonActivoEntrenador2(entrenador2.getEquipo().get(eleccion(entrenador2)-1));
+        controlador.setPokemonActivoEntrenador1(entrenador1.getEquipo().get(eleccion(entrenador1) - 1));
+        controlador.setPokemonActivoEntrenador2(entrenador2.getEquipo().get(eleccion(entrenador2) - 1));
         controlador.ordenarContrincantes();
-        System.out.println(controlador.getOrden().get(0).getNombre() + " vs " + controlador.getOrden().get(1).getNombre());
+        System.out.println(
+                controlador.getOrden().get(0).getNombre() + " vs " + controlador.getOrden().get(1).getNombre());
     }
 
-    /**
-     * Método auxiliar para elegir un Pokémon de un equipo.
-     * @param entrenador Entrenador que elige.
-     * @return Índice del Pokémon elegido (1-3).
-     */
     private byte eleccion(Entrenador entrenador) {
         ArrayList<Pokemon> pokemones = entrenador.getEquipo();
-        int opcion = 0; 
-        System.out.println("Elige un Pokémon:" + entrenador.getNombre());
-        for (int i = 0; i < pokemones.size(); i++) {
-            System.out.println((i + 1) + ". " + pokemones.get(i).getNombre());
-        }
-        while(true) {
-            if (scanner.hasNextInt()) {
+        int opcion = 0;
+
+        while (true) {
+            try {
+                System.out.println("Elige un Pokémon para " + entrenador.getNombre() + ":");
+                for (int i = 0; i < pokemones.size(); i++) {
+                    Pokemon p = pokemones.get(i);
+
+                    String estado = p.getHp() <= 0 ? " (Debilitado)" : " (HP: " + p.getHp() + ")";
+                    System.out.println((i + 1) + ". " + p.getNombre() + estado);
+                }
+
+                System.out.print("Ingresa el número del Pokémon: ");
                 opcion = scanner.nextInt();
-                switch (opcion) {
-                    case 1:
-                        System.out.println("Has elegido a " + pokemones.get(0).getNombre());
-                        break; 
-                    case 2:
-                        System.out.println("Has elegido a " + pokemones.get(1).getNombre());
-                        break;
-                    case 3:
-                        System.out.println("Has elegido a " + pokemones.get(2).getNombre());
-                        break;
-                    default:
-                        System.out.println("Opción no válida. Elige un número entre 1 y 3.");
-                }
-                if (opcion >= 1 && opcion <= 3) {
+
+                if (opcion >= 1 && opcion <= pokemones.size()) {
+                    // NUEVO: Verificación de que el Pokémon no esté debilitado.
+                    if (pokemones.get(opcion - 1).getHp() <= 0) {
+                        throw new PokemonDebilitadoException("Error: " + pokemones.get(opcion - 1).getNombre()
+                                + " está debilitado y no puede luchar.");
+                    }
+                    System.out.println("Has elegido a " + pokemones.get(opcion - 1).getNombre());
                     break;
+                } else {
+                    throw new IndexOutOfBoundsException(
+                            "Opción no válida. Elige un número entre 1 y " + pokemones.size() + ".");
                 }
-            } else {
-                System.out.println("Entrada no válida. Por favor, ingresa un número.");
-                scanner.nextLine();
-                scanner.nextLine();
+            } catch (InputMismatchException e) {
+                System.err.println("Entrada no válida. Por favor, ingresa únicamente un número.");
+                scanner.next();
+
+            } catch (PokemonDebilitadoException | IndexOutOfBoundsException e) {
+                System.err.println(e.getMessage());
             }
         }
+
+        scanner.nextLine();
         limpiarConsola();
         return (byte) opcion;
     }
 
-    /**
-     * Permite al usuario elegir el ataque a realizar para el Pokémon activo.
-     * Llama al controlador para ejecutar el ataque.
-     */
     @Override
     public void elegirAtaque(Pokemon pokemon) {
         ArrayList<Ataque> ataques = pokemon.getAtaques();
-        int opcion = 0; 
-        System.out.println("Elige un Ataque para : " + pokemon.getNombre());
-        for (int i = 0; i < ataques.size(); i++) {
-            System.out.println((i + 1) + ". " + ataques.get(i).getNombre() + " / " + ataques.get(i).getPoder());
-        }
-        while(true) {
-            if (scanner.hasNextInt()) {
+        int opcion = 0;
+
+        while (true) {
+            try {
+                System.out.println("Elige un Ataque para: " + pokemon.getNombre());
+                for (int i = 0; i < ataques.size(); i++) {
+                    System.out.println(
+                            (i + 1) + ". " + ataques.get(i).getNombre() + " / Poder: " + ataques.get(i).getPoder());
+                }
+
+                System.out.print("Ingresa el número del ataque: ");
                 opcion = scanner.nextInt();
-                switch (opcion) {
-                    case 1:
-                        System.out.println("Has elegido a " + ataques.get(0).getNombre());
-                        break;
-                    case 2:
-                        System.out.println("Has elegido a " + ataques.get(1).getNombre());
-                        break;
-                    case 3:
-                        System.out.println("Has elegido a " + ataques.get(2).getNombre());
-                        break;
-                    case 4:
-                        System.out.println("Has elegido a " + ataques.get(3).getNombre());
-                        break;
-                    default:
-                        System.out.println("Opción no válida. Elige un número entre 1 y 4.");
-                }
-                if (opcion >= 1 && opcion <= 4) {
+
+                if (opcion >= 1 && opcion <= ataques.size()) {
+                    System.out.println("Has elegido usar " + ataques.get(opcion - 1).getNombre());
                     break;
+                } else {
+                    throw new AtaqueNoDisponibleException(
+                            "Opción no válida. Elige un número entre 1 y " + ataques.size() + ".");
                 }
-            } else {
-                System.out.println("Entrada no válida. Por favor, ingresa un número.");
-                scanner.nextLine();
-                scanner.nextLine();
+            } catch (InputMismatchException e) {
+                System.err.println("Entrada no válida. Por favor, ingresa únicamente un número.");
+                scanner.next();
+            } catch (AtaqueNoDisponibleException e) {
+                System.err.println(e.getMessage());
             }
         }
+
+        scanner.nextLine();
         limpiarConsola();
-        controlador.atacar(ataques.get(opcion-1));
+        controlador.atacar(ataques.get(opcion - 1));
     }
 
-    /**
-     * Asocia el controlador a la vista para manejar eventos y flujo del juego.
-     */
     @Override
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
 
-    /**
-     * Muestra la información de los Pokémon seleccionados y avanza la escena.
-     * Luego permite elegir el ataque para el primer Pokémon en el orden.
-     */
     @Override
     public void mostrarPokemon(ArrayList<Pokemon> pokemon) {
-        for (int i = 0; i < pokemon.size(); i++) {  
-            String stats = "Pokémon: " + pokemon.get(i).getNombre() + " | Tipo: " + pokemon.get(i).getTipo().toString() + "\nNivel: " + String.valueOf(pokemon.get(i).getNivel()) + " | HP: " + String.valueOf(pokemon.get(i).getHp()) + "\nAtaque: " + String.valueOf(pokemon.get(i).getAtk()) + " | Ataque Especial: " + String.valueOf(pokemon.get(i).getAtkEs()) + "\nDefensa: " + String.valueOf(pokemon.get(i).getDf()) + " | Defensa Especial: " + String.valueOf(pokemon.get(i).getDfEs()) + "\nVelocidad: " + String.valueOf(pokemon.get(i).getVelocidad());
+        for (int i = 0; i < pokemon.size(); i++) {
+            String stats = "Pokémon: " + pokemon.get(i).getNombre() + " | Tipo: " + pokemon.get(i).getTipo().toString()
+                    + "\nNivel: " + String.valueOf(pokemon.get(i).getNivel()) + " | HP: "
+                    + String.valueOf(pokemon.get(i).getHp()) + "\nAtaque: " + String.valueOf(pokemon.get(i).getAtk())
+                    + " | Ataque Especial: " + String.valueOf(pokemon.get(i).getAtkEs()) + "\nDefensa: "
+                    + String.valueOf(pokemon.get(i).getDf()) + " | Defensa Especial: "
+                    + String.valueOf(pokemon.get(i).getDfEs()) + "\nVelocidad: "
+                    + String.valueOf(pokemon.get(i).getVelocidad());
             System.out.println(stats);
             System.out.println("\n");
             limpiarConsola();
@@ -266,8 +405,8 @@ public class VistaPokemonConsola implements VistaPokemon {
         controlador.avanzarEscena();
         elegirAtaque(controlador.getOrden().get(0));
     }
-    
-    /**
+
+    /*
      * Muestra el mensaje de victoria y termina el programa.
      */
     @Override
@@ -276,29 +415,22 @@ public class VistaPokemonConsola implements VistaPokemon {
         System.exit(0);
     }
 
-    /**
-     * Indica si ocurrió un error en la vista (no implementado, siempre retorna false).
-     */
     @Override
     public boolean isError() {
         return false;
     }
 
-    /**
-     * Continúa el flujo del juego permitiendo elegir el siguiente ataque.
-     */
-    @Override
-    public void continuar() {
-        elegirAtaque(controlador.getOrden().get(0));
-    }
-
-    /**
-     * Limpia la consola y espera a que el usuario presione Enter para continuar.
-     */
     public void limpiarConsola() {
         System.out.println("Presiona Enter para continuar...");
         scanner.nextLine();
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
+
+    @Override
+    public void mostrarHistorialAtaques(ArrayList<Ataque> ataques, Pokemon defensor) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mostrarHistorialAtaques'");
+    }
+
 }
