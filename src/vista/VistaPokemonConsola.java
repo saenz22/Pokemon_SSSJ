@@ -257,11 +257,7 @@ public class VistaPokemonConsola implements VistaPokemon {
         limpiarConsola();
     }
 
-    @Override
-    public void mostrarHistorialAtaques(ArrayList<String> ataques) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mostrarHistorialAtaques'");
-    }
+ 
 
     @Override
     public void mostrarRanking(ArrayList<Entrenador> entrenadores) {
