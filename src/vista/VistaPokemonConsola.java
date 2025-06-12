@@ -10,10 +10,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.NoSuchElementException;
 
-/**
- Implementación de la interfaz VistaPokemon para interacción por consola.
-  Permite al usuario jugar el simulador Pokémon desde la terminal.
- */
+
 public class VistaPokemonConsola implements VistaPokemon {
     // Scanner para la entrada de datos por consola
     private Scanner scanner;
@@ -34,8 +31,8 @@ public class VistaPokemonConsola implements VistaPokemon {
         this.pokemon3 = "";
     }
     
-    /**
-     * Muestra la pantalla de bienvenida y avanza a la siguiente escena.
+    /*
+      Muestra la pantalla de bienvenida y avanza a la siguiente escena.
      */
     @Override
     public void bienvenido() {
