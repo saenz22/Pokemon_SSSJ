@@ -189,7 +189,8 @@ public class VistaPokemonConsola implements VistaPokemon {
                 salvajes que querrán luchar contigo,
                 pero ¡ánimo, tú puedes!""");
         limpiarConsola();
-        controlador.avanzarEscena();
+        menuPrincipal();
+        // controlador.avanzarEscena();
     }
 
     /**
