@@ -156,7 +156,6 @@ Selección de pokemones
 
 ![Selección de pokemones 1](src/image/Seleccion_de_pokemones.png)
 
-![Selección de pokemones 2](src/image/Seleccion_de_pokemon_2.png)
 
 Combate
 
