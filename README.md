@@ -133,7 +133,7 @@ Pokemon_MVC/
 ---
 
 ### 📊 Diagrama UML del Juego
-![Diagrama UML del Juego](src/image/diagrama.png)
+![Diagrama UML del Juego](SSJ/Pokemon_SSSJ/src/image/diagrama.png)
 
 ---
 
