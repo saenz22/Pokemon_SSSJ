@@ -146,21 +146,21 @@ Pokemon_MVC/
 
 Pantalla Prinicipal
 
-![Pantalla principal](/src/image/Pantalla_principal.png)
+![Pantalla principal](SSJ/Pokemon_SSSJ/src/image/Pantalla_principal.png)
 
 Selección de entrenadores
 
-![Selección de entrenadores](/src/image/Seleccion_de_entrenadores.png)
+![Selección de entrenadores](SSJ/Pokemon_SSSJ/src/image/Seleccion_de_entrenadores.png)
 
 Selección de pokemones
 
-![Selección de pokemones 1](src/image/Seleccion_de_pokemones.png)
+![Selección de pokemones 1](SSJ/Pokemon_SSSJ/src/image/Seleccion_de_pokemones.png)
 
 
 Combate
 
-![Combate](src/image/Combate.png)
-![Combate 2](src/image/Combate_2.png)
+![Combate](SSJ/Pokemon_SSSJ/src/image/Combate.png)
+![Combate 2](SSJ/Pokemon_SSSJ/src/image/Combate_2.png)
 
 
 ---
